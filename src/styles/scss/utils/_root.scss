@@ -1,0 +1,16 @@
+@use 'colors' as *;
+@use 'typography' as *;
+
+:root {
+  @each $ff, $shades in $font-family {
+    @each $shade, $value in $shades {
+      --tv-#{$ff}-#{$shade}: #{$value};
+    }
+  }
+
+  @each $color, $shades in $colors {
+    @each $shade, $value in $shades {
+      --tv-#{$color}-#{$shade}: #{$value};
+    }
+  }
+}

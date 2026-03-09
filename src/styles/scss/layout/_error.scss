@@ -1,0 +1,12 @@
+@use '../utils' as *;
+
+.tv-error {
+  &-thumb {
+    @media #{$lg} {
+      margin-bottom: 90px;
+    }
+    @media #{$md,$xs} {
+      margin-bottom: 50px;
+    }
+  }
+}
