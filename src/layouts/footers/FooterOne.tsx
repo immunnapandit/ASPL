@@ -43,7 +43,7 @@ export default function FooterOne() {
                 <div className="tv-footer-widget tv-footer-col-1">
                   <div className="tv-footer-widget-logo mb-30">
                     <Link to="/">
-                      <img src="assets/img/logo/logo-white2.png" alt="" />
+                      <img src="assets/img/logo/AtiSunya.png" alt="" />
                     </Link>
                   </div>
                   <div className="tv-footer-widget-text">
@@ -61,9 +61,9 @@ export default function FooterOne() {
                         </a>
                       </li>
                       <li>
-                        <a href="mailto:techor@example.com">
+                        <a href="mailto:info@atisunya.co">
                           <i className="fa-solid fa-envelope"></i>
-                          techor@example.com
+                          info@atisunya.co
                         </a>
                       </li>
                     </ul>
@@ -153,8 +153,7 @@ export default function FooterOne() {
                 <div className="col-lg-6">
                   <div className="tv-copyright-left text-center text-lg-start">
                     <p className="mb-0">
-                      © 2025 <a href="#">Techor</a>All Rights Reserved, Created
-                      by <a href="#">HurrayTheme</a>
+                      © 2025 <a href="#">AtiSunya</a> All Rights Reserved <a href="#"></a>
                     </p>
                   </div>
                 </div>

@@ -31,7 +31,7 @@ export default function HeroHomeOne() {
               <div
                 className="tv-slider-bg"
                 style={{
-                  backgroundImage: `url(/assets/img/slider/slider-1-1.jpg)`,
+                  backgroundImage: `url(/assets/img/slider/CloudComputing.png)`,
                 }}
               ></div>
               <div className="container">

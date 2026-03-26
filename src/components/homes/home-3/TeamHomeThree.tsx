@@ -87,7 +87,7 @@ export default function TeamHomeThree() {
           >
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/team-1-2.png" alt="" />
+                <img src="assets/img/team/Saroj.jpg" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -105,16 +105,16 @@ export default function TeamHomeThree() {
                 <div className="team-content d-flex justify-content-between align-items-center">
                   <div>
                     <h2 className="team-name">
-                      <a href="team-details.html">Arush Aggarwal</a>
+                      <a href="team-details.html">Saroj Pandit</a>
                     </h2>
-                    <p className="designation">Founder & Ceo</p>
+                    <p className="designation">Director</p>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/team-1-3.png" alt="" />
+                <img src="assets/img/team/Shalini.jpg" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -132,16 +132,16 @@ export default function TeamHomeThree() {
                 <div className="team-content d-flex justify-content-between align-items-center">
                   <div>
                     <h2 className="team-name">
-                      <a href="team-details.html">Marvin McKinney</a>
+                      <a href="team-details.html">Shalini Verma</a>
                     </h2>
-                    <p className="designation">Product Designer</p>
+                    <p className="designation">Director</p>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/team-1-5.png" alt="" />
+                <img src="assets/img/team/Atul.jpg" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -159,14 +159,68 @@ export default function TeamHomeThree() {
                 <div className="team-content d-flex justify-content-between align-items-center">
                   <div>
                     <h2 className="team-name">
-                      <a href="team-details.html">Kevin Martin</a>
+                      <a href="team-details.html">Atul Verma</a>
                     </h2>
-                    <p className="designation">Product Designer</p>
+                    <p className="designation">Managing Director</p>
                   </div>
                 </div>
               </div>
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
+              <div className="single-team-item style-2">
+                <img src="assets/img/team/Umesh.jpg" alt="" />
+                <div className="team-social">
+                  <a href="#">
+                    <i className="fa-brands fa-facebook-f"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-linkedin-in"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-twitter"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-instagram"></i>
+                  </a>
+                </div>
+                <div className="team-content d-flex justify-content-between align-items-center">
+                  <div>
+                    <h2 className="team-name">
+                      <a href="team-details.html">Umesh Prajapati</a>
+                    </h2>
+                    <p className="designation">Solution Architect</p>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide className="swiper-slide">
+              <div className="single-team-item style-2">
+                <img src="assets/img/team/Sangeeta.jpg" alt="" />
+                <div className="team-social">
+                  <a href="#">
+                    <i className="fa-brands fa-facebook-f"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-linkedin-in"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-twitter"></i>
+                  </a>
+                  <a href="#">
+                    <i className="fa-brands fa-instagram"></i>
+                  </a>
+                </div>
+                <div className="team-content d-flex justify-content-between align-items-center">
+                  <div>
+                    <h2 className="team-name">
+                      <a href="team-details.html">Sangeeta Verma</a>
+                    </h2>
+                    <p className="designation">Senior Consultant</p>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+            {/* <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
                 <img src="assets/img/team/team-1-3.png" alt="" />
                 <div className="team-social">
@@ -192,61 +246,7 @@ export default function TeamHomeThree() {
                   </div>
                 </div>
               </div>
-            </SwiperSlide>
-            <SwiperSlide className="swiper-slide">
-              <div className="single-team-item style-2">
-                <img src="assets/img/team/team-1-5.png" alt="" />
-                <div className="team-social">
-                  <a href="#">
-                    <i className="fa-brands fa-facebook-f"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-linkedin-in"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-twitter"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-instagram"></i>
-                  </a>
-                </div>
-                <div className="team-content d-flex justify-content-between align-items-center">
-                  <div>
-                    <h2 className="team-name">
-                      <a href="team-details.html">Kevin Martin</a>
-                    </h2>
-                    <p className="designation">Product Designer</p>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide className="swiper-slide">
-              <div className="single-team-item style-2">
-                <img src="assets/img/team/team-1-3.png" alt="" />
-                <div className="team-social">
-                  <a href="#">
-                    <i className="fa-brands fa-facebook-f"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-linkedin-in"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-twitter"></i>
-                  </a>
-                  <a href="#">
-                    <i className="fa-brands fa-instagram"></i>
-                  </a>
-                </div>
-                <div className="team-content d-flex justify-content-between align-items-center">
-                  <div>
-                    <h2 className="team-name">
-                      <a href="team-details.html">Sophia Rodriguez</a>
-                    </h2>
-                    <p className="designation">Creative Director</p>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
+            </SwiperSlide> */}
           </Swiper>
         </div>
       </div>

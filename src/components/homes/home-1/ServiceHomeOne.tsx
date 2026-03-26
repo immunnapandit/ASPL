@@ -2,16 +2,16 @@ import { Link } from 'react-router-dom';
 
 export default function ServiceHomeOne() {
   return (
-    <div className="tv-service-area gray-bg pt-130 pb-130">
+    <div className="tv-service-area gray-bg pt-40 pb-130">
       <div className="container">
         <div className="row  justify-content-center">
           <div className="col-12 text-center">
             <div className="tv-section-title-box mb-60">
               <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
-                Our Services
+                What we do
               </span>
               <h4 className="tv-section-title pb-20 tv-spltv-text tv-spltv-in-right">
-                Smart Solutions for a <br /> Digital World
+                Helping businesses grow with<br /> Microsoft Dynamics 365 solutions
               </h4>
             </div>
           </div>
@@ -61,10 +61,11 @@ export default function ServiceHomeOne() {
                   />
                 </svg>
               </span>
-              <h3 className="service-section-title">Managed IT Services</h3>
+              <h3 className="service-section-title">Implementation</h3>
               <p>
-                It is a long established fact that reader will be distracte
-                readable content of a when looking.
+                Our Highly experienced and Certified Professionals are always available for end to end 
+                implementation of all Microsoft Dynamics 365 Products either on Cloud or On Premises with POC 
+                to after Go Live Support in a phased manner.
               </p>
               <Link to="/service-details" className="tv-normal-btn">
                 Read More <i className="fa-solid fa-arrow-right"></i>
@@ -115,10 +116,11 @@ export default function ServiceHomeOne() {
                   />
                 </svg>
               </span>
-              <h3 className="service-section-title">Cloud Services</h3>
+              <h3 className="service-section-title">Upgradation</h3>
               <p>
-                It is a long established fact that reader will be distracte
-                readable content of a when looking.
+                We help you and your company to upgrade your AX 2012 R2 or AX 2009 to D365 FO, 
+                It might be case for other technologies like CRM to CE, or NAV to BC. 
+                Our Proven  methodologies and steps keep you always on track and in budget.
               </p>
               <Link to="/service-details" className="tv-normal-btn">
                 Read More <i className="fa-solid fa-arrow-right"></i>
@@ -169,11 +171,11 @@ export default function ServiceHomeOne() {
                   />
                 </svg>
               </span>
-              <h3 className="service-section-title">Machine Learning</h3>
+              <h3 className="service-section-title">Migration</h3>
               <p>
-                It is a long established fact that reader will be distracte
-                readable content of a when looking.
-              </p>
+                Our expert team is always there with you in your Migration of AX 2012 R2 or AX 2009 to D365 FO, 
+                It might be case for other technologies like CRM to CE, or NAV to BC or Webmail Hosting to Office 365 or 
+                SAP on Azure.</p>
               <Link to="/service-details" className="tv-normal-btn">
                 Read More <i className="fa-solid fa-arrow-right"></i>
               </Link>
@@ -223,11 +225,9 @@ export default function ServiceHomeOne() {
                   />
                 </svg>
               </span>
-              <h3 className="service-section-title">Data Security</h3>
+              <h3 className="service-section-title">Integeration</h3>
               <p>
-                It is a long established fact that reader will be distracte
-                readable content of a when looking.
-              </p>
+                We have done tons of Integration’s from AX 2012 or AX 2009 to D365 FO, From legacy software from D365FO via ESB or Via Power Automate.                </p>
               <Link to="/service-details" className="tv-normal-btn">
                 Read More <i className="fa-solid fa-arrow-right"></i>
               </Link>

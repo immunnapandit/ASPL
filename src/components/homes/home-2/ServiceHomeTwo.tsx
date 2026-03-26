@@ -9,7 +9,7 @@ import 'swiper/css/pagination';
 
 export default function ServiceHomeTwo() {
   return (
-    <div className="tv-service-area2 pt-130 pb-130 gray-bg">
+    <div className="tv-service-area2 pt-60 pb-0 gray-bg">
       <div className="container">
         <div className="row">
           <div className="tv-section-title-box text-center mb-60">
@@ -17,7 +17,7 @@ export default function ServiceHomeTwo() {
               Our Services
             </span>
             <h4 className="tv-section-title  tv-spltv-text tv-spltv-in-right">
-              Advancing Technology for A <br /> Better Tomorrow
+              Smart Business Solutions <br /> with Dynamics 365
             </h4>
           </div>
         </div>
@@ -190,11 +190,11 @@ export default function ServiceHomeTwo() {
                 </div>
                 <div className="service-content">
                   <h2>
-                    <Link to="/service-details">Quantum IT Solutions</Link>
+                    <Link to="/service-details">Microsoft Dynamics 365</Link>
                   </h2>
                   <p>
-                    As technology continues to evolve, the importance of IT in
-                    shaping future
+                    Microsoft dynamic 365 is a product line of ERP and CRM Applications by
+                    Microsoft.
                   </p>
                 </div>
               </div>
@@ -202,7 +202,7 @@ export default function ServiceHomeTwo() {
             <SwiperSlide className="swiper-slide">
               <div className="single-service-item style-2">
                 <div className="thumb">
-                  <img src="assets/img/service/service-thumb-2.png" alt="" />
+                  <img src="assets/img/service/service-thumb-3.png" alt="" />
                   <span className="icon">
                     <svg
                       width="36"
@@ -220,11 +220,10 @@ export default function ServiceHomeTwo() {
                 </div>
                 <div className="service-content">
                   <h2>
-                    <Link to="/service-details">Smart Net IT Services</Link>
+                    <Link to="/service-details">Microsoft Azure</Link>
                   </h2>
                   <p>
-                    As technology continues to evolve, the importance of IT in
-                    shaping future
+                    Empower your business with scalable, secure, and intelligent cloud solutions from Microsoft Azure.
                   </p>
                 </div>
               </div>
@@ -265,11 +264,10 @@ export default function ServiceHomeTwo() {
                 </div>
                 <div className="service-content">
                   <h2>
-                    <Link to="/service-details">Secure Link Technologies</Link>
+                    <Link to="/service-details">Microsoft Power Platform</Link>
                   </h2>
                   <p>
-                    As technology continues to evolve, the importance of IT in
-                    shaping future
+                    Empowering businesses with cutting-edge solutions built on trusted Microsoft technologies and platforms.
                   </p>
                 </div>
               </div>
@@ -408,11 +406,10 @@ export default function ServiceHomeTwo() {
                 </div>
                 <div className="service-content">
                   <h2>
-                    <Link to="/service-details">Quantum IT Solutions</Link>
+                    <Link to="/service-details">Microsoft Power BI</Link>
                   </h2>
                   <p>
-                    As technology continues to evolve, the importance of IT in
-                    shaping future
+                    Transform data into actionable insights with Microsoft Power BI interactive analytics platform.
                   </p>
                 </div>
               </div>

@@ -10,15 +10,15 @@ export default function AboutHomeTwo() {
             <div className="tv-about2-left">
               <div className="tv-section-title-box mb-40">
                 <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
-                  About Your Company
+                  About Us
                 </span>
                 <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
-                  We Execute Ideas From Start to Finish
+                  AtiSunya — Your Ideas, Our Execution
                 </h4>
                 <p>
-                  Monotonectally synergize granular markets and front market
-                  Collaboratively visualize strat fomediaries after based
-                  models, Synergistically task state of the art infrastructures.
+                  At AtiSunya, we bring your ideas to life through a complete end-to-end approach. From initial concept and planning to development, 
+                  deployment, and ongoing support, we manage every stage with precision and care. Our focus is on delivering innovative, reliable,
+                  and scalable solutions that drive real business value.
                 </p>
               </div>
               <div className="tv-list-item">
@@ -56,7 +56,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    Created 40+ unique sections with responsiveness.
+                    End-to-End Solutions – From idea to delivery
                   </li>
                   <li>
                     <span>
@@ -91,7 +91,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    You will able to build a new site with an ease.
+                    Modern Technology – Dynamics 365, Azure, AI
                   </li>
                   <li>
                     <span>
@@ -126,7 +126,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    Booster is made for stay ahead from the compitition.
+                    Client Focused – Solutions tailored to your needs
                   </li>
                 </ul>
               </div>

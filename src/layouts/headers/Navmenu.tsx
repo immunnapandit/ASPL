@@ -7,9 +7,13 @@ export default function Navmenu() {
       {menu_data.map((item, i) => (
         <li
           key={i}
-          className={`${item.has_dropdown ? 'has-dropdown' : ''} ${i === 0 ? 'p-static' : ''}`}
+          className={`${item.has_dropdown ? 'has-dropdown' : ''} ${
+            i === 0 ? 'p-static' : ''
+          }`}
         >
           <Link to={item.link}>{item.title}</Link>
+
+          {/* ✅ HOME MEGA MENU (unchanged) */}
           {i === 0 && (
             <div className="tv-submenu submenu has-home-img">
               <div className="tv-homemenu-wrapper">
@@ -35,11 +39,30 @@ export default function Navmenu() {
               </div>
             </div>
           )}
+
+          {/* ✅ NORMAL DROPDOWN (UPDATED WITH 3 LEVEL) */}
           {i !== 0 && item.has_dropdown && (
             <ul className="tv-submenu submenu">
               {item.sub_menus?.map((sub_item, index) => (
-                <li key={index}>
-                  <Link to={sub_item.link}>{sub_item.title}</Link>
+                <li
+                  key={index}
+                  className={sub_item.sub_menus ? 'has-dropdown' : ''}
+                >
+                  <Link to={sub_item.link}>
+                    {sub_item.title}
+                    {sub_item.sub_menus && ' ▶'}
+                  </Link>
+
+                  {/* ✅ 3rd LEVEL */}
+                  {sub_item.sub_menus && (
+                    <ul className="tv-submenu submenu">
+                      {sub_item.sub_menus.map((child, i) => (
+                        <li key={i}>
+                          <Link to={child.link}>{child.title}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
