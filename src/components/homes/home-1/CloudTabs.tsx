@@ -56,7 +56,7 @@ const content: Record<TabType, ContentType> = {
   },
 };
 
-export default function CloudPixelPerfect(): JSX.Element {
+export default function CloudPixelPerfect(){
 
   // ✅ FIXED DEFAULT VALUE
   const [active, setActive] = useState<TabType>("Azure");

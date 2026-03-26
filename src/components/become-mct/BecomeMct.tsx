@@ -156,8 +156,8 @@ export default function BecomeMct() {
     },
   ];
 
-  const toggleSection = (index) => {
-    setOpenIndex((current) => (current === index ? -1 : index));
+const toggleSection = (index: number) => {
+      setOpenIndex((current) => (current === index ? -1 : index));
   };
 
   return (
