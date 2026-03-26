@@ -85,9 +85,9 @@ export default function AboutHomeOne() {
               <div className="tv-about-middle">
                 <img src="assets/img/about/about-1-1.png" alt="" />
                 <p>
-                  Repellendus autem ruibusdam et aut officiis debitis aut re
-                  necessitatibus saepe eveniet ut et repudianda sint et
-                  molestiae non recusandae.{' '}
+                  autem ruibusdam et aut officiis debitis aut re necessitatibus
+                  saepe eveniet ut et repudianda sint et molestiae non
+                  recusandae.{' '}
                 </p>
               </div>
             </div>
