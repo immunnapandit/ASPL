@@ -156,8 +156,8 @@ export default function BecomeMct() {
     },
   ];
 
-  const toggleSection = (index) => {
-    setOpenIndex((current) => (current === index ? -1 : index));
+const toggleSection = (index: number) => {
+      setOpenIndex((current) => (current === index ? -1 : index));
   };
 
   return (
@@ -203,8 +203,8 @@ export default function BecomeMct() {
               </div>
 
               <div className="pm-sections">
-                {sections.map((section, index) => {
-                  const isOpen = openIndex === index;
+              {sections.map((section: any, index: number) => {
+                    const isOpen = openIndex === index;
 
                   return (
                     <article

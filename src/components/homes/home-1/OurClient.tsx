@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const clientLogos = [
   { id: 1, name: "Microsoft", logo: "/logos/microsoft.png" },
