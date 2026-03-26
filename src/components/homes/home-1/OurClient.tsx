@@ -1,5 +1,3 @@
-import React from "react";
-
 const clientLogos = [
   { id: 1, name: "Microsoft", logo: "/logos/microsoft.png" },
   { id: 2, name: "Google", logo: "/logos/google.png" },
@@ -91,7 +89,6 @@ export default function ClientLogos() {
           }
         }
 
-        /* Pause on hover */
         .slider:hover .slide-track {
           animation-play-state: paused;
         }
@@ -125,7 +122,7 @@ export default function ClientLogos() {
 
           <div className="slider">
             <div className="slide-track">
-              {[...clientLogos, ...clientLogos].map((client, index) => (
+              {[...clientLogos, ...clientLogos].map((client, index: number) => (
                 <div key={index} className="logo-card">
                   <img src={client.logo} alt={client.name} />
                 </div>
