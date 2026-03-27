@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 
@@ -38,7 +38,7 @@ const services = [
   },
 ];
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   show: {
     transition: {
@@ -47,12 +47,15 @@ const containerVariants = {
   },
 };
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    transition: {
+      duration: 0.7,
+      ease: 'easeOut', // ✅ FIXED (TS safe)
+    },
   },
 };
 
@@ -91,7 +94,10 @@ export default function ServiceHomeTwo() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          transition={{
+            duration: 0.75,
+            ease: 'easeOut', // ✅ FIXED
+          }}
         >
           <Swiper
             modules={[Autoplay, Pagination]}
@@ -113,7 +119,7 @@ export default function ServiceHomeTwo() {
             }}
             className="premium-service-swiper"
           >
-            {services.map((item, index) => (
+            {services.map((item, index: number) => (
               <SwiperSlide key={item.id} className="service-slide">
                 <motion.div
                   className="service-card-premium"
@@ -135,7 +141,9 @@ export default function ServiceHomeTwo() {
                       <span />
                       <span />
                     </div>
-                    <div className="service-number">{String(index + 1).padStart(2, '0')}</div>
+                    <div className="service-number">
+                      {String(index + 1).padStart(2, '0')}
+                    </div>
                   </div>
 
                   <div className="service-content">
