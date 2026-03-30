@@ -9,32 +9,34 @@ import 'swiper/css/pagination';
 
 const services = [
   {
-    id: 1,
     title: 'Microsoft Dynamics 365',
     desc: 'ERP and CRM solutions designed to streamline operations, improve visibility, and drive smarter business decisions.',
     img: '/assets/img/service/Dynamics365.svg',
     accent: '#2B4DFF',
   },
   {
-    id: 2,
     title: 'Microsoft Azure',
     desc: 'Secure, scalable cloud solutions that modernize infrastructure and support enterprise-level growth.',
     img: '/assets/img/service/azure-icon.svg',
     accent: '#6C4DFF',
   },
   {
-    id: 3,
     title: 'Power Platform',
     desc: 'Build apps, automate workflows, and unlock productivity with low-code Microsoft solutions.',
     img: '/assets/img/service/PowerPlatform.svg',
     accent: '#0EA5E9',
   },
   {
-    id: 4,
     title: 'Microsoft Power BI',
     desc: 'Transform raw data into interactive dashboards and clear insights for better business decisions.',
     img: '/assets/img/service/power-bi-icon.svg',
     accent: '#14B8A6',
+  },
+  {
+    title: 'Cloud Technology',
+    desc: 'Comprehensive cloud services including migration, infrastructure management, and DevOps automation.',
+    img: '/assets/img/service/Cloud.svg',
+    accent: '#4F46E5',
   },
 ];
 
@@ -54,7 +56,7 @@ const fadeUp: Variants = {
     y: 0,
     transition: {
       duration: 0.7,
-      ease: 'easeOut', // ✅ FIXED (TS safe)
+      ease: 'easeOut',
     },
   },
 };
@@ -96,7 +98,7 @@ export default function ServiceHomeTwo() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{
             duration: 0.75,
-            ease: 'easeOut', // ✅ FIXED
+            ease: 'easeOut',
           }}
         >
           <Swiper
@@ -115,12 +117,12 @@ export default function ServiceHomeTwo() {
               768: { slidesPerView: 2, spaceBetween: 20 },
               992: { slidesPerView: 2, spaceBetween: 22 },
               1200: { slidesPerView: 3, spaceBetween: 24 },
-              1400: { slidesPerView: 3, spaceBetween: 28 },
+              1440: { slidesPerView: 4, spaceBetween: 24 },
             }}
             className="premium-service-swiper"
           >
-            {services.map((item, index: number) => (
-              <SwiperSlide key={item.id} className="service-slide">
+            {services.map((item) => (
+              <SwiperSlide key={item.title} className="service-slide">
                 <motion.div
                   className="service-card-premium"
                   style={{ '--accent': item.accent } as CSSProperties}
@@ -133,16 +135,17 @@ export default function ServiceHomeTwo() {
                 >
                   <div className="service-image-wrap">
                     <div className="image-frame" />
-                    <img src={item.img} alt={item.title} className="service-image" />
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="service-image"
+                    />
                     <div className="service-image-overlay" />
                     <div className="service-corner-glow" />
                     <div className="service-line-shape">
                       <span />
                       <span />
                       <span />
-                    </div>
-                    <div className="service-number">
-                      {String(index + 1).padStart(2, '0')}
                     </div>
                   </div>
 
@@ -155,7 +158,10 @@ export default function ServiceHomeTwo() {
 
                     <p className="service-card-desc">{item.desc}</p>
 
-                    <Link to="/service-details" className="service-read-more">
+                    <Link
+                      to="/service-details"
+                      className="service-read-more"
+                    >
                       Explore Service
                       <span className="arrow">↗</span>
                     </Link>
