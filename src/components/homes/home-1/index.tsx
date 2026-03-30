@@ -6,12 +6,12 @@ import FooterOne from '../../../layouts/footers/FooterOne';
 import ServiceHomeTwo from '../home-2/ServiceHomeTwo';
 import BlogHomeTwo from '../home-2/BlogHomeTwo';
 import AboutHomeTwo from '../home-2/AboutHomeTwo';
-import ServiceHomeOne from './ServiceHomeOne';
-// import TeamHomeThree from '../home-3/TeamHomeThree';
-import CloudTabs from './CloudTabs';
+// import ServiceHomeOne from './ServiceHomeOne';
+// // import TeamHomeThree from '../home-3/TeamHomeThree';
 import IndustriesSection from './IndustriesSection';
 import OurTraining from './OurTraining';
 import OurClient from './OurClient';
+import SolutionsSection from './SolutionsSection';
 
 export default function HomeOne() {
   return (
@@ -21,9 +21,10 @@ export default function HomeOne() {
         <HeroHomeOne />
         <AboutHomeTwo />
         <ServiceHomeTwo/>
+        <SolutionsSection />
         <IndustriesSection />
-        <CloudTabs/>
-        <ServiceHomeOne />
+        
+        {/* <ServiceHomeOne /> */}
         {/* <TeamHomeThree /> */}
         <OurTraining />
         <BlogHomeTwo />

@@ -1,5 +1,5 @@
 .industries-section {
-  padding: 70px 0 90px;
+  padding: 18px 0 90px;
   background: #ffffff;
   font-family: var(--tv-ff-body);
 }
@@ -12,7 +12,7 @@
 
 .industries-header {
   text-align: center;
-  margin-bottom: 70px;
+  margin-bottom: 56px;
 }
 
 .subtitle-row {
@@ -174,7 +174,7 @@
 /* mobile */
 @media (max-width: 768px) {
   .industries-section {
-    padding: 60px 0 75px;
+    padding: 48px 0 75px;
   }
 
   .container {
@@ -182,7 +182,7 @@
   }
 
   .industries-header {
-    margin-bottom: 48px;
+    margin-bottom: 42px;
   }
 
   .industries-grid-top {
