@@ -1,7 +1,7 @@
 .solutions-section {
   position: relative;
   padding: 40px 0 48px;
-  background: #ffff;
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -23,7 +23,7 @@
   align-items: stretch;
   border-radius: 18px;
   overflow: hidden;
-  background: linear-gradient(90deg, #5f4fe1 0%, #5a4bda 100%);
+  background: linear-gradient(90deg, #2B4DFF 0%, #2B4DFF 100%);
   box-shadow: 0 14px 34px rgba(90, 75, 218, 0.18);
   position: relative;
   z-index: 2;
@@ -40,11 +40,7 @@
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   white-space: nowrap;
   min-height: 64px;
   flex: 0 0 auto;
@@ -56,14 +52,14 @@
 
 .solution-tab.active {
   background: rgba(245, 243, 255, 0.98);
-  color: #4c45d6;
+  color: #2B4DFF;
   box-shadow: inset 0 0 0 1px rgba(76, 69, 214, 0.08);
 }
 
 .tabs-line {
   flex: 1;
   height: 4px;
-  background: linear-gradient(90deg, #5a4bda 0%, rgba(90, 75, 218, 0.2) 100%);
+  background: linear-gradient(90deg, #2B4DFF 0%, rgba(90, 75, 218, 0.2) 100%);
   margin-left: -4px;
   border-radius: 999px;
   align-self: center;
@@ -108,7 +104,7 @@
   gap: 10px;
   padding: 14px 26px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #2eaf7f 0%, #22a06b 100%);
+  background: linear-gradient(135deg, #2B4DFF 0%, #2B4DFF 100%);
   color: #fff;
   text-decoration: none;
   font-family: var(--tv-ff-body);
@@ -134,7 +130,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 18px;
+  padding: 0;              /* removed extra inner space */
+  width: 100%;
+  min-height: auto;
 }
 
 .visual-circle {
@@ -145,10 +143,9 @@
   position: relative;
   width: 100%;
   max-width: 580px;
-  aspect-ratio: 16 / 10;
   border-radius: 28px;
   overflow: hidden;
-  background: #fff;
+  background: transparent;  /* no background gap */
   box-shadow:
     0 24px 60px rgba(18, 24, 40, 0.12),
     0 8px 18px rgba(90, 75, 218, 0.08);
@@ -157,6 +154,8 @@
   isolation: isolate;
   border: 1px solid rgba(0, 0, 0, 0.04);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
+  aspect-ratio: auto;      /* important */
+  min-height: 0;           /* important */
 }
 
 .visual-card:hover {
@@ -175,15 +174,20 @@
   z-index: 1;
 }
 
+.visual-card img,
 .visual-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;            /* keeps full image, no top/bottom empty space */
   display: block;
-  transform: scale(1.01);
+  object-fit: unset;       /* contain ki jagah unset */
+  object-position: center;
+  background: transparent;
   position: relative;
   z-index: 0;
+}
+
+.visual-image.cover {
+  object-fit: cover;
 }
 
 @media (max-width: 1199px) {
@@ -193,7 +197,11 @@
   }
 
   .solutions-visual {
-    min-height: 330px;
+    min-height: auto;
+  }
+
+  .visual-card {
+    max-width: 720px;
   }
 }
 
@@ -242,13 +250,15 @@
   }
 
   .solutions-visual {
-    min-height: 260px;
-    padding: 10px;
+    min-height: auto;
+    padding: 0;
   }
 
   .visual-card {
     max-width: 100%;
     border-radius: 22px;
+    height: auto;
+    min-height: 0;
   }
 }
 
@@ -264,6 +274,7 @@
   }
 
   .visual-card {
-    aspect-ratio: 4 / 3;
+    height: auto;
+    min-height: 0;
   }
 }
