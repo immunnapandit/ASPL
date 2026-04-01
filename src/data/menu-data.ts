@@ -3,7 +3,7 @@ interface SubMenuType {
   link: string;
   img?: string;
   buttonText?: string;
-  sub_menus?: SubMenuType[]; // 👈 nested support
+  sub_menus?: SubMenuType[];
 }
 
 interface MenuDataType {
@@ -16,40 +16,7 @@ interface MenuDataType {
 const menu_data: MenuDataType[] = [
   {
     title: 'Home',
-    link: '#',
-    has_dropdown: true,
-    sub_menus: [
-      {
-        title: 'Home 01',
-        img: 'assets/img/menu/home-1.jpg',
-        link: '/',
-        buttonText: 'View Page',
-      },
-      {
-        title: 'Home 02',
-        img: 'assets/img/menu/home-2.jpg',
-        link: '/home-2',
-        buttonText: 'View Page',
-      },
-      {
-        title: 'Home 03',
-        img: 'assets/img/menu/home-3.jpg',
-        link: '/home-3',
-        buttonText: 'View Demo',
-      },
-      {
-        title: 'Comming Soon',
-        img: 'assets/img/menu/home-4.jpg',
-        link: '#',
-        buttonText: 'Comming Soon',
-      },
-      {
-        title: 'Comming Soon',
-        img: 'assets/img/menu/home-5.jpg',
-        link: '#',
-        buttonText: 'Comming Soon',
-      },
-    ],
+    link: '/', // ✅ direct homepage (no dropdown)
   },
 
   {
@@ -149,13 +116,13 @@ const menu_data: MenuDataType[] = [
       {
         title: 'Microsoft Power Platform',
         link: '/solutions/microsoft-power-platform',
-        sub_menus: [  
+        sub_menus: [
           {
             title: 'Power Automate Solutions',
             link: '/solutions/microsoft-power-platform/power-automate-solutions',
           },
         ]
-      } 
+      }
     ],
   },
 
