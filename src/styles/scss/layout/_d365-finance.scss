@@ -1,0 +1,600 @@
+@use '../utils' as *;
+
+.tv-d365-finance-area {
+  position: relative;
+  overflow: hidden;
+  padding: 70px 0 130px;
+  background: #ffffff;
+  color: var(--tv-text-body);
+  font-family: var(--tv-ff-body);
+
+  @media #{$md, $sm, $xs} {
+    padding: 55px 0 90px;
+  }
+
+  .tv-d365-bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(10px);
+  }
+
+  .tv-d365-bg-shape-one {
+    top: 160px;
+    left: -120px;
+    width: 280px;
+    height: 280px;
+    background: rgba(16, 42, 73, 0.06);
+  }
+
+  .tv-d365-bg-shape-two {
+    right: -120px;
+    bottom: 120px;
+    width: 320px;
+    height: 320px;
+    background: rgba(16, 42, 73, 0.08);
+  }
+
+  .tv-d365-section-head {
+    margin-bottom: 34px;
+
+    .tv-section-title {
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .tv-d365-hero {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 70px;
+    padding: 42px;
+    border: 1px solid rgba(13, 34, 58, 0.08);
+    border-radius: 34px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 253, 0.96) 100%);
+    box-shadow: 0 28px 64px rgba(18, 38, 63, 0.08);
+
+    @media #{$md} {
+      padding: 34px;
+      margin-bottom: 56px;
+    }
+
+    @media #{$sm, $xs} {
+      padding: 22px 18px;
+      border-radius: 24px;
+      margin-bottom: 48px;
+    }
+  }
+
+  .tv-d365-hero-content {
+    padding-right: 24px;
+
+    @media #{$lg, $md, $sm, $xs} {
+      padding-right: 0;
+    }
+  }
+
+  .tv-d365-title-box {
+    p {
+      margin-top: 28px;
+    }
+  }
+
+  .tv-d365-hero-subtitle {
+    margin: 18px 0 0;
+    color: var(--tv-heading-primary);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    font-family: var(--tv-ff-heading);
+
+    @media #{$md} {
+      font-size: 24px;
+    }
+
+    @media #{$sm, $xs} {
+      font-size: 21px;
+    }
+  }
+
+  .tv-d365-hero-text,
+  .tv-d365-offerings-content p,
+  .tv-spectrum-content p {
+    margin: 0;
+    color: var(--tv-text-body);
+    font-size: 17px;
+    line-height: 1.85;
+    font-family: var(--tv-ff-body);
+
+    @media #{$xs} {
+      font-size: 15px;
+    }
+  }
+
+  .tv-d365-title-box,
+  .tv-d365-section-head,
+  .tv-d365-inner-title-box {
+    .tv-section-subtitle {
+      margin-bottom: 10px;
+    }
+  }
+
+  .tv-d365-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+    margin-top: 32px;
+  }
+
+  .tv-d365-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--tv-heading-primary);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--tv-ff-heading);
+    transition: color 0.3s ease, transform 0.3s ease;
+
+    i {
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      color: var(--tv-theme-1);
+      transform: translateX(2px);
+
+      i {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  .tv-d365-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #445262;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--tv-ff-body);
+      background: rgba(43, 77, 255, 0.06);
+    }
+  }
+
+  .tv-d365-hero-visual {
+    position: relative;
+    padding: 24px;
+    border-radius: 32px;
+    background: linear-gradient(145deg, #ffffff 0%, #edf2f7 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+
+    @media #{$xs} {
+      padding: 16px;
+      border-radius: 24px;
+    }
+  }
+
+  .tv-d365-image-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 14px 28px rgba(17, 35, 57, 0.1);
+
+    span {
+      color: var(--tv-heading-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: var(--tv-ff-heading);
+    }
+
+    strong {
+      color: var(--tv-heading-primary);
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--tv-ff-heading);
+    }
+  }
+
+  .tv-d365-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+
+    img {
+      width: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      border-radius: 24px;
+      box-shadow: 0 24px 46px rgba(11, 31, 58, 0.12);
+      transition: transform 0.6s ease, filter 0.6s ease;
+
+      @media #{$sm, $xs} {
+        min-height: 340px;
+      }
+    }
+
+    &::after {
+      position: absolute;
+      inset: 0;
+      content: '';
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(8, 24, 41, 0.04) 0%, rgba(8, 24, 41, 0.26) 100%);
+    }
+  }
+
+  .tv-d365-hero-visual:hover .tv-d365-image img {
+    transform: scale(1.04);
+    filter: saturate(1.05);
+  }
+
+  .tv-d365-floating-card {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2;
+    max-width: 290px;
+    padding: 18px 20px;
+    border-radius: 22px;
+    background: rgba(11, 31, 58, 0.9);
+    box-shadow: 0 18px 40px rgba(9, 22, 39, 0.2);
+
+    @media #{$xs} {
+      position: static;
+      max-width: 100%;
+      margin-top: 16px;
+    }
+
+    span {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h4 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  .tv-d365-stats {
+    margin-bottom: 70px;
+
+    @media #{$sm, $xs} {
+      margin-bottom: 54px;
+    }
+  }
+
+  .tv-d365-stat-card {
+    height: calc(100% - 24px);
+    margin-bottom: 24px;
+    padding: 30px 26px;
+    border: 1px solid rgba(16, 39, 68, 0.08);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 38px rgba(12, 29, 52, 0.06);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 44px rgba(12, 29, 52, 0.1);
+    }
+
+    h4 {
+      margin-bottom: 12px;
+      color: var(--tv-heading-primary);
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-family: var(--tv-ff-heading);
+    }
+
+    p {
+      margin: 0;
+      color: var(--tv-text-body);
+      font-size: 15px;
+      line-height: 1.7;
+      font-family: var(--tv-ff-body);
+    }
+  }
+
+  .tv-d365-spectrum {
+    margin-bottom: 70px;
+
+    @media #{$sm, $xs} {
+      margin-bottom: 54px;
+    }
+  }
+
+  .tv-d365-tabs {
+    margin-bottom: 28px;
+  }
+
+  .tv-tabs-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .tv-tab-btn {
+    padding: 14px 20px;
+    border: 1px solid rgba(11, 31, 58, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    color: #4c5a68;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+    font-family: var(--tv-ff-heading);
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      box-shadow 0.3s ease,
+      color 0.3s ease;
+
+    &:hover {
+      color: var(--tv-heading-primary);
+      transform: translateY(-2px);
+      border-color: rgba(11, 31, 58, 0.18);
+    }
+
+    &.active {
+      color: #ffffff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--tv-heading-primary) 0%, var(--tv-theme-1) 100%);
+      box-shadow: 0 14px 30px rgba(11, 31, 58, 0.18);
+    }
+  }
+
+  .tv-spectrum-panel {
+    padding: 38px;
+    border: 1px solid rgba(13, 34, 58, 0.08);
+    border-radius: 34px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.97) 0%, rgba(246, 249, 252, 0.96) 100%);
+    box-shadow: 0 26px 60px rgba(18, 38, 63, 0.08);
+    animation: tvD365FadeIn 0.45s ease;
+
+    @media #{$md} {
+      padding: 28px;
+    }
+
+    @media #{$sm, $xs} {
+      padding: 20px 18px;
+      border-radius: 24px;
+    }
+  }
+
+  .tv-spectrum-content {
+    padding-right: 22px;
+
+    @media #{$lg, $md, $sm, $xs} {
+      padding-right: 0;
+    }
+
+    .tv-section-title {
+      font-size: 38px;
+      margin-bottom: 0;
+
+      @media #{$md} {
+        font-size: 32px;
+      }
+
+      @media #{$sm} {
+        font-size: 28px;
+      }
+
+      @media #{$xs} {
+        font-size: 24px;
+      }
+    }
+
+    .tv-section-title-box {
+      margin-bottom: 14px;
+    }
+  }
+
+  .tv-features-list {
+    display: grid;
+    gap: 14px;
+    padding: 0;
+    margin: 26px 0 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      padding: 18px 18px 18px 62px;
+      border: 1px solid rgba(17, 40, 66, 0.08);
+      border-radius: 20px;
+      color: #2e4052;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.7;
+      font-family: var(--tv-ff-body);
+      background: rgba(255, 255, 255, 0.78);
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+
+      &::before {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Pro';
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #0b1f3a 0%, #18395e 100%);
+        box-shadow: 0 10px 20px rgba(11, 31, 58, 0.18);
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+        border-color: rgba(11, 31, 58, 0.2);
+        box-shadow: 0 18px 32px rgba(11, 31, 58, 0.08);
+      }
+    }
+  }
+
+  .tv-spectrum-media {
+    overflow: hidden;
+    border-radius: 26px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      object-fit: cover;
+      border-radius: 26px;
+      box-shadow: 0 20px 42px rgba(11, 31, 58, 0.12);
+
+      @media #{$sm, $xs} {
+        min-height: 320px;
+      }
+    }
+  }
+
+  .tv-d365-offerings {
+    padding: 40px;
+    border: 1px solid rgba(13, 34, 58, 0.08);
+    border-radius: 34px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 250, 253, 0.95) 100%);
+    box-shadow: 0 26px 60px rgba(18, 38, 63, 0.08);
+
+    @media #{$md} {
+      padding: 28px;
+    }
+
+    @media #{$sm, $xs} {
+      padding: 22px 18px;
+      border-radius: 24px;
+    }
+  }
+
+  .tv-d365-offerings-content {
+    padding-right: 24px;
+
+    @media #{$lg, $md, $sm, $xs} {
+      padding-right: 0;
+      margin-bottom: 10px;
+    }
+
+    .tv-section-title {
+      @media #{$md} {
+        font-size: 32px;
+      }
+
+      @media #{$sm} {
+        font-size: 28px;
+      }
+
+      @media #{$xs} {
+        font-size: 24px;
+      }
+    }
+
+    .tv-btn-primary {
+      margin-top: 30px;
+    }
+  }
+
+  .tv-offering-card {
+    height: calc(100% - 24px);
+    margin-bottom: 24px;
+    padding: 28px 24px;
+    border: 1px solid rgba(16, 39, 68, 0.08);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 18px 36px rgba(12, 29, 52, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 42px rgba(12, 29, 52, 0.1);
+    }
+
+    h4 {
+      margin: 20px 0 12px;
+      color: var(--tv-heading-primary);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.03em;
+      font-family: var(--tv-ff-heading);
+    }
+
+    p {
+      margin: 0;
+      color: var(--tv-text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      font-family: var(--tv-ff-body);
+    }
+  }
+
+  .tv-offering-icon {
+    width: 58px;
+    height: 58px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    color: #ffffff;
+    font-size: 22px;
+    background: linear-gradient(135deg, #0b1f3a 0%, #18395e 100%);
+    box-shadow: 0 12px 22px rgba(11, 31, 58, 0.2);
+  }
+}
+
+@keyframes tvD365FadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -397,3 +397,337 @@
     }
   }
 }
+
+.tv-about2 {
+  &-footprints {
+    .tv-section-title {
+      color: #174786;
+    }
+  }
+
+  &-footprints-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+  }
+
+  &-location-card {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    background: #fff;
+    border: 0;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(14, 29, 53, 0.08);
+    min-height: 136px;
+    width: 100%;
+    padding: 0;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(14, 29, 53, 0.12);
+    }
+    &:focus-visible {
+      outline: 2px solid #2493d2;
+      outline-offset: 4px;
+    }
+    &.is-active {
+      background: #1f4274;
+      .tv-about2-location-content {
+        h5,
+        li {
+          color: var(--tv-common-white);
+        }
+      }
+    }
+    @media #{$sm,$xs} {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &-location-thumb {
+    min-height: 136px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.2;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.5) 100%);
+    }
+    &.is-california {
+      background-image:
+        linear-gradient(135deg, rgba(240, 126, 57, 0.5), rgba(14, 39, 74, 0.2)),
+        linear-gradient(180deg, #8fd6ff 0%, #436b97 45%, #d4663b 100%);
+    }
+    &.is-new-jersey {
+      background-image:
+        linear-gradient(135deg, rgba(56, 196, 239, 0.18), rgba(8, 44, 99, 0.2)),
+        linear-gradient(180deg, #39c0ef 0%, #67d0f7 45%, #5f7a98 100%);
+    }
+    &.is-leeds {
+      background-image:
+        linear-gradient(135deg, rgba(255, 97, 145, 0.16), rgba(35, 44, 91, 0.22)),
+        linear-gradient(180deg, #8aa6ff 0%, #9764cb 50%, #ff835e 100%);
+    }
+    &.is-ahmedabad {
+      background-image:
+        linear-gradient(135deg, rgba(255, 147, 73, 0.22), rgba(13, 40, 82, 0.3)),
+        linear-gradient(180deg, #6b8edc 0%, #2b4170 45%, #d96f43 100%);
+    }
+  }
+
+  &-location-content {
+    padding: 16px 20px;
+    h5 {
+      font-size: 17px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      color: #14213d;
+      @media #{$xs} {
+        font-size: 18px;
+      }
+    }
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13px;
+      line-height: 1.3;
+      color: #20304f;
+      &:not(:last-child) {
+        margin-bottom: 8px;
+      }
+      @media #{$xs} {
+        font-size: 13px;
+      }
+      span {
+        height: 22px;
+        width: 22px;
+        min-width: 22px;
+        border-radius: 50%;
+        background: #2493d2;
+        color: var(--tv-common-white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+        font-size: 10px;
+      }
+    }
+  }
+
+  &-map-wrap {
+    position: relative;
+    height: 100%;
+    min-height: 590px;
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(14, 29, 53, 0.12);
+    @media #{$xl} {
+      min-height: 570px;
+    }
+    @media #{$lg} {
+      min-height: 650px;
+    }
+    @media #{$md,$sm,$xs} {
+      min-height: 410px;
+    }
+  }
+
+  &-map-frame {
+    height: 100%;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity 0.45s ease, transform 0.55s ease;
+    &.is-loaded {
+      opacity: 1;
+      transform: scale(1);
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: saturate(0.95);
+    }
+  }
+
+  &-map-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(36, 147, 210, 0.14));
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    &.is-hidden {
+      opacity: 0;
+    }
+  }
+
+  &-map-flight {
+    position: absolute;
+    left: var(--tv-badge-x, 50%);
+    top: var(--tv-badge-y, 56%);
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    pointer-events: none;
+    transition: left 0.95s cubic-bezier(0.22, 1, 0.36, 1), top 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    i {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #174786;
+      color: #fff;
+      font-size: 11px;
+      box-shadow: 0 8px 20px rgba(23, 71, 134, 0.28);
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      background: rgba(23, 71, 134, 0.18);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      animation: tvMapPulse 1.8s ease-out infinite;
+    }
+  }
+
+  &-map-badge {
+    position: absolute;
+    left: var(--tv-badge-x, 50%);
+    top: var(--tv-badge-y, 56%);
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 10px 10px 7px;
+    min-width: 126px;
+    text-align: center;
+    box-shadow: 0 14px 35px rgba(16, 34, 63, 0.2);
+    transition: left 0.95s cubic-bezier(0.22, 1, 0.36, 1), top 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+    .tv-about2-map-flag {
+      height: 62px;
+      width: 88px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--tv-common-white);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin: 0 auto 8px;
+      position: relative;
+      overflow: hidden;
+      &.is-usa {
+        background:
+          linear-gradient(
+            180deg,
+            #b22234 0%,
+            #b22234 14%,
+            #ffffff 14%,
+            #ffffff 28%,
+            #b22234 28%,
+            #b22234 42%,
+            #ffffff 42%,
+            #ffffff 56%,
+            #b22234 56%,
+            #b22234 70%,
+            #ffffff 70%,
+            #ffffff 84%,
+            #b22234 84%,
+            #b22234 100%
+          );
+      }
+      &.is-usa::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 44px;
+        height: 44px;
+        background: #3c3b6e;
+      }
+      &.is-india {
+        background: linear-gradient(180deg, #ff9933 0%, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%, #138808 100%);
+        color: transparent;
+      }
+      &.is-india::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 22px;
+        height: 22px;
+        border: 2px solid #000080;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+      }
+      &.is-india::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 2px;
+        height: 22px;
+        background: #000080;
+        transform: translate(-50%, -50%);
+        box-shadow:
+          0 -10px 0 0 #000080,
+          0 10px 0 0 #000080,
+          10px 0 0 0 #000080,
+          -10px 0 0 0 #000080;
+      }
+      &.is-uk {
+        background:
+          linear-gradient(90deg, transparent 42%, #ffffff 42%, #ffffff 58%, transparent 58%),
+          linear-gradient(transparent 42%, #ffffff 42%, #ffffff 58%, transparent 58%),
+          linear-gradient(90deg, transparent 46%, #c8102e 46%, #c8102e 54%, transparent 54%),
+          linear-gradient(transparent 46%, #c8102e 46%, #c8102e 54%, transparent 54%),
+          linear-gradient(33deg, transparent 44%, #ffffff 44%, #ffffff 49%, #c8102e 49%, #c8102e 53%, #ffffff 53%, #ffffff 58%, transparent 58%),
+          linear-gradient(-33deg, transparent 44%, #ffffff 44%, #ffffff 49%, #c8102e 49%, #c8102e 53%, #ffffff 53%, #ffffff 58%, transparent 58%),
+          #012169;
+      }
+    }
+    span {
+      display: block;
+      font-size: 13px;
+      color: #20304f;
+      font-weight: 500;
+    }
+    @media #{$xs} {
+      min-width: 118px;
+      .tv-about2-map-flag {
+        width: 80px;
+        height: 56px;
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+@keyframes tvMapPulse {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(4.4);
+  }
+}
