@@ -62,25 +62,24 @@
 }
 
 .training-card {
-  background: var(--tv-common-white);
-  border: 1px solid rgba(10, 22, 94, 0.08);
-  border-radius: 20px;
-  padding: 34px 30px 30px;
-  text-align: left;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(10, 22, 94, 0.06);
+    background: var(--tv-common-white);
+    border: 1px solid rgba(10, 22, 94, 0.08);
+    border-radius: 20px;
+    padding: 34px 30px 30px;
+    text-align: left;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(10, 22, 94, 0.06);
 
-  &:hover {
-    transform: translateY(-6px);
-    border-color: rgba(60, 99, 255, 0.18);
-    box-shadow: 0 18px 40px rgba(10, 22, 94, 0.1);
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(24, 110, 255, 0.16), 0 30px 80px rgba(24, 110, 255, 0.18);
+      border-color: rgba(24, 110, 255, 0.25);
+    }
+
+    @media #{$xs} {
+      padding: 28px 22px;
+    }
   }
-
-  @media #{$xs} {
-    padding: 28px 22px;
-  }
-}
-
 .training-logo {
   width: 58px;
   height: 58px;
