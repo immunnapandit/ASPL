@@ -1,49 +1,49 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-
+ 
 const solutions = [
   {
     key: 'Dynamics 365',
-    title: 'Solutions across Microsoft product suite',
-    desc: 'Microsoft technologies can transform how you operate and the outcomes you achieve. As a trusted Microsoft partner, we ensure this transformation happens without a hiccup so your business can be more agile, fast, and productive.',
+    title: 'Transform Your Business with Dynamics 365',
+    desc: 'Transform your operations with Microsoft technologies to drive better outcomes—enabling a more agile, efficient, and growth-focused business.',
     button: 'Know More',
-    image: '/assets/img/service/Microsoft.svg',
+    image: '/assets/img/service/MicrosoftD365.jpg',
   },
   {
-    key: 'SAP',
-    title: 'Solutions across SAP product suite',
-    desc: 'Modern SAP solutions help simplify operations, improve process visibility, and support smarter enterprise decisions with confidence.',
+    key: 'Business Central',
+    title: 'Run Your Business Smarter with Business Central',
+    desc: 'Manage your finances, operations, and sales seamlessly with Dynamics 365 Business Central—giving you real-time insights and the flexibility to make faster, smarter business decisions.',
     button: 'Know More',
-    image: '/assets/img/solutions/sap-banner.png',
+    image: '/assets/img/service/Business Central.avif',
   },
   {
     key: 'Salesforce',
-    title: 'Solutions across Salesforce product suite',
-    desc: 'Salesforce solutions can connect teams, automate workflows, and create better customer experiences across your business.',
+    title: 'Grow Faster with Salesforce',
+    desc: 'Unify your teams, automate workflows, and deliver personalized customer experiences with Salesforce—helping you build stronger relationships and drive consistent business growth.',
     button: 'Know More',
-    image: '/assets/img/solutions/salesforce-banner.png',
-  },
-  {
-    key: 'ServiceNow',
-    title: 'Solutions across ServiceNow product suite',
-    desc: 'ServiceNow can streamline service delivery, reduce manual work, and improve visibility across your enterprise operations.',
-    button: 'Know More',
-    image: '/assets/img/solutions/servicenow-banner.png',
+    image: '/assets/img/service/Salesforce.png',
   },
   {
     key: 'AWS',
-    title: 'Solutions across AWS product suite',
-    desc: 'AWS cloud solutions help you scale securely, modernize infrastructure, and build resilient digital experiences faster.',
+    title: 'Scale Smarter with AWS',
+    desc: 'Build, scale, and secure your applications with AWS—enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
     button: 'Know More',
-    image: '/assets/img/solutions/aws-banner.png',
+    image: '/assets/img/service/saas-concept-collage.jpg',
+  },
+  {
+    key: 'Azure',
+    title: 'Innovate Faster with Microsoft Azure',
+    desc: 'Unlock the full potential of Microsoft Azure to build, scale, and manage applications with speed and security—empowering your business with intelligent cloud capabilities, seamless integration, and continuous innovation.',
+    button: 'Know More',
+    image: '/assets/img/service/Azure.png',
   },
 ];
-
+ 
 export default function SolutionsSection() {
   const [activeTab, setActiveTab] = useState(0);
   const active = solutions[activeTab];
-
+ 
   return (
     <section className="solutions-section">
       <div className="container">
@@ -67,7 +67,7 @@ export default function SolutionsSection() {
           </div>
           <div className="tabs-line" />
         </div>
-
+ 
         <AnimatePresence mode="wait">
           <motion.div
             key={active.key}
@@ -85,13 +85,13 @@ export default function SolutionsSection() {
             >
               <h2 className="solutions-title">{active.title}</h2>
               <p className="solutions-desc">{active.desc}</p>
-
+ 
               <Link to="/service-details" className="solutions-btn">
                 {active.button}
                 <span>›</span>
               </Link>
             </motion.div>
-
+ 
             <motion.div
               className="solutions-visual"
               initial={{ opacity: 0, x: 20 }}
@@ -99,7 +99,7 @@ export default function SolutionsSection() {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="visual-circle" />
-
+ 
               <motion.div
                 className="visual-card"
                 whileHover={{ y: -4 }}
@@ -122,3 +122,4 @@ export default function SolutionsSection() {
     </section>
   );
 }
+ 
