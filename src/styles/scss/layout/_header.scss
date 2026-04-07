@@ -121,6 +121,7 @@
     & > nav {
       & > ul {
         margin-left: 65px;
+        white-space: nowrap;
         @media #{$xl,$lg} {
           margin-left: 30px;
         }

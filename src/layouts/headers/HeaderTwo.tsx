@@ -2,12 +2,10 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Navmenu from './Navmenu';
 import UseSticky from '../../hooks/UseSticky';
-import SearchArea from '../../common/SearchArea';
 import OffCanvasArea from '../../common/OffCanvasArea';
 
 export default function HeaderTwo() {
   const { sticky } = UseSticky();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -36,12 +34,6 @@ export default function HeaderTwo() {
                 </div>
                 <div className="col-xxl-3 col-xl-3 col-6">
                   <div className="tv-header-right-action d-flex justify-content-end align-items-center">
-                    <button
-                      onClick={() => setSearchOpen(true)}
-                      className="tv-header-search search-open-btn d-none d-xxl-block"
-                    >
-                      <i className="fa-solid fa-magnifying-glass"></i>
-                    </button>
                     <div className="tv-header-bar">
                       <button
                         className="tv-menu-bar"
@@ -68,7 +60,6 @@ export default function HeaderTwo() {
           </div>
         </div>
       </header>
-      <SearchArea searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
       <OffCanvasArea menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
     </>
   );

@@ -131,17 +131,18 @@ const menu_data: MenuDataType[] = [
     link: '#',
     has_dropdown: true,
     sub_menus: [
-      { title: 'ERP Implementation', link: '/team' },
-      { title: 'CRM Implementation', link: '/team-details' },
-      { title: 'BI & Analytics', link: '/price' },
-      { title: 'App Development', link: '/project' },
-      { title: 'Support & Managed Services', link: '/project-details' },
-      { title: 'Enterprise Management', link: '/faq' },
-      { title: 'Digital Transformation', link: '/404' },
+      { title: 'ERP Implementation', link: '/what-we-do/erp-implementation' },
+      { title: 'CRM Implementation', link: '/what-we-do/crm-implementation' },
+      { title: 'BI & Analytics', link: '/what-we-do/bi-analytics' },
+      { title: 'App Development', link: '/what-we-do/app-development' },
+      { title: 'Support & Managed Services', link: '/what-we-do/support-managed-services' },
+      { title: 'Enterprise Management', link: '/what-we-do/enterprise-management' },
+      { title: 'Digital Transformation', link: '/what-we-do/digital-transformation' },
       { title: 'Become MCT', link: '/become-mct' },
-      { title: 'Consulting', link: '/404' },
-      { title: 'Training', link: '/404' },
-      { title: 'Microsoft Certified Training Readiness Training', link: '/404' },
+      { title: 'Consulting', link: '/what-we-do/consulting' },
+      { title: 'Product Engineering', link: '/what-we-do/product-engineering' },
+      { title: 'Training', link: '/what-we-do/training' },
+      { title: 'Microsoft Certified Training Readiness Training', link: '/microsoft-certified-trainer-readiness-training' },
     ],
   },
 
@@ -158,6 +159,10 @@ const menu_data: MenuDataType[] = [
   {
     title: 'Careers',
     link: '/careers',
+  },
+  {
+    title: 'Become MCT',
+    link: '/become-mct',
   }
 
 ];
