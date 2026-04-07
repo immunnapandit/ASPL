@@ -156,8 +156,8 @@ const menu_data: MenuDataType[] = [
     ],
   },
   {
-    title: 'Career',
-    link: '/career',
+    title: 'Careers',
+    link: '/careers',
   }
 
 ];

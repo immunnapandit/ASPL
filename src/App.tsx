@@ -17,6 +17,7 @@ import BlogList from './components/blog-list';
 import BlogDetails from './components/blog-details';
 import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
+import Careers from './components/careers';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomeOne /> },
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
   { path: '/blog-list', element: <BlogList /> },
   { path: '/blog-details', element: <BlogDetails /> },
   { path: '/contact', element: <Contact /> },
+  { path: '/careers', element: <Careers /> },
   { path: '*', element: <NotFound /> },
 
   { path: '/become-mct', element: <BecomeMCTPage /> },
