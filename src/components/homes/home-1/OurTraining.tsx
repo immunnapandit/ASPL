@@ -57,7 +57,6 @@ export default function TrainingsSection() {
               alt={item.title}
               className="training-logo"
             />
-
             <div className="training-name">{item.title}</div>
 
             <div className="training-desc">{item.desc}</div>
@@ -72,7 +71,6 @@ export default function TrainingsSection() {
       <a href="#" className="view-all-btn">
         View All Trainings
       </a>
-
     </section>
   );
 }

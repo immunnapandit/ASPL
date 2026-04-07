@@ -1,5 +1,5 @@
 import AboutHomeOne from '../homes/home-1/AboutHomeOne';
-import ChooseHomeTwo from '../homes/home-2/ChooseHomeTwo';
+//import ChooseHomeTwo from '../homes/home-2/ChooseHomeTwo';
 import CounterHomeOne from '../homes/home-1/CounterHomeOne';
 import TeamHomeOne from '../homes/home-1/TeamHomeOne';
 import TestimonialHomeTwo from '../homes/home-2/TestimonialHomeTwo';
@@ -15,9 +15,9 @@ export default function About() {
       <main>
         <Breadcrumb title="About us" subtitle="About us" />
         <AboutHomeOne />
-        <ChooseHomeTwo />
+        {/* <ChooseHomeTwo /> */}
         <CounterHomeOne />
-        <TeamHomeOne />
+        <TeamHomeOne /> 
         <TestimonialHomeTwo />
       </main>
       <FooterOne />

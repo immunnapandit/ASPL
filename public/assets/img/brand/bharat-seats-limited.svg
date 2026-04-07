@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" role="img" aria-labelledby="title">
+  <title id="title">Bharat Seats Limited</title>
+  <g transform="translate(10 12)">
+    <path d="M18 46c18-16 34-24 48-24 8 0 14 2 20 6-9 4-15 10-18 19h20v20H52V51H30z" fill="#17a9f1"/>
+    <path d="M52 22h26v18H52zM18 46h28v18H18zM40 34h18v18H40z" fill="none" stroke="#17a9f1" stroke-width="8" stroke-linejoin="round"/>
+    <text x="118" y="34" fill="#2a2a2a" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800">BHARAT</text>
+    <text x="118" y="62" fill="#2a2a2a" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800">SEATS</text>
+    <text x="118" y="88" fill="#2a2a2a" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800">LIMITED</text>
+  </g>
+</svg>
