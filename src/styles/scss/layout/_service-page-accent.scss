@@ -1,0 +1,51 @@
+@use '../utils' as *;
+
+.tv-page-accent {
+  position: relative;
+  padding: 52px 0 18px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 8px 0 auto;
+    height: calc(100% - 8px);
+    border-radius: 36px;
+    background:
+      radial-gradient(circle at top left, rgba(43, 77, 255, 0.08), transparent 28%),
+      linear-gradient(180deg, #fbfcff 0%, #ffffff 70%);
+    border: 1px solid rgba(10, 22, 94, 0.06);
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tv-page-accent-head {
+    max-width: 780px;
+    margin: 0 auto 34px;
+  }
+
+  .tv-page-accent-head p {
+    margin: 16px 0 0;
+    color: var(--tv-text-body);
+    font-size: 17px;
+    line-height: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .tv-page-accent {
+    padding: 34px 0 10px;
+
+    .tv-page-accent-head {
+      margin-bottom: 24px;
+    }
+
+    .tv-page-accent-head p {
+      font-size: 16px;
+      line-height: 28px;
+    }
+  }
+}

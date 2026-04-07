@@ -82,6 +82,27 @@
     }
   }
 
+  .tv-d365-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .tv-d365-eyebrow-line {
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(43, 77, 255, 0.85), rgba(43, 77, 255, 0.08));
+  }
+
+  .tv-d365-eyebrow-text {
+    color: #5f6c7b;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
   .tv-d365-hero-subtitle {
     margin: 18px 0 0;
     color: var(--tv-heading-primary);
@@ -169,6 +190,43 @@
       font-weight: 600;
       font-family: var(--tv-ff-body);
       background: rgba(43, 77, 255, 0.06);
+    }
+  }
+
+  .tv-d365-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+
+    @media #{$xs} {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tv-d365-quick-card {
+    padding: 18px 18px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(10, 22, 94, 0.08);
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: 0 16px 34px rgba(12, 29, 52, 0.05);
+
+    span {
+      display: block;
+      margin-bottom: 8px;
+      color: #6c7786;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    strong {
+      display: block;
+      color: var(--tv-heading-primary);
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 700;
     }
   }
 
@@ -426,6 +484,29 @@
     }
   }
 
+  .tv-spectrum-content-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    span {
+      color: #607080;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  }
+
+  .tv-spectrum-marker {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(43, 77, 255, 0.16), rgba(43, 77, 255, 0.04));
+    border: 1px solid rgba(43, 77, 255, 0.12);
+  }
+
   .tv-features-list {
     display: grid;
     gap: 14px;
@@ -477,6 +558,7 @@
   }
 
   .tv-spectrum-media {
+    position: relative;
     overflow: hidden;
     border-radius: 26px;
 
@@ -491,6 +573,42 @@
       @media #{$sm, $xs} {
         min-height: 320px;
       }
+    }
+  }
+
+  .tv-spectrum-overlay-card {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 36px rgba(11, 31, 58, 0.14);
+
+    @media #{$xs} {
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+    }
+
+    span {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: #607080;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    strong {
+      display: block;
+      color: var(--tv-heading-primary);
+      font-size: 18px;
+      line-height: 1.5;
+      font-weight: 700;
     }
   }
 

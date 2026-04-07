@@ -19,6 +19,7 @@ import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
 import Careers from './components/careers';
 import D365Finance from './components/solutions/d365-finance';
+import { customPageRoutes } from './routes/custom-pages';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomeOne /> },
@@ -35,10 +36,12 @@ const router = createBrowserRouter([
   { path: '/faq', element: <Faq /> },
   { path: '/blog-grid', element: <BlogGrid /> },
   { path: '/blog-list', element: <BlogList /> },
+  { path: '/blog', element: <BlogGrid /> },
   { path: '/blog-details', element: <BlogDetails /> },
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
   { path: '/solutions/d365-for-finance-and-operations', element: <D365Finance /> },
+  ...customPageRoutes,
   { path: '*', element: <NotFound /> },
 
   { path: '/become-mct', element: <BecomeMCTPage /> },

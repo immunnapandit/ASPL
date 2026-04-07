@@ -1,0 +1,46 @@
+@use '../utils' as *;
+
+.tv-app-development-showcase {
+  .tv-app-dev-card {
+    height: 100%;
+    padding: 28px 24px 26px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+    border: 1px solid rgba(15, 49, 58, 0.08);
+    box-shadow: 0 18px 42px rgba(15, 49, 58, 0.08);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+  }
+
+  .tv-app-dev-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px rgba(15, 49, 58, 0.12);
+  }
+
+  .tv-app-dev-index {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0f313a, #2b4dff);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 22px;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    color: var(--tv-heading-primary);
+  }
+
+  p {
+    margin: 0;
+    color: var(--tv-text-body);
+    font-size: 16px;
+    line-height: 28px;
+  }
+}

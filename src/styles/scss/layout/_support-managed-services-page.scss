@@ -1,0 +1,51 @@
+@use '../utils' as *;
+
+.tv-support-strip {
+  .tv-support-card {
+    position: relative;
+    height: 100%;
+    padding: 28px 26px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.2);
+  }
+
+  .tv-support-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -30px -30px auto;
+    width: 110px;
+    height: 110px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 68%);
+  }
+
+  .tv-support-label {
+    position: relative;
+    display: block;
+    color: rgba(255, 255, 255, 0.66);
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  strong {
+    position: relative;
+    display: block;
+    font-size: 34px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+
+  p {
+    position: relative;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 16px;
+    line-height: 28px;
+  }
+}

@@ -1,0 +1,47 @@
+@use '../utils' as *;
+
+.tv-training-showcase {
+  .tv-accent-card {
+    height: 100%;
+    padding: 30px 26px;
+    border-radius: 26px;
+    background:
+      linear-gradient(180deg, rgba(255, 250, 240, 0.98) 0%, #ffffff 100%);
+    border: 1px solid rgba(236, 176, 20, 0.18);
+    box-shadow: 0 20px 48px rgba(140, 111, 33, 0.1);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+  }
+
+  .tv-accent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 26px 56px rgba(140, 111, 33, 0.14);
+  }
+
+  .tv-accent-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(236, 176, 20, 0.12);
+    color: #8b6110;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  h3 {
+    font-size: 23px;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    color: var(--tv-heading-primary);
+  }
+
+  p {
+    margin: 0;
+    color: var(--tv-text-body);
+    font-size: 16px;
+    line-height: 28px;
+  }
+}
