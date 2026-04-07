@@ -153,10 +153,6 @@ const menu_data: MenuDataType[] = [
     ],
   },
 
-  {
-    title: 'Contact',
-    link: '/contact',
-  },
 ];
 
 export default menu_data;
