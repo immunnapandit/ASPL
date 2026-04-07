@@ -20,7 +20,9 @@ export default function HomeOne() {
       <main>
         <HeroHomeOne />
         <AboutHomeTwo />
-        <ServiceHomeTwo/>
+        <div className="home-one-service-spacing-fix">
+          <ServiceHomeTwo />
+        </div>
         <SolutionsSection />
         <IndustriesSection />
         

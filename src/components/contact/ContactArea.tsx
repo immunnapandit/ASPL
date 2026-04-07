@@ -1,4 +1,94 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+
+const contactHighlights = [
+  {
+    title: 'Project-led delivery',
+    description:
+      'We shape clear scopes, realistic milestones, and dependable communication from kickoff to launch.',
+  },
+  {
+    title: 'Business-first consulting',
+    description:
+      'Our team connects strategy, technology, and execution so every engagement moves the business forward.',
+  },
+];
+
+const officeLocations = [
+  {
+    country: 'India',
+    city: 'Bengaluru',
+    address: 'Global delivery and consulting operations',
+  },
+  {
+    country: 'United States',
+    city: 'Dallas',
+    address: 'Client partnerships and transformation programs',
+  },
+  {
+    country: 'United Arab Emirates',
+    city: 'Dubai',
+    address: 'Regional business support and enterprise advisory',
+  },
+];
+
+const initialFormData = {
+  fullName: '',
+  email: '',
+  subject: '',
+  message: '',
+};
+
 export default function ContactArea() {
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({
+    type: null,
+    message: '',
+  });
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setIsSubmitting(true);
+    setSubmitState({ type: null, message: '' });
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Unable to submit your message right now.');
+      }
+
+      setSubmitState({
+        type: 'success',
+        message: result.message || 'Your message has been submitted successfully.',
+      });
+      setFormData(initialFormData);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+
+      setSubmitState({
+        type: 'error',
+        message,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <div className="tv-contact-area pt-130 pb-130">
@@ -12,163 +102,135 @@ export default function ContactArea() {
                       Contact Us
                     </span>
                     <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
-                      Let’s Build an Awesome Project Together
+                      Let&apos;s Build an Exceptional Project Together
                     </h4>
                     <p>
-                      Each demo built with Teba will look different. You can
-                      customize almost anything in the appearance of your
-                      website with only a few clicks. Each demo built with Teba
-                      will look different.
+                      Share your goals with our team and we will help you shape a practical,
+                      premium solution with the right delivery approach.
                     </p>
                   </div>
-                  <div
-                    className="tv-card-box mb-40 wow itfadeUp"
-                    data-wow-delay=".2s"
-                  >
-                    <div className="icon">
-                      <svg
-                        width="44"
-                        height="44"
-                        viewBox="0 0 44 44"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M29.7344 0C29.2598 0 28.875 0.384828 28.875 0.859375V4.8125C28.875 5.28705 29.2598 5.67188 29.7344 5.67188C30.2089 5.67188 30.5938 5.28705 30.5938 4.8125V0.859375C30.5938 0.384828 30.2089 0 29.7344 0Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M9.96875 26.8125C9.49437 26.8125 9.10938 27.1975 9.10938 27.6719C9.10938 28.1463 9.49437 28.5312 9.96875 28.5312C10.4431 28.5312 10.8281 28.1463 10.8281 27.6719C10.8281 27.1975 10.4431 26.8125 9.96875 26.8125Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M41.7656 25.0938C41.7656 23.1983 40.2236 21.6562 38.3281 21.6562H31.9127C32.9059 19.1122 33.3079 16.1178 33.2304 13.4523C33.2156 12.9436 33.1961 12.6495 33.1697 12.4643C33.1253 10.6074 31.6006 9.10938 29.7344 9.10938C27.8389 9.10938 26.2969 10.6514 26.2969 12.5469V13.4062C26.2969 18.8415 19.3175 21.8952 14.0504 23.2048C13.6522 22.2943 12.7432 21.6562 11.6875 21.6562H3.09375C2.6192 21.6562 2.23438 22.0411 2.23438 22.5156V43.1406C2.23438 43.6152 2.6192 44 3.09375 44H11.6875C12.7361 44 13.6399 43.3703 14.0423 42.4695C14.4784 42.5814 14.8833 42.6871 15.257 42.7848C18.2575 43.5684 19.9103 44 23.9302 44H33.1719C35.0673 44 36.6094 42.4579 36.6094 40.5625C36.6094 39.8557 36.3948 39.1983 36.0276 38.6514C37.3551 38.1871 38.3281 36.9187 38.3281 35.4062C38.3281 34.7021 38.1188 34.0425 37.7527 33.4931C39.0744 33.028 40.0469 31.7625 40.0469 30.25C40.0469 29.5432 39.8323 28.8858 39.4651 28.3389C40.7926 27.8746 41.7656 26.6062 41.7656 25.0938ZM12.5469 41.4219C12.5469 41.8957 12.1614 42.2812 11.6875 42.2812H3.95312V23.375H11.6875C12.1614 23.375 12.5469 23.7605 12.5469 24.2344V41.4219ZM38.3281 26.8125C36.4849 26.8125 36.0455 26.8125 34.0312 26.8125C33.5567 26.8125 33.1719 27.1973 33.1719 27.6719C33.1719 28.1464 33.5567 28.5312 34.0312 28.5312H36.6094C37.5571 28.5312 38.3281 29.3023 38.3281 30.25C38.3281 31.1993 37.5586 31.9688 36.6094 31.9688H32.3125C31.838 31.9688 31.4531 32.3536 31.4531 32.8281C31.4531 33.3027 31.838 33.6875 32.3125 33.6875H34.8906C35.8271 33.6875 36.6094 34.4356 36.6094 35.4062C36.6094 36.3555 35.8399 37.125 34.8906 37.125C33.0474 37.125 32.608 37.125 30.5938 37.125C30.1192 37.125 29.7344 37.5098 29.7344 37.9844C29.7344 38.4589 30.1192 38.8438 30.5938 38.8438H33.1719C34.1196 38.8438 34.8906 39.6148 34.8906 40.5625C34.8906 41.5102 34.1196 42.2812 33.1719 42.2812H23.9302C20.1311 42.2812 18.6473 41.8938 15.6913 41.1218C15.2583 41.0087 14.7833 40.8847 14.2656 40.7527V24.924C20.4847 23.4426 28.0156 19.8267 28.0156 13.4062V12.5469C28.0156 11.5992 28.7867 10.8281 29.7344 10.8281C30.6804 10.8281 31.4513 11.598 31.4531 12.5442V12.5469C31.4531 12.9204 31.9193 17.504 30.0501 21.6562H27.1562C26.6817 21.6562 26.2969 22.0411 26.2969 22.5156C26.2969 22.9902 26.6817 23.375 27.1562 23.375C27.7564 23.375 37.3486 23.375 38.3281 23.375C39.2758 23.375 40.0469 24.146 40.0469 25.0938C40.0469 26.043 39.2774 26.8125 38.3281 26.8125Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M9.96875 30.25C9.4942 30.25 9.10938 30.6348 9.10938 31.1094V37.9844C9.10938 38.4589 9.4942 38.8438 9.96875 38.8438C10.4433 38.8438 10.8281 38.4589 10.8281 37.9844V31.1094C10.8281 30.6348 10.4433 30.25 9.96875 30.25Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M22.8594 10.8281H19.4219C18.9473 10.8281 18.5625 11.213 18.5625 11.6875C18.5625 12.162 18.9473 12.5469 19.4219 12.5469H22.8594C23.3339 12.5469 23.7188 12.162 23.7188 11.6875C23.7188 11.213 23.3339 10.8281 22.8594 10.8281Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M40.0469 10.8281H36.6094C36.1348 10.8281 35.75 11.213 35.75 11.6875C35.75 12.162 36.1348 12.5469 36.6094 12.5469H40.0469C40.5214 12.5469 40.9062 12.162 40.9062 11.6875C40.9062 11.213 40.5214 10.8281 40.0469 10.8281Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M37.6337 3.79069C37.298 3.45519 36.754 3.45519 36.4182 3.79069L33.988 6.22091C33.6524 6.5565 33.6524 7.10066 33.988 7.43633C34.3238 7.77191 34.8677 7.77183 35.2034 7.43633L37.6337 5.0061C37.9692 4.67052 37.9692 4.12636 37.6337 3.79069Z"
-                          fill="white"
-                        />
-                        <path
-                          d="M25.4813 6.22091L23.0511 3.79069C22.7154 3.45519 22.1714 3.45519 21.8357 3.79069C21.5001 4.12627 21.5001 4.67043 21.8357 5.0061L24.2659 7.43633C24.6017 7.77191 25.1456 7.77183 25.4813 7.43633C25.8169 7.10074 25.8169 6.55659 25.4813 6.22091Z"
-                          fill="white"
-                        />
-                      </svg>
+
+                  {contactHighlights.map((item, index) => (
+                    <div
+                      key={item.title}
+                      className="tv-card-box mb-40 wow itfadeUp"
+                      data-wow-delay={index === 0 ? '.2s' : '.3s'}
+                    >
+                      <div className="icon">
+                        <svg
+                          width="40"
+                          height="40"
+                          viewBox="0 0 40 40"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20 0L24.4901 13.8197H39.0211L27.2655 22.3607L31.7557 36.1803L20 27.6393L8.24429 36.1803L12.7345 22.3607L0.97887 13.8197H15.5099L20 0Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                      <div className="content">
+                        <h4>{item.title}</h4>
+                        <p>{item.description}</p>
+                      </div>
                     </div>
-                    <div className="content">
-                      <h4>350+ Projects Done</h4>
-                      <p>
-                        From banking and insurance to wealth the management and
-                        security on there
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    className="tv-card-box mb-40 wow itfadeUp"
-                    data-wow-delay=".3s"
-                  >
-                    <div className="icon">
-                      <svg
-                        width="40"
-                        height="40"
-                        viewBox="0 0 40 40"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_2505_4399)">
-                          <path
-                            d="M20.7812 31.7188C20.7812 32.1503 20.4315 32.5 20 32.5C19.5685 32.5 19.2188 32.1503 19.2188 31.7188C19.2188 31.2872 19.5685 30.9375 20 30.9375C20.4315 30.9375 20.7812 31.2872 20.7812 31.7188Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M37.4219 24.6875C37.4219 22.1027 35.3192 20 32.7344 20C30.1495 20 28.0469 22.1027 28.0469 24.6875C28.0469 27.2723 30.1495 29.375 32.7344 29.375C35.3192 29.375 37.4219 27.2723 37.4219 24.6875ZM32.7344 27.8125C31.0114 27.8125 29.6094 26.4105 29.6094 24.6875C29.6094 22.9645 31.0114 21.5625 32.7344 21.5625C34.4574 21.5625 35.8594 22.9645 35.8594 24.6875C35.8594 26.4105 34.4574 27.8125 32.7344 27.8125Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M32.7344 29.375C30.7657 29.375 28.8025 30.1923 27.4652 31.5173C25.705 29.2041 22.9907 27.8125 20 27.8125C17.1359 27.8125 14.3607 29.1193 12.5351 31.5173C11.1975 30.1926 9.23462 29.375 7.26562 29.375C3.32733 29.375 0 32.5949 0 36.4062V37.9688C0 38.4003 0.349731 38.75 0.78125 38.75H39.2188C39.6503 38.75 40 38.4003 40 37.9688V36.4062C40 32.5949 36.6727 29.375 32.7344 29.375ZM1.5625 36.4062C1.5625 33.4418 4.17419 30.9375 7.26562 30.9375C8.95721 30.9375 10.6348 31.687 11.6733 32.8784C10.9866 34.2047 10.625 35.683 10.625 37.1875H1.5625V36.4062ZM20 29.375C24.3472 29.375 27.8125 32.9022 27.8125 37.1875H12.1875C12.1875 32.8452 15.7236 29.375 20 29.375ZM38.4375 37.1875H29.375C29.375 35.683 29.0134 34.2047 28.3267 32.8784C29.3652 31.687 31.0428 30.9375 32.7344 30.9375C35.8258 30.9375 38.4375 33.4418 38.4375 36.4062V37.1875Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M11.9531 24.6875C11.9531 22.1027 9.85046 20 7.26562 20C4.68079 20 2.57812 22.1027 2.57812 24.6875C2.57812 27.2723 4.68079 29.375 7.26562 29.375C9.85046 29.375 11.9531 27.2723 11.9531 24.6875ZM7.26562 27.8125C5.5426 27.8125 4.14062 26.4105 4.14062 24.6875C4.14062 22.9645 5.5426 21.5625 7.26562 21.5625C8.98865 21.5625 10.3906 22.9645 10.3906 24.6875C10.3906 26.4105 8.98865 27.8125 7.26562 27.8125Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M26.25 21.5625C26.25 18.1161 23.4464 15.3125 20 15.3125C16.5536 15.3125 13.75 18.1161 13.75 21.5625C13.75 25.0089 16.5536 27.8125 20 27.8125C23.4464 27.8125 26.25 25.0089 26.25 21.5625ZM20 26.25C17.4152 26.25 15.3125 24.1473 15.3125 21.5625C15.3125 18.9777 17.4152 16.875 20 16.875C22.5848 16.875 24.6875 18.9777 24.6875 21.5625C24.6875 24.1473 22.5848 26.25 20 26.25Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M26.1828 5.79376C26.0909 5.51086 25.8465 5.30487 25.552 5.26215L22.1822 4.77295L20.6734 1.68823C20.5425 1.41998 20.2703 1.25 19.9718 1.25C19.6734 1.25 19.4012 1.41998 19.2699 1.68793L17.7614 4.77295L14.3917 5.26184C14.0972 5.30457 13.8528 5.51086 13.7609 5.79376C13.669 6.07666 13.7456 6.38702 13.9587 6.59454L16.3988 8.97278L15.823 12.3312C15.7726 12.6242 15.8932 12.9205 16.1339 13.0951C16.3732 13.269 16.6918 13.2938 16.9567 13.1546L19.9718 11.5692L22.9882 13.1546C23.2513 13.2932 23.5702 13.27 23.8109 13.0951C24.0514 12.9202 24.172 12.6242 24.1216 12.3309L23.5451 8.97278L25.985 6.59454C26.198 6.38702 26.2746 6.07666 26.1828 5.79376ZM22.1599 8.14056C21.9759 8.32001 21.8917 8.5788 21.9353 8.83209L22.3135 11.0352L20.3353 9.99512C20.1076 9.87549 19.8357 9.87549 19.6081 9.99512L17.6305 11.0352L18.0083 8.83209C18.0517 8.57849 17.9674 8.32001 17.7834 8.14056L16.1831 6.58081L18.3941 6.25977C18.6498 6.22284 18.8705 6.06171 18.9837 5.82977L19.9718 3.80951L20.9597 5.82977C21.0732 6.06201 21.2939 6.22284 21.5493 6.25977L23.7606 6.58081L22.1599 8.14056Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M37.8602 11.6492C37.7683 11.3663 37.5238 11.1603 37.2294 11.1176L34.9463 10.7858L33.9255 8.71674C33.794 8.45001 33.5227 8.28125 33.2251 8.28125C33.2251 8.28125 33.2251 8.28125 33.2248 8.28125C32.9276 8.28125 32.656 8.45001 32.5245 8.71674L31.503 10.7858L29.2197 11.1176C28.9255 11.1603 28.6811 11.3663 28.5892 11.6492C28.4971 11.9321 28.5737 12.2424 28.7867 12.45L30.4386 14.061L30.0486 16.3345C29.9985 16.6275 30.1188 16.9235 30.3595 17.0984C30.6 17.2733 30.9189 17.2964 31.182 17.1582L33.2248 16.0849L35.2671 17.1582C35.5301 17.2964 35.8493 17.2733 36.0898 17.0984C36.3303 16.9238 36.4505 16.6275 36.4005 16.3345L36.0105 14.061L37.6627 12.45C37.8757 12.2424 37.952 11.9321 37.8602 11.6492ZM34.6259 13.2291C34.4416 13.4085 34.3576 13.667 34.4013 13.9203L34.5929 15.0385L33.5886 14.5108C33.3609 14.3912 33.089 14.3912 32.8617 14.5108L31.8564 15.0388L32.0484 13.9203C32.0917 13.667 32.0078 13.4085 31.8238 13.2291L31.0108 12.4362L32.1341 12.2733C32.3887 12.2363 32.6087 12.0764 32.7225 11.846L33.2248 10.8282L33.7268 11.8457C33.8407 12.0764 34.0607 12.2363 34.3152 12.2733L35.4386 12.4362L34.6259 13.2291Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M11.2977 11.6492C11.2058 11.3663 10.9613 11.1603 10.6669 11.1176L8.38383 10.7858L7.36302 8.71674C7.23149 8.45001 6.96019 8.28125 6.66264 8.28125C6.36509 8.28125 6.09349 8.45001 5.96196 8.71674L4.94053 10.7858L2.65721 11.1176C2.36302 11.1603 2.11857 11.3663 2.02672 11.6492C1.93455 11.9321 2.01115 12.2424 2.22416 12.45L3.87608 14.061L3.48637 16.3345C3.43602 16.6275 3.55656 16.9235 3.79704 17.0984C4.03752 17.2733 4.35643 17.2964 4.61979 17.1582L6.66234 16.0849L8.70457 17.1582C8.96946 17.2974 9.28807 17.2723 9.52733 17.0984C9.7678 16.9238 9.88835 16.6275 9.83799 16.3345L9.44798 14.061L11.1002 12.45C11.3132 12.2424 11.3895 11.9321 11.2977 11.6492ZM8.06309 13.2291C7.87907 13.4085 7.79515 13.667 7.83848 13.9203L8.03044 15.0385L7.0258 14.5108C6.79844 14.3912 6.52653 14.3912 6.29918 14.5108L5.29362 15.0388L5.48558 13.9203C5.52922 13.667 5.44499 13.4085 5.26097 13.2291L4.44798 12.4362L5.57164 12.2733C5.82585 12.2363 6.04588 12.0764 6.15971 11.846L6.66203 10.8282L7.16404 11.8457C7.27787 12.0764 7.49791 12.2363 7.75242 12.2733L8.87578 12.4362L8.06309 13.2291Z"
-                            fill="white"
-                          />
-                          <path
-                            d="M23.4232 31.9605C23.0625 31.7234 22.5782 31.8238 22.3414 32.1845C22.1043 32.5449 22.2047 33.0293 22.5654 33.2664C23.2877 33.7409 23.8651 34.4026 24.235 35.1795C24.4199 35.5686 24.8856 35.735 25.276 35.5491C25.6657 35.3639 25.8311 34.8975 25.6458 34.5081C25.1533 33.473 24.3845 32.5919 23.4232 31.9605Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_2505_4399">
-                            <rect width="40" height="40" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </div>
-                    <div className="content">
-                      <h4>500+ Happy Clients e</h4>
-                      <p>
-                        From banking and insurance to wealth the management and
-                        security on there
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
+
               <div
                 className="col-xxl-6 col-xl-6 col-lg-6 wow itfadeUp"
                 data-wow-delay=".2s"
               >
                 <div className="tv-contact-right-wrap">
                   <h1 className="text-white">Make an Appointment</h1>
-                  <p>Feel free to contact with us, we don’t spam your email</p>
-                  <form action="#">
+                  <p>Tell us about your requirement and our team will get back to you promptly.</p>
+                  <form
+                    action="#"
+                    className="tv-contact-form"
+                    aria-label="Contact form"
+                    onSubmit={handleSubmit}
+                  >
                     <div className="tv-contact-input-box mb-24">
-                      <input type="text" placeholder="Full Name *" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Full Name *"
+                        value={formData.fullName}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            fullName: event.target.value,
+                          }))
+                        }
+                        required
+                      />
                     </div>
                     <div className="tv-contact-input-box mb-24">
-                      <input type="email" placeholder="Email Here *" />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address *"
+                        value={formData.email}
+                        autoCapitalize="none"
+                        autoComplete="email"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            email: event.target.value.toLowerCase(),
+                          }))
+                        }
+                        required
+                      />
                     </div>
                     <div className="tv-contact-input-box mb-24">
-                      <input type="text" placeholder="Select Service *" />
+                      <input
+                        type="text"
+                        name="subject"
+                        placeholder="Subject *"
+                        value={formData.subject}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            subject: event.target.value,
+                          }))
+                        }
+                        required
+                      />
                     </div>
                     <div className="it-contact-textarea-box mb-24">
                       <textarea
+                        name="message"
                         placeholder="Your Message *"
-                        rows={3}
+                        rows={4}
+                        value={formData.message}
+                        onChange={(event) =>
+                          setFormData((current) => ({
+                            ...current,
+                            message: event.target.value,
+                          }))
+                        }
+                        required
                       ></textarea>
                     </div>
-                    <button className="tv-btn-primary">
+                    {submitState.type ? (
+                      <p
+                        className={`tv-contact-form-message tv-contact-form-message--${submitState.type}`}
+                      >
+                        {submitState.message}
+                      </p>
+                    ) : null}
+                    <button type="submit" className="tv-btn-primary" disabled={isSubmitting}>
                       <span className="btn-wrap">
-                        <span className="btn-text1">Submit Message</span>
-                        <span className="btn-text2">Submit Message</span>
+                        <span className="btn-text1">
+                          {isSubmitting ? 'Sending...' : 'Submit Message'}
+                        </span>
+                        <span className="btn-text2">
+                          {isSubmitting ? 'Sending...' : 'Submit Message'}
+                        </span>
                       </span>
                     </button>
                   </form>
@@ -178,15 +240,32 @@ export default function ContactArea() {
           </div>
         </div>
       </div>
+
       <div className="tv-google-map wow itfadeUp" data-wow-delay=".2s">
-        <iframe
-          className="tv-map"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387196.07665879064!2d-74.30914977179596!3d40.69667269554806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1744694839471!5m2!1sen!2sbd"
-          style={{ border: 0 }}
-          allowFullScreen={true}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        ></iframe>
+        <div className="container">
+          <div className="tv-office-location-wrap">
+            <div className="tv-office-location-head">
+              <span className="tv-section-subtitle">Our Locations</span>
+              <h4 className="tv-section-title">Supporting clients across multiple countries</h4>
+              <p>
+                Present your offices in a premium, compact format without the oversized single-map
+                layout.
+              </p>
+            </div>
+
+            <div className="row gy-4">
+              {officeLocations.map((office) => (
+                <div key={`${office.country}-${office.city}`} className="col-xl-4 col-md-6">
+                  <div className="tv-office-location-card">
+                    <span className="tv-office-location-country">{office.country}</span>
+                    <h5>{office.city}</h5>
+                    <p>{office.address}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

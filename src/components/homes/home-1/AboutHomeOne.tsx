@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function AboutHomeOne() {
   return (
-    <div className="tv-about-area z-index-1 p-relative pt-130 pb-130 white-bg">
+    <div className="tv-about-area z-index-1 p-relative pt-130 pb-80 white-bg">
       <div className="container">
         <div className="row align-items-end">
           <div className="col-xl-5 col-lg-5">

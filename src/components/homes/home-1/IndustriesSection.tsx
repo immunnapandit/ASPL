@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import type { Variants } from "framer-motion";import {
+import type { ElementType, CSSProperties } from 'react';
+import { motion, type Variants } from 'framer-motion';
+import {
   Factory,
   ShoppingCart,
   HeartPulse,
@@ -9,30 +10,108 @@ import type { Variants } from "framer-motion";import {
   RadioTower,
   LaptopMinimal,
   MoreHorizontal,
-} from "lucide-react";
-import "../../../styles/scss/layout/_industry.scss";
+} from 'lucide-react';
+import '../../../styles/scss/layout/_industry.scss';
 
 type IndustryItem = {
   title: string;
-  icon: React.ElementType;
-  color: string;
-  tint: string;
+  icon: ElementType;
+  label: string;
+  iconColor: string;
+  gradient: string;
+  glow: string;
+  ring: string;
 };
 
-type HexagonStyle = React.CSSProperties & {
-  ["--icon-tint"]?: string;
+type HexagonStyle = CSSProperties & {
+  '--industry-gradient'?: string;
+  '--industry-glow'?: string;
+  '--industry-ring'?: string;
+  '--industry-icon'?: string;
 };
 
 const industries: IndustryItem[] = [
-  { title: "Manufacturing", icon: Factory, color: "#C48A3A", tint: "rgba(196, 138, 58, 0.12)" },
-  { title: "Retail & E-Commerce", icon: ShoppingCart, color: "#F97316", tint: "rgba(249, 115, 22, 0.12)" },
-  { title: "Healthcare", icon: HeartPulse, color: "#EF4444", tint: "rgba(239, 68, 68, 0.12)" },
-  { title: "Food and Beverages", icon: UtensilsCrossed, color: "#E11D48", tint: "rgba(225, 29, 72, 0.12)" },
-  { title: "Engineering", icon: Cog, color: "#F59E0B", tint: "rgba(245, 158, 11, 0.12)" },
-  { title: "Education", icon: GraduationCap, color: "#7C3AED", tint: "rgba(124, 58, 237, 0.12)" },
-  { title: "Telecommunication", icon: RadioTower, color: "#0EA5E9", tint: "rgba(14, 165, 233, 0.12)" },
-  { title: "Technology", icon: LaptopMinimal, color: "#2563EB", tint: "rgba(37, 99, 235, 0.12)" },
-  { title: "And Many More", icon: MoreHorizontal, color: "#8B5CF6", tint: "rgba(139, 92, 246, 0.12)" },
+  {
+    title: 'Manufacturing',
+    icon: Factory,
+    label: 'ERP Systems',
+    iconColor: '#1f6fff',
+    gradient: 'linear-gradient(145deg, #f4f8ff 0%, #e7efff 55%, #eaf7ff 100%)',
+    glow: 'rgba(31, 111, 255, 0.14)',
+    ring: 'rgba(31, 111, 255, 0.12)',
+  },
+  {
+    title: 'Retail & E-Commerce',
+    icon: ShoppingCart,
+    label: 'Digital Commerce',
+    iconColor: '#0c8bdc',
+    gradient: 'linear-gradient(145deg, #f2f9ff 0%, #e5f1ff 52%, #edf8ff 100%)',
+    glow: 'rgba(12, 139, 220, 0.14)',
+    ring: 'rgba(12, 139, 220, 0.12)',
+  },
+  {
+    title: 'Healthcare',
+    icon: HeartPulse,
+    label: 'Connected Care',
+    iconColor: '#149d8d',
+    gradient: 'linear-gradient(145deg, #f1fbfa 0%, #e1f7f3 52%, #ebf8ff 100%)',
+    glow: 'rgba(20, 157, 141, 0.14)',
+    ring: 'rgba(20, 157, 141, 0.12)',
+  },
+  {
+    title: 'Food and Beverages',
+    icon: UtensilsCrossed,
+    label: 'Supply Visibility',
+    iconColor: '#2b77d1',
+    gradient: 'linear-gradient(145deg, #f4f8ff 0%, #e9f1ff 50%, #eef8ff 100%)',
+    glow: 'rgba(43, 119, 209, 0.14)',
+    ring: 'rgba(43, 119, 209, 0.12)',
+  },
+  {
+    title: 'Engineering',
+    icon: Cog,
+    label: 'Process Automation',
+    iconColor: '#335eea',
+    gradient: 'linear-gradient(145deg, #f5f7ff 0%, #e6ecff 52%, #edf5ff 100%)',
+    glow: 'rgba(51, 94, 234, 0.14)',
+    ring: 'rgba(51, 94, 234, 0.12)',
+  },
+  {
+    title: 'Education',
+    icon: GraduationCap,
+    label: 'Learning Platforms',
+    iconColor: '#1477c9',
+    gradient: 'linear-gradient(145deg, #f3f8ff 0%, #e7f0ff 52%, #edf8ff 100%)',
+    glow: 'rgba(20, 119, 201, 0.14)',
+    ring: 'rgba(20, 119, 201, 0.12)',
+  },
+  {
+    title: 'Telecommunication',
+    icon: RadioTower,
+    label: 'Connected Networks',
+    iconColor: '#1764d6',
+    gradient: 'linear-gradient(145deg, #f4f8ff 0%, #e6eeff 52%, #edf6ff 100%)',
+    glow: 'rgba(23, 100, 214, 0.14)',
+    ring: 'rgba(23, 100, 214, 0.12)',
+  },
+  {
+    title: 'Technology',
+    icon: LaptopMinimal,
+    label: 'Cloud Native',
+    iconColor: '#0f8ea7',
+    gradient: 'linear-gradient(145deg, #f1fbff 0%, #e3f6ff 52%, #e8fbff 100%)',
+    glow: 'rgba(15, 142, 167, 0.14)',
+    ring: 'rgba(15, 142, 167, 0.12)',
+  },
+  {
+    title: 'And Many More',
+    icon: MoreHorizontal,
+    label: 'Scalable Delivery',
+    iconColor: '#2354c7',
+    gradient: 'linear-gradient(145deg, #f5f8ff 0%, #e9efff 52%, #eff8ff 100%)',
+    glow: 'rgba(35, 84, 199, 0.14)',
+    ring: 'rgba(35, 84, 199, 0.12)',
+  },
 ];
 
 const containerVariants: Variants = {
@@ -63,12 +142,20 @@ function IndustryCard({ item }: { item: IndustryItem }) {
     <motion.div className="industry-item" variants={itemVariants}>
       <div
         className="hexagon-card"
-        style={{ "--icon-tint": item.tint } as HexagonStyle}
+        style={
+          {
+            '--industry-gradient': item.gradient,
+            '--industry-glow': item.glow,
+            '--industry-ring': item.ring,
+            '--industry-icon': item.iconColor,
+          } as HexagonStyle
+        }
       >
         <div className="hexagon-shape">
           <div className="icon-badge">
-            <Icon size={28} strokeWidth={2} style={{ color: item.color }} />
+            <Icon size={28} strokeWidth={2.1} style={{ color: item.iconColor }} />
           </div>
+          <span className="industry-meta">{item.label}</span>
         </div>
       </div>
 
@@ -79,7 +166,7 @@ function IndustryCard({ item }: { item: IndustryItem }) {
 
 export default function IndustriesSection() {
   return (
-    <section className="industries-section">
+    <section className="tv-industries-section pt-130 pb-80">
       <div className="container">
         <motion.div
           className="industries-header"
@@ -88,20 +175,22 @@ export default function IndustriesSection() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="subtitle-row">
-            <span className="industries-subtitle">INDUSTRIES</span>
-            <span className="subtitle-line">
-              <span className="subtitle-dot" />
+          <div className="tv-section-title-box text-center mb-60">
+            <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
+              Industries
             </span>
+
+            <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
+              Technology Solutions
+              <br />
+              for Every Industry
+            </h4>
+
+            <p>
+              Enterprise-focused IT services designed to modernize operations,
+              connect business systems, and support secure digital growth.
+            </p>
           </div>
-
-          <h2 className="industries-title">
-            <span>Explore</span> Industries
-          </h2>
-
-          <p className="industries-description">
-            Powerful solutions designed for multiple business sectors with a modern, scalable experience.
-          </p>
         </motion.div>
 
         <motion.div

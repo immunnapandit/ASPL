@@ -177,7 +177,7 @@ export default function BecomeMct() {
             </span>
             <h1>Become a Microsoft Certified Trainer (MCT)</h1>
             <p>
-              Unlock your potential with AtiSunya — a trusted Microsoft
+              Unlock your potential with AtiSunya, a trusted Microsoft
               Instructional Skills Certification Provider (ISCP).
             </p>
 
@@ -199,7 +199,7 @@ export default function BecomeMct() {
                 <span className="pm-kicker">MCT Program</span>
                 <h2>Become a Microsoft Certified Trainer (MCT)</h2>
                 <p>
-                  Unlock Your Potential with AtiSunya – A Trusted Microsoft
+                  Unlock Your Potential with AtiSunya, a Trusted Microsoft
                   Instructional Skills Certification Provider (ISCP)
                 </p>
               </div>
@@ -224,7 +224,7 @@ export default function BecomeMct() {
                           <p>{section.subtitle}</p>
                         </div>
                         <span className={`pm-toggle ${isOpen ? "open" : ""}`}>
-                          {isOpen ? "−" : "+"}
+                          {isOpen ? "-" : "+"}
                         </span>
                       </button>
 

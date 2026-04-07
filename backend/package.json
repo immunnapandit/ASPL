@@ -1,0 +1,12 @@
+{
+  "name": "aspl-contact-backend",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "nodemailer": "^6.10.1"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}

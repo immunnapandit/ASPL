@@ -17,6 +17,7 @@ import BlogList from './components/blog-list';
 import BlogDetails from './components/blog-details';
 import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
+import Dynamics365 from './components/Dynamics365';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomeOne /> },
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
   { path: '*', element: <NotFound /> },
 
   { path: '/become-mct', element: <BecomeMCTPage /> },
+  { path: '/solutions/d365-for-finance-and-operations', element: <Dynamics365 /> },
 ]);
 
 function App() {
