@@ -400,6 +400,7 @@
 
 .tv-about2 {
   &-footprints {
+    background: var(--tv-common-white);
     .tv-section-title {
       color: #174786;
     }
@@ -408,19 +409,23 @@
   &-footprints-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     height: 100%;
+    &--compact {
+      max-width: 500px;
+      margin: 0 auto;
+    }
   }
 
   &-location-card {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 124px 1fr;
     background: #fff;
     border: 0;
     border-radius: 28px;
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(14, 29, 53, 0.08);
-    min-height: 136px;
+    min-height: 122px;
     width: 100%;
     padding: 0;
     text-align: left;
@@ -448,48 +453,45 @@
   }
 
   &-location-thumb {
-    min-height: 136px;
-    background-size: cover;
-    background-position: center;
+    min-height: 122px;
     position: relative;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      opacity: 0.2;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.5) 100%);
-    }
-    &.is-california {
-      background-image:
-        linear-gradient(135deg, rgba(240, 126, 57, 0.5), rgba(14, 39, 74, 0.2)),
-        linear-gradient(180deg, #8fd6ff 0%, #436b97 45%, #d4663b 100%);
-    }
-    &.is-new-jersey {
-      background-image:
-        linear-gradient(135deg, rgba(56, 196, 239, 0.18), rgba(8, 44, 99, 0.2)),
-        linear-gradient(180deg, #39c0ef 0%, #67d0f7 45%, #5f7a98 100%);
-    }
-    &.is-leeds {
-      background-image:
-        linear-gradient(135deg, rgba(255, 97, 145, 0.16), rgba(35, 44, 91, 0.22)),
-        linear-gradient(180deg, #8aa6ff 0%, #9764cb 50%, #ff835e 100%);
+      opacity: 0.22;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0.42) 100%);
     }
     &.is-ahmedabad {
-      background-image:
-        linear-gradient(135deg, rgba(255, 147, 73, 0.22), rgba(13, 40, 82, 0.3)),
-        linear-gradient(180deg, #6b8edc 0%, #2b4170 45%, #d96f43 100%);
+      img {
+        object-position: center;
+      }
+    }
+  }
+
+  &-location-card:hover {
+    .tv-about2-location-thumb img {
+      transform: scale(1.06);
     }
   }
 
   &-location-content {
-    padding: 16px 20px;
+    padding: 14px 18px;
     h5 {
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.2;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: #14213d;
       @media #{$xs} {
-        font-size: 18px;
+        font-size: 16px;
       }
     }
     ul {
@@ -500,15 +502,15 @@
     li {
       display: flex;
       align-items: flex-start;
-      gap: 9px;
-      font-size: 13px;
-      line-height: 1.3;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.25;
       color: #20304f;
       &:not(:last-child) {
-        margin-bottom: 8px;
+        margin-bottom: 7px;
       }
       @media #{$xs} {
-        font-size: 13px;
+        font-size: 12px;
       }
       span {
         height: 22px;
@@ -529,17 +531,21 @@
   &-map-wrap {
     position: relative;
     height: 100%;
-    min-height: 590px;
+    min-height: 540px;
     overflow: hidden;
     box-shadow: 0 18px 45px rgba(14, 29, 53, 0.12);
+    &--compact {
+      max-width: 720px;
+      margin: 0 auto;
+    }
     @media #{$xl} {
-      min-height: 570px;
+      min-height: 520px;
     }
     @media #{$lg} {
-      min-height: 650px;
+      min-height: 590px;
     }
     @media #{$md,$sm,$xs} {
-      min-height: 410px;
+      min-height: 390px;
     }
   }
 
@@ -591,7 +597,7 @@
       border-radius: 50%;
       background: #174786;
       color: #fff;
-      font-size: 11px;
+      font-size: 10px;
       box-shadow: 0 8px 20px rgba(23, 71, 134, 0.28);
     }
     &::after {
@@ -615,23 +621,23 @@
     transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
-    padding: 10px 10px 7px;
-    min-width: 126px;
+    padding: 8px 8px 6px;
+    min-width: 112px;
     text-align: center;
     box-shadow: 0 14px 35px rgba(16, 34, 63, 0.2);
     transition: left 0.95s cubic-bezier(0.22, 1, 0.36, 1), top 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
     .tv-about2-map-flag {
-      height: 62px;
-      width: 88px;
+      height: 54px;
+      width: 76px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--tv-common-white);
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.08em;
-      margin: 0 auto 8px;
+      margin: 0 auto 6px;
       position: relative;
       overflow: hidden;
       &.is-usa {
@@ -659,8 +665,8 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 44px;
-        height: 44px;
+        width: 34px;
+        height: 34px;
         background: #3c3b6e;
       }
       &.is-india {
@@ -672,8 +678,8 @@
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 22px;
-        height: 22px;
+        width: 18px;
+        height: 18px;
         border: 2px solid #000080;
         border-radius: 50%;
         transform: translate(-50%, -50%);
@@ -684,7 +690,7 @@
         left: 50%;
         top: 50%;
         width: 2px;
-        height: 22px;
+        height: 18px;
         background: #000080;
         transform: translate(-50%, -50%);
         box-shadow:
@@ -706,16 +712,16 @@
     }
     span {
       display: block;
-      font-size: 13px;
+      font-size: 12px;
       color: #20304f;
       font-weight: 500;
     }
     @media #{$xs} {
-      min-width: 118px;
+      min-width: 106px;
       .tv-about2-map-flag {
-        width: 80px;
-        height: 56px;
-        font-size: 18px;
+        width: 72px;
+        height: 50px;
+        font-size: 16px;
       }
     }
   }
