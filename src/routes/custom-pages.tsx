@@ -11,12 +11,15 @@ import D365RetailPage from '../components/solutions/d365-retail';
 import D365SalesPage from '../components/solutions/d365-sales';
 import D365SupplyChainManagementPage from '../components/solutions/d365-supply-chain-management';
 import D365TalentPage from '../components/solutions/d365-talent';
+import CloudTechnologyPage from '../components/solutions/cloud-technology';
 import DynamicsNav2017Page from '../components/solutions/dynamics-nav-2017';
 import DynamicsNav2018Page from '../components/solutions/dynamics-nav-2018';
+import MicrosoftAzurePage from '../components/solutions/microsoft-azure';
 import MicrosoftDynamics365Page from '../components/solutions/microsoft-dynamics-365';
 import MicrosoftDynamicsAxPage from '../components/solutions/microsoft-dynamics-ax';
 import MicrosoftDynamicsCrmPage from '../components/solutions/microsoft-dynamics-crm';
 import MicrosoftDynamicsNavPage from '../components/solutions/microsoft-dynamics-nav';
+import MicrosoftPowerBiPage from '../components/solutions/microsoft-power-bi';
 import MicrosoftPowerPlatformPage from '../components/solutions/microsoft-power-platform';
 import PowerAutomateSolutionsPage from '../components/solutions/power-automate-solutions';
 import AppDevelopmentPage from '../components/what-we-do/app-development';
@@ -52,6 +55,7 @@ export const customPageRoutes: RouteObject[] = [
     path: '/solutions/d365-for-project-service-automation',
     element: <D365ProjectServiceAutomationPage />
   },
+  { path: '/solutions/microsoft-azure', element: <MicrosoftAzurePage /> },
   { path: '/ai-solutions', element: <AiSolutionsPage /> },
   { path: '/solutions/microsoft-dynamics-ax', element: <MicrosoftDynamicsAxPage /> },
   { path: '/solutions/microsoft-dynamics-ax/ax-7', element: <Ax7Page /> },
@@ -68,6 +72,8 @@ export const customPageRoutes: RouteObject[] = [
     element: <DynamicsNav2018Page />
   },
   { path: '/solutions/microsoft-power-platform', element: <MicrosoftPowerPlatformPage /> },
+  { path: '/solutions/microsoft-power-bi', element: <MicrosoftPowerBiPage /> },
+  { path: '/solutions/cloud-technology', element: <CloudTechnologyPage /> },
   {
     path: '/solutions/microsoft-power-platform/power-automate-solutions',
     element: <PowerAutomateSolutionsPage />

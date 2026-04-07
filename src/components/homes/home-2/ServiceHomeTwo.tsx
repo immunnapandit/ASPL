@@ -13,30 +13,35 @@ const services = [
     desc: 'ERP and CRM solutions designed to streamline operations, improve visibility, and drive smarter business decisions.',
     img: '/assets/img/service/Dynamics365.svg',
     accent: '#2B4DFF',
+    href: '/solutions/microsoft-dynamics-365',
   },
   {
     title: 'Microsoft Azure',
     desc: 'Secure, scalable cloud solutions that modernize infrastructure and support enterprise-level growth.',
     img: '/assets/img/service/azure-icon.svg',
     accent: '#6C4DFF',
+    href: '/solutions/microsoft-azure',
   },
   {
     title: 'Power Platform',
     desc: 'Build apps, automate workflows, and unlock productivity with low-code Microsoft solutions.',
     img: '/assets/img/service/PowerPlatform.svg',
     accent: '#0EA5E9',
+    href: '/solutions/microsoft-power-platform',
   },
   {
     title: 'Microsoft Power BI',
     desc: 'Transform raw data into interactive dashboards and clear insights for better business decisions.',
     img: '/assets/img/service/power-bi-icon.svg',
     accent: '#14B8A6',
+    href: '/solutions/microsoft-power-bi',
   },
   {
     title: 'Cloud Technology',
     desc: 'Comprehensive cloud services including migration, infrastructure management, and DevOps automation.',
     img: '/assets/img/service/Cloud.svg',
     accent: '#4F46E5',
+    href: '/solutions/cloud-technology',
   },
 ] as const;
 
@@ -159,14 +164,14 @@ export default function ServiceHomeTwo() {
                     <div className="service-mini-line" />
 
                     <h3 className="service-card-title">
-                      <Link to="/service-details">{item.title}</Link>
+                      <Link to={item.href}>{item.title}</Link>
                     </h3>
 
                     <p className="service-card-desc">{item.desc}</p>
 
-                    <Link to="/service-details" className="service-read-more">
+                    <Link to={item.href} className="service-read-more">
                       Explore Service
-                      <span className="arrow">&nearr;</span>
+                      <span className="arrow">↗</span>
                     </Link>
                   </div>
                 </motion.div>
