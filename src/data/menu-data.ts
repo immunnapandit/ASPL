@@ -127,31 +127,38 @@ const menu_data: MenuDataType[] = [
   },
 
   {
-    title: 'Pages',
+    title: 'What We Do',
     link: '#',
     has_dropdown: true,
     sub_menus: [
-      { title: 'Team', link: '/team' },
-      { title: 'Team Details', link: '/team-details' },
-      { title: 'Price', link: '/price' },
-      { title: 'Projects', link: '/project' },
-      { title: 'Project Details', link: '/project-details' },
-      { title: 'Faq', link: '/faq' },
-      { title: '404', link: '/404' },
+      { title: 'ERP Implementation', link: '/team' },
+      { title: 'CRM Implementation', link: '/team-details' },
+      { title: 'BI & Analytics', link: '/price' },
+      { title: 'App Development', link: '/project' },
+      { title: 'Support & Managed Services', link: '/project-details' },
+      { title: 'Enterprise Management', link: '/faq' },
+      { title: 'Digital Transformation', link: '/404' },
       { title: 'Become MCT', link: '/become-mct' },
+      { title: 'Consulting', link: '/404' },
+      { title: 'Training', link: '/404' },
+      { title: 'Microsoft Certified Training Readiness Training', link: '/404' },
     ],
   },
 
   {
-    title: 'Blog',
+    title: 'Insights',
     link: '#',
     has_dropdown: true,
     sub_menus: [
-      { title: 'Blog Grid', link: '/blog-grid' },
-      { title: 'Blog List', link: '/blog-list' },
-      { title: 'Blog Details', link: '/blog-details' },
+      { title: 'Blog', link: '/blog' },
+      { title: 'Webinar & Events', link: 'insights/webinars-events' },
+      { title: 'Success Stories', link: 'insights/success-stories' },
     ],
   },
+  {
+    title: 'Career',
+    link: '/career',
+  }
 
 ];
 

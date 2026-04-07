@@ -50,7 +50,7 @@ export default function Navmenu() {
                 >
                   <Link to={sub_item.link}>
                     {sub_item.title}
-                    {sub_item.sub_menus && ' ▶'}
+                    {sub_item.sub_menus && ' '}
                   </Link>
 
                   {/* ✅ 3rd LEVEL */}
