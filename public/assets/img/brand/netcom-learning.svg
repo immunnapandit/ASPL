@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 120" role="img" aria-labelledby="title">
+  <title id="title">NetCom Learning</title>
+  <defs>
+    <radialGradient id="orb" cx="40%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#c8edff"/>
+      <stop offset="100%" stop-color="#005fb6"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(8 8)">
+    <circle cx="54" cy="50" r="46" fill="url(#orb)"/>
+    <path d="M24 76c18-6 40-27 57-57" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+    <text x="120" y="54" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="500">NetCom</text>
+    <text x="121" y="96" fill="#222222" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="300" letter-spacing="10">LEARNING</text>
+  </g>
+</svg>

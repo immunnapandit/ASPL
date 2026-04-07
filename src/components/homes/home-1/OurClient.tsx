@@ -1,133 +1,194 @@
+import { Autoplay } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css';
+
 const clientLogos = [
-  { id: 1, name: "Microsoft", logo: "/logos/microsoft.png" },
-  { id: 2, name: "Google", logo: "/logos/google.png" },
-  { id: 3, name: "Amazon", logo: "/logos/amazon.png" },
-  { id: 4, name: "Meta", logo: "/logos/meta.png" },
-  { id: 5, name: "Netflix", logo: "/logos/netflix.png" },
-  { id: 6, name: "Adobe", logo: "/logos/adobe.png" },
+  {
+    id: 1,
+    name: 'Alpha Variance Solutions',
+    logo: '/assets/img/brand/alpha-variance-solutions.svg',
+  },
+  { id: 2, name: 'SYSCOM', logo: '/assets/img/brand/syscom.svg' },
+  {
+    id: 3,
+    name: 'Alfahhad Holding Group',
+    logo: '/assets/img/brand/alfahhad-holding-group.svg',
+  },
+  { id: 4, name: 'VJ Group', logo: '/assets/img/brand/vj-group.svg' },
+  { id: 5, name: 'ADCB', logo: '/assets/img/brand/adcb.svg' },
+  { id: 6, name: 'Daikin', logo: '/assets/img/brand/daikin.svg' },
+  { id: 7, name: 'Brown Bites', logo: '/assets/img/brand/brown-bites.svg' },
+  {
+    id: 8,
+    name: 'Chartered HighTech',
+    logo: '/assets/img/brand/chartered-hightech.svg',
+  },
+  {
+    id: 9,
+    name: 'Bharat Seats Limited',
+    logo: '/assets/img/brand/bharat-seats-limited.svg',
+  },
+  {
+    id: 10,
+    name: 'NetCom Learning',
+    logo: '/assets/img/brand/netcom-learning.svg',
+  },
+  { id: 11, name: 'Hitachi', logo: '/assets/img/brand/hitachi.svg' },
+  { id: 12, name: 'Grandmasters', logo: '/assets/img/brand/grandmasters.svg' },
+  {
+    id: 13,
+    name: 'Bhagwati Shuttering Store',
+    logo: '/assets/img/brand/bhagwati-shuttering-store.svg',
+  },
+  {
+    id: 14,
+    name: 'Tessitura Monti',
+    logo: '/assets/img/brand/tessitura-monti.svg',
+  },
+  {
+    id: 15,
+    name: 'Global Knowledge',
+    logo: '/assets/img/brand/global-knowledge.svg',
+  },
 ];
 
-export default function ClientLogos() {
+export default function OurClient() {
   return (
     <>
       <style>{`
-        .client-section {
-          padding: 70px 20px;
-          background: #ffffff;
-          text-align: center;
-          overflow: hidden;
+        .our-client-area {
+          background: linear-gradient(180deg, #fffff0%, #ffffff 100%);
         }
 
-        .client-container {
-          max-width: 1200px;
+        .our-client-area .tv-brand-content {
+          border-top: 1px solid rgba(17, 24, 39, 0.08);
+          border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+          padding-bottom: 36px;
+        }
+
+        .our-client-header {
+          max-width: 780px;
           margin: 0 auto;
+          text-align: center;
         }
 
-        .client-title {
-          font-size: 34px;
-          font-weight: 700;
-          margin-bottom: 10px;
-          color: #111827;
+        .our-client-header .tv-section-title {
+          margin-bottom: 14px;
         }
 
-        .client-subtitle {
-          color: #6b7280;
-          margin-bottom: 50px;
+        .our-client-header p {
+          margin-bottom: 0;
+          color: #5b6472;
         }
 
-        .slider {
-          position: relative;
-          overflow: hidden;
-          width: 100%;
+        .our-client-slider {
+          padding-top: 34px;
         }
 
-        .slide-track {
-          display: flex;
-          width: calc(200px * 12);
-          animation: scroll 25s linear infinite;
+        .our-client-slider .swiper-wrapper {
+          align-items: center;
+          transition-timing-function: linear;
         }
 
-        .logo-card {
-          width: 180px;
-          height: 100px;
-          margin: 0 12px;
-          background: #f9fafb;
-          border-radius: 14px;
+        .our-client-item {
+          min-height: 92px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.3s ease;
-          border: 1px solid #e5e7eb;
-          filter: grayscale(100%);
+          padding: 12px 10px;
+          background: transparent;
         }
 
-        .logo-card img {
+        .our-client-item img {
+          display: block;
+          width: auto;
           max-width: 100%;
-          height: 42px;
+          max-height: 58px;
           object-fit: contain;
-          transition: transform 0.3s ease;
+          transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .logo-card:hover {
-          transform: translateY(-8px) scale(1.05);
-          filter: grayscale(0%);
-          background: #ffffff;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-          border-color: #d1d5db;
+        .our-client-item:hover img {
+          transform: scale(1.04);
+          opacity: 0.9;
         }
 
-        .logo-card:hover img {
-          transform: scale(1.1);
-        }
-
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .slider:hover .slide-track {
-          animation-play-state: paused;
-        }
-
-        @media (max-width: 768px) {
-          .client-title {
-            font-size: 26px;
+        @media (max-width: 767px) {
+          .our-client-item {
+            min-height: 74px;
           }
 
-          .slide-track {
-            animation: scroll 18s linear infinite;
-          }
-
-          .logo-card {
-            width: 140px;
-            height: 80px;
-          }
-
-          .logo-card img {
-            height: 30px;
+          .our-client-item img {
+            max-height: 44px;
           }
         }
       `}</style>
 
-      <section className="client-section">
-        <div className="client-container">
-          <h2 className="client-title">Our Clients</h2>
-          <p className="client-subtitle">
-            Trusted by top companies worldwide
-          </p>
-
-          <div className="slider">
-            <div className="slide-track">
-              {[...clientLogos, ...clientLogos].map((client, index: number) => (
-                <div key={index} className="logo-card">
-                  <img src={client.logo} alt={client.name} />
+      <section className="tv-brand-area our-client-area pb-130">
+        <div className="container">
+          <div className="tv-brand-content pt-80">
+            <div className="row justify-content-center">
+              <div className="col-xl-8 col-lg-10">
+                <div className="our-client-header">
+                  <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
+                    Our Clients
+                  </span>
+                  <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
+                    Trusted by brands across industries.
+                  </h4>
+                  <p>
+                    From manufacturing and banking to education, retail, and
+                    enterprise technology, our clients rely on AtiSunya for
+                    transformation and delivery.
+                  </p>
                 </div>
-              ))}
+              </div>
             </div>
+          </div>
+
+          <div className="tv-brand-slider our-client-slider">
+            <Swiper
+              loop={true}
+              spaceBetween={36}
+              slidesPerView={5}
+              speed={3500}
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              modules={[Autoplay]}
+              breakpoints={{
+                1400: {
+                  slidesPerView: 5,
+                },
+                1200: {
+                  slidesPerView: 5,
+                },
+                992: {
+                  slidesPerView: 4,
+                },
+                768: {
+                  slidesPerView: 3,
+                },
+                576: {
+                  slidesPerView: 2,
+                },
+                0: {
+                  slidesPerView: 2,
+                },
+              }}
+              className="swiper-container tv-brand-slider-active"
+            >
+              {clientLogos.map((client) => (
+                <SwiperSlide className="swiper-slide" key={client.id}>
+                  <div className="tv-brand-single-item our-client-item">
+                    <img src={client.logo} alt={client.name} />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </section>

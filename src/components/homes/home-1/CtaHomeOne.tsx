@@ -57,7 +57,6 @@ export default function CtaHomeOne() {
                       <option value="option3">Graphic Design</option>
                     </select>
                   </div>
-
                   <div className="it-contact-textarea-box ">
                     <textarea placeholder="Your Message *"></textarea>
                   </div>

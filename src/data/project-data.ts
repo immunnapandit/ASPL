@@ -73,5 +73,4 @@ const project_data: ProjectDataType[] = [
     colClass: 'col-12',
   },
 ];
-
 export default project_data;

@@ -14,10 +14,11 @@ export default function CounterHomeOne() {
                   <span
                     className="purecounter"
                     data-purecounter-duration="0"
-                    data-purecounter-end="25"
+                    data-purecounter-end="10"
                   >
-                    25
+                    10
                   </span>
+                  +
                 </h5>
                 <h6>Years Experience</h6>
               </div>
@@ -57,9 +58,9 @@ export default function CounterHomeOne() {
                     data-purecounter-duration="0"
                     data-purecounter-end="8"
                   >
-                    8
+                    500
                   </span>
-                  K
+                  +
                 </h5>
                 <h6>Project Completed</h6>
               </div>
@@ -78,9 +79,9 @@ export default function CounterHomeOne() {
                     data-purecounter-duration="0"
                     data-purecounter-end="19"
                   >
-                    19
+                    250
                   </span>
-                  K
+                  +
                 </h5>
                 <h6>Happy Clients</h6>
               </div>

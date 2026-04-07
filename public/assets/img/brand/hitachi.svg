@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" role="img" aria-labelledby="title">
+  <title id="title">Hitachi</title>
+  <g transform="translate(8 14)">
+    <text x="0" y="34" fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800">HITACHI</text>
+    <text x="4" y="72" fill="#666666" font-family="Georgia, 'Times New Roman', serif" font-size="28" font-weight="600">Inspire the Nex</text>
+    <path d="M255 61l8 3-8 3z" fill="#d31f2b"/>
+  </g>
+</svg>

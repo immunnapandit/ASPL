@@ -8,10 +8,10 @@ export default function AboutHomeOne() {
           <div className="col-xl-5 col-lg-5">
             <div className="tv-section-title-box">
               <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
-                About Your Company
+                About Company
               </span>
               <h4 className="tv-section-title pb-20 tv-spltv-text tv-spltv-in-right">
-                We Execute Ideas From Start to Finish
+                AtiSunya is a trusted Microsoft partner delivering digital solutions.
               </h4>
             </div>
           </div>
@@ -46,8 +46,7 @@ export default function AboutHomeOne() {
                   <div className="icon-box-content">
                     <h3>Our Mission</h3>
                     <p>
-                      Our mission is to push boundaries, engage audiences, and
-                      driv engage innovation through
+                      To drive digital transformation through reliable Microsoft-based solutions.
                     </p>
                   </div>
                 </div>
@@ -58,8 +57,7 @@ export default function AboutHomeOne() {
                   <div className="icon-box-content">
                     <h3>Our Vission</h3>
                     <p>
-                      Our mission is to push boundaries, engage audiences, and
-                      driv engage innovation through
+                      To drive innovation and excellence across industries worldwide.
                     </p>
                   </div>
                 </div>
@@ -70,8 +68,7 @@ export default function AboutHomeOne() {
                   <div className="icon-box-content">
                     <h3>Our Awards</h3>
                     <p>
-                      Our mission is to push boundaries, engage audiences, and
-                      driv engage innovation through
+                      Recognized for excellence in delivering Microsoft-based solutions and digital transformation services.
                     </p>
                   </div>
                 </div>
@@ -85,9 +82,7 @@ export default function AboutHomeOne() {
               <div className="tv-about-middle">
                 <img src="assets/img/about/about-1-1.png" alt="" />
                 <p>
-                  Repellendus autem ruibusdam et aut officiis debitis aut re
-                  necessitatibus saepe eveniet ut et repudianda sint et
-                  molestiae non recusandae.{' '}
+                  Honored for delivering excellence through certified expertise, trusted partnerships, and innovative technology solutions.{' '}
                 </p>
               </div>
             </div>
