@@ -14,7 +14,7 @@ export default function Navmenu() {
           <Link to={item.link}>{item.title}</Link>
 
           {/* ✅ HOME MEGA MENU (unchanged) */}
-          {i === 0 && (
+          {i === 0 && item.sub_menus && item.sub_menus.length > 0 && (
             <div className="tv-submenu submenu has-home-img">
               <div className="tv-homemenu-wrapper">
                 <div className="row gx-6 row-cols-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-5">
