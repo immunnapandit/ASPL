@@ -38,7 +38,7 @@ const services = [
     img: '/assets/img/service/Cloud.svg',
     accent: '#4F46E5',
   },
-];
+] as const;
 
 const containerVariants: Variants = {
   hidden: {},
@@ -92,8 +92,8 @@ export default function ServiceHomeTwo() {
           </motion.h2>
 
           <motion.p className="section-subtitle" variants={fadeUp}>
-            Premium Microsoft technology services built to help your business scale with
-            confidence, clarity, and speed.
+            Premium Microsoft technology services built to help your business
+            scale with confidence, clarity, and speed.
           </motion.p>
         </motion.div>
 
@@ -164,12 +164,9 @@ export default function ServiceHomeTwo() {
 
                     <p className="service-card-desc">{item.desc}</p>
 
-                    <Link
-                      to="/service-details"
-                      className="service-read-more"
-                    >
+                    <Link to="/service-details" className="service-read-more">
                       Explore Service
-                      <span className="arrow">↗</span>
+                      <span className="arrow">&nearr;</span>
                     </Link>
                   </div>
                 </motion.div>

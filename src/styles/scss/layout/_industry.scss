@@ -1,12 +1,12 @@
 .industries-section {
   padding: 0 0 90px;
   background: #ffffff;
-}
 
-.container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 40px;
+  .container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
 }
 
 .industries-header {
@@ -129,10 +129,10 @@
 @media (max-width: 768px) {
   .industries-section {
     padding: 8px 0 75px;
-  }
 
-  .container {
-    padding: 0 20px;
+    .container {
+      padding: 0 20px;
+    }
   }
 
   .industries-header {

@@ -13,12 +13,15 @@ export default function AboutHomeTwo() {
                   About Us
                 </span>
                 <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
-                  AtiSunya — Your Ideas, Our Execution
+                  AtiSunya - Your Ideas, Our Execution
                 </h4>
                 <p>
-                  At AtiSunya, we bring your ideas to life through a complete end-to-end approach. From initial concept and planning to development, 
-                  deployment, and ongoing support, we manage every stage with precision and care. Our focus is on delivering innovative, reliable,
-                  and scalable solutions that drive real business value.
+                  At AtiSunya, we bring your ideas to life through a complete
+                  end-to-end approach. From initial concept and planning to
+                  development, deployment, and ongoing support, we manage every
+                  stage with precision and care. Our focus is on delivering
+                  innovative, reliable, and scalable solutions that drive real
+                  business value.
                 </p>
               </div>
               <div className="tv-list-item">
@@ -56,7 +59,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    End-to-End Solutions – From idea to delivery
+                    End-to-End Solutions - From idea to delivery
                   </li>
                   <li>
                     <span>
@@ -91,7 +94,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    Modern Technology – Dynamics 365, Azure, AI
+                    Modern Technology - Dynamics 365, Azure, AI
                   </li>
                   <li>
                     <span>
@@ -126,7 +129,7 @@ export default function AboutHomeTwo() {
                         />
                       </svg>
                     </span>
-                    Client Focused – Solutions tailored to your needs
+                    Client Focused - Solutions tailored to your needs
                   </li>
                 </ul>
               </div>

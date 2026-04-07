@@ -1,4 +1,4 @@
-import "../../../styles/scss/layout/_trainings.scss";
+import '../../../styles/scss/layout/_trainings.scss';
 
 const trainings = [
   {

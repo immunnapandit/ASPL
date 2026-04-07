@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 
-// swiper css
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-cards';
@@ -20,12 +19,34 @@ const settings = {
     nextEl: '.arrow-next',
   },
 };
+
+const testimonials = [
+  {
+    quote:
+      'AtiSunya gave us a dependable team, clean execution, and strong communication throughout the project. The quality of delivery and overall experience were excellent.',
+    name: 'Marvin McKinney',
+    role: 'Product Manager',
+  },
+  {
+    quote:
+      'From planning to implementation, the team stayed focused on business value. Their technical depth and responsiveness made the engagement smooth and effective.',
+    name: 'Marvin McKinney',
+    role: 'Product Manager',
+  },
+  {
+    quote:
+      'The solution was delivered with care, speed, and the right technical approach. We appreciated the clarity, ownership, and consistency from start to finish.',
+    name: 'Marvin McKinney',
+    role: 'Product Manager',
+  },
+] as const;
+
 export default function TestimonialHomeOne() {
   return (
     <div
       className="tv-testimonial-area pt-130 pb-130"
       style={{
-        backgroundImage: `url(/assets/img/testimonial/testi-bg-1-1.png)`,
+        backgroundImage: 'url(/assets/img/testimonial/testi-bg-1-1.png)',
       }}
     >
       <div className="container">
@@ -40,8 +61,8 @@ export default function TestimonialHomeOne() {
                   What Our Clients Say About Us
                 </h4>
                 <p>
-                  Each demo built with Teba will look different. You can
-                  customize almost anything in the appearance of your website.
+                  Real feedback from organizations that trust AtiSunya for
+                  transformation, implementation, and long-term support.
                 </p>
               </div>
               <div className="tv-testi-arrow-box d-flex">
@@ -65,102 +86,35 @@ export default function TestimonialHomeOne() {
                 modules={[Navigation]}
                 className="swiper-container tv-testi-slider-active"
               >
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-testi-slider-item">
-                    <div className="rating">
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                    </div>
-                    <p>
-                      “ Working with several word themes and templates the last
-                      years only can say this is best in every level use it for
-                      my reviews that I have already are company and the reviews
-                      that I have already are all excellent. Not only the design
-                      but the code ”
-                    </p>
-                    <div className="author-info d-flex  align-items-center">
+                {testimonials.map((item, index) => (
+                  <SwiperSlide className="swiper-slide" key={`${item.name}-${index}`}>
+                    <div className="single-testi-slider-item">
+                      <div className="rating">
+                        <i className="fa-solid fa-star-sharp"></i>
+                        <i className="fa-solid fa-star-sharp"></i>
+                        <i className="fa-solid fa-star-sharp"></i>
+                        <i className="fa-solid fa-star-sharp"></i>
+                        <i className="fa-solid fa-star-sharp"></i>
+                      </div>
+                      <p>"{item.quote}"</p>
+                      <div className="author-info d-flex align-items-center">
+                        <img
+                          src="assets/img/testimonial/testi-avatar-1.png"
+                          alt={item.name}
+                        />
+                        <h5>
+                          {item.name}
+                          <span>{item.role}</span>
+                        </h5>
+                      </div>
                       <img
-                        src="assets/img/testimonial/testi-avatar-1.png"
+                        src="assets/img/testimonial/testi-shap-1.png"
                         alt=""
+                        className="shap-icon"
                       />
-                      <h5>
-                        Marvin McKinney<span>Product Manager</span>
-                      </h5>
                     </div>
-                    <img
-                      src="assets/img/testimonial/testi-shap-1.png"
-                      alt=""
-                      className="shap-icon"
-                    />
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-testi-slider-item">
-                    <div className="rating">
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                    </div>
-                    <p>
-                      “ Working with several word themes and templates the last
-                      years only can say this is best in every level use it for
-                      my reviews that I have already are company and the reviews
-                      that I have already are all excellent. Not only the design
-                      but the code ”
-                    </p>
-                    <div className="author-info d-flex  align-items-center">
-                      <img
-                        src="assets/img/testimonial/testi-avatar-1.png"
-                        alt=""
-                      />
-                      <h5>
-                        Marvin McKinney<span>Product Manager</span>
-                      </h5>
-                    </div>
-                    <img
-                      src="assets/img/testimonial/testi-shap-1.png"
-                      alt=""
-                      className="shap-icon"
-                    />
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-testi-slider-item">
-                    <div className="rating">
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                      <i className="fa-solid fa-star-sharp"></i>
-                    </div>
-                    <p>
-                      “ Working with several word themes and templates the last
-                      years only can say this is best in every level use it for
-                      my reviews that I have already are company and the reviews
-                      that I have already are all excellent. Not only the design
-                      but the code ”
-                    </p>
-                    <div className="author-info  d-flex  align-items-center">
-                      <img
-                        src="assets/img/testimonial/testi-avatar-1.png"
-                        alt=""
-                      />
-                      <h5>
-                        Marvin McKinney<span>Product Manager</span>
-                      </h5>
-                    </div>
-                    <img
-                      src="assets/img/testimonial/testi-shap-1.png"
-                      alt=""
-                      className="shap-icon"
-                    />
-                  </div>
-                </SwiperSlide>
+                  </SwiperSlide>
+                ))}
               </Swiper>
             </div>
           </div>

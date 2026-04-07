@@ -6,39 +6,39 @@ const solutions = [
   {
     key: 'Dynamics 365',
     title: 'Transform Your Business with Dynamics 365',
-    desc: 'Transform your operations with Microsoft technologies to drive better outcomes—enabling a more agile, efficient, and growth-focused business.',
+    desc: 'Transform your operations with Microsoft technologies to drive better outcomes, enabling a more agile, efficient, and growth-focused business.',
     button: 'Know More',
     image: '/assets/img/service/MicrosoftD365.jpg',
   },
   {
     key: 'Business Central',
     title: 'Run Your Business Smarter with Business Central',
-    desc: 'Manage your finances, operations, and sales seamlessly with Dynamics 365 Business Central—giving you real-time insights and the flexibility to make faster, smarter business decisions.',
+    desc: 'Manage your finances, operations, and sales seamlessly with Dynamics 365 Business Central, giving you real-time insights and the flexibility to make faster, smarter business decisions.',
     button: 'Know More',
     image: '/assets/img/service/Business Central.avif',
   },
   {
     key: 'Salesforce',
     title: 'Grow Faster with Salesforce',
-    desc: 'Unify your teams, automate workflows, and deliver personalized customer experiences with Salesforce—helping you build stronger relationships and drive consistent business growth.',
+    desc: 'Unify your teams, automate workflows, and deliver personalized customer experiences with Salesforce, helping you build stronger relationships and drive consistent business growth.',
     button: 'Know More',
     image: '/assets/img/service/Salesforce.png',
   },
   {
     key: 'AWS',
     title: 'Scale Smarter with AWS',
-    desc: 'Build, scale, and secure your applications with AWS—enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
+    desc: 'Build, scale, and secure your applications with AWS, enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
     button: 'Know More',
     image: '/assets/img/service/saas-concept-collage.jpg',
   },
   {
     key: 'Azure',
     title: 'Innovate Faster with Microsoft Azure',
-    desc: 'Unlock the full potential of Microsoft Azure to build, scale, and manage applications with speed and security—empowering your business with intelligent cloud capabilities, seamless integration, and continuous innovation.',
+    desc: 'Unlock the full potential of Microsoft Azure to build, scale, and manage applications with speed and security, empowering your business with intelligent cloud capabilities, seamless integration, and continuous innovation.',
     button: 'Know More',
     image: '/assets/img/service/Azure.png',
   },
-];
+] as const;
 
 const panelVariants = {
   initial: {
@@ -103,7 +103,11 @@ export default function SolutionsSection() {
     <section className="solutions-section">
       <div className="container">
         <div className="solutions-tabs-wrap">
-          <div className="solutions-tabs" role="tablist" aria-label="Solutions categories">
+          <div
+            className="solutions-tabs"
+            role="tablist"
+            aria-label="Solutions categories"
+          >
             {solutions.map((item, index) => (
               <motion.button
                 key={item.key}
@@ -147,7 +151,7 @@ export default function SolutionsSection() {
 
                 <Link to="/service-details" className="solutions-btn">
                   {active.button}
-                  <span>›</span>
+                  <span>&rsaquo;</span>
                 </Link>
               </motion.div>
 

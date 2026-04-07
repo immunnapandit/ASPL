@@ -58,7 +58,7 @@ export default function OurClient() {
     <>
       <style>{`
         .our-client-area {
-          background: linear-gradient(180deg, #fffff0%, #ffffff 100%);
+          background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
         }
 
         .our-client-area .tv-brand-content {
