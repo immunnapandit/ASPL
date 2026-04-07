@@ -163,14 +163,14 @@
   z-index: 1;
   width: 100%;
   max-width: 580px;
-  min-height: 380px;
-  aspect-ratio: 580 / 380;
+  min-height: auto;
+  aspect-ratio: auto;
   border-radius: 28px;
   overflow: hidden;
   background: linear-gradient(135deg, #eef4ff 0%, #f7faff 48%, #e9f1ff 100%);
   border: 1px solid rgba(255, 255, 255, 0.88);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: 0;
   box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12), 0 10px 24px rgba(43, 77, 255, 0.08);
@@ -193,10 +193,9 @@
 .visual-image {
   position: relative;
   z-index: 1;
-  width: calc(100% - 8px);
-  height: calc(100% - 8px);
-  max-width: calc(100% - 8px);
-  max-height: calc(100% - 8px);
+  width: 100%;
+  height: auto;
+  max-width: 100%;
   object-fit: contain;
   object-position: center;
   display: block;
