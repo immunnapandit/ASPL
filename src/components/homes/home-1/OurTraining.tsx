@@ -1,3 +1,5 @@
+import "../../../styles/scss/layout/_trainings.scss";
+
 const trainings = [
   {
     title: "Microsoft Dynamics 365 F&O",
@@ -34,11 +36,10 @@ const trainings = [
 export default function TrainingsSection() {
   return (
     <section className="training-area">
-      
-      <div className="training-heading">
-        <div className="training-subtitle">TRAININGS</div>
+      <div className="training-heading tv-section-title-box">
+        <span className="training-subtitle tv-section-subtitle">TRAININGS</span>
 
-        <h2 className="training-title">
+        <h2 className="training-title tv-section-title">
           Our <span>Training Programs</span>
         </h2>
 
@@ -51,18 +52,13 @@ export default function TrainingsSection() {
       <div className="training-grid">
         {trainings.map((item, index) => (
           <div key={index} className="training-card">
-            
-            <img
-              src={item.logo}
-              alt={item.title}
-              className="training-logo"
-            />
+            <img src={item.logo} alt={item.title} className="training-logo" />
             <div className="training-name">{item.title}</div>
 
             <div className="training-desc">{item.desc}</div>
 
             <a href="#" className="learn-more">
-              Learn More <span>→</span>
+              Learn More <span>&rarr;</span>
             </a>
           </div>
         ))}
