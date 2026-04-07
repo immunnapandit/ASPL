@@ -69,17 +69,23 @@ export default function ServiceHomeTwo() {
 
       <div className="container position-relative">
         <motion.div
-          className="section-header text-center"
+          className="section-header text-center tv-section-title-box"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <motion.span className="section-kicker" variants={fadeUp}>
+          <motion.span
+            className="section-kicker tv-section-subtitle tv-spltv-text tv-spltv-in-right"
+            variants={fadeUp}
+          >
             Our Services
           </motion.span>
 
-          <motion.h2 className="section-title" variants={fadeUp}>
+          <motion.h2
+            className="section-title tv-section-title tv-spltv-text tv-spltv-in-right"
+            variants={fadeUp}
+          >
             Smart Business Solutions
             <br />
             with Dynamics 365

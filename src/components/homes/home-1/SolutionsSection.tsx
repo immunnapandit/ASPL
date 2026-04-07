@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
- 
+
 const solutions = [
   {
     key: 'Dynamics 365',
@@ -39,11 +39,66 @@ const solutions = [
     image: '/assets/img/service/Azure.png',
   },
 ];
- 
+
+const panelVariants = {
+  initial: {
+    opacity: 0,
+    x: 60,
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+  },
+  exit: {
+    opacity: 0,
+    x: -60,
+  },
+};
+
+const textVariants = {
+  initial: {
+    opacity: 0,
+    x: 40,
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+  },
+  exit: {
+    opacity: 0,
+    x: -40,
+  },
+};
+
+const imageVariants = {
+  initial: {
+    opacity: 0,
+    x: 28,
+    scale: 0.995,
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+  },
+  exit: {
+    opacity: 0,
+    x: -28,
+    scale: 0.995,
+  },
+};
+
 export default function SolutionsSection() {
   const [activeTab, setActiveTab] = useState(0);
   const active = solutions[activeTab];
- 
+
+  useEffect(() => {
+    solutions.forEach((item) => {
+      const image = new Image();
+      image.src = item.image;
+    });
+  }, []);
+
   return (
     <section className="solutions-section">
       <div className="container">
@@ -67,59 +122,63 @@ export default function SolutionsSection() {
           </div>
           <div className="tabs-line" />
         </div>
- 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active.key}
-            className="solutions-content"
-            initial={{ opacity: 0, y: 18, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.985 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          >
+
+        <div className="solutions-content-area">
+          <AnimatePresence initial={false} mode="sync">
             <motion.div
-              className="solutions-text"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              key={active.key}
+              className="solutions-panel"
+              variants={panelVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h2 className="solutions-title">{active.title}</h2>
-              <p className="solutions-desc">{active.desc}</p>
- 
-              <Link to="/service-details" className="solutions-btn">
-                {active.button}
-                <span>›</span>
-              </Link>
-            </motion.div>
- 
-            <motion.div
-              className="solutions-visual"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="visual-circle" />
- 
               <motion.div
-                className="visual-card"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
+                className="solutions-text"
+                variants={textVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               >
-                <motion.img
-                  key={active.image}
-                  src={active.image}
-                  alt={active.key}
-                  className="visual-image"
-                  initial={{ opacity: 0, scale: 0.97 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                />
+                <h2 className="solutions-title">{active.title}</h2>
+                <p className="solutions-desc">{active.desc}</p>
+
+                <Link to="/service-details" className="solutions-btn">
+                  {active.button}
+                  <span>›</span>
+                </Link>
+              </motion.div>
+
+              <motion.div
+                className="solutions-visual"
+                variants={imageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="visual-circle" />
+                <div className="visual-glow" />
+
+                <motion.div
+                  className="visual-card"
+                  whileHover={{ y: -2 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  <img
+                    src={active.image}
+                    alt={active.key}
+                    className="visual-image"
+                    loading="eager"
+                  />
+                </motion.div>
               </motion.div>
             </motion.div>
-          </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );
 }
- 
