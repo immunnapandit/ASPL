@@ -1,7 +1,6 @@
 .industries-section {
   padding: 18px 0 90px;
   background: #ffffff;
-  font-family: var(--tv-ff-body);
 }
 
 .container {
@@ -13,71 +12,25 @@
 .industries-header {
   text-align: center;
   margin-bottom: 56px;
-}
-
-.subtitle-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.industries-subtitle {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: #15306f;
-  text-transform: uppercase;
-}
-
-.subtitle-line {
-  position: relative;
-  width: 86px;
-  height: 1px;
-  background: #b7c8f4;
-
-  &::after {
-    content: "";
-    position: absolute;
-    right: -1px;
-    top: -7px;
-    width: 28px;
-    height: 1px;
-    background: #2f63ff;
-    transform: rotate(-38deg);
-    transform-origin: right center;
+  
+  .industries-subtitle {
+    text-transform: capitalize;
   }
 }
 
-.subtitle-dot {
-  position: absolute;
-  right: -6px;
-  top: -4px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #2f63ff;
-}
-
 .industries-title {
-  margin: 0;
-  font-size: clamp(46px, 5vw, 68px);
-  line-height: 1.02;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  color: #0b1f63;
-
   span {
-    color: #2f63ff;
+    color: var(--tv-theme-1);
   }
 }
 
 .industries-description {
   max-width: 860px;
-  margin: 14px auto 0;
+  margin: 28px auto 0;
+  font-family: var(--tv-ff-body);
   font-size: 18px;
-  line-height: 1.55;
-  color: #4b5b7a;
+  line-height: 30px;
+  color: var(--tv-text-body);
 }
 
 .industries-grid-top {
@@ -146,10 +99,11 @@
 
 .industry-text {
   margin: 0;
+  font-family: var(--tv-ff-heading);
   font-size: 18px;
   line-height: 1.35;
   font-weight: 500;
-  color: #0b1f63;
+  color: var(--tv-heading-primary);
   letter-spacing: -0.01em;
 }
 

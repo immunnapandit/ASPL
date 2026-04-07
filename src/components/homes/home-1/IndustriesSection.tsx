@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import type { Variants } from "framer-motion";import {
+import type { Variants } from "framer-motion";
+import {
   Factory,
   ShoppingCart,
   HeartPulse,
@@ -82,20 +83,15 @@ export default function IndustriesSection() {
     <section className="industries-section">
       <div className="container">
         <motion.div
-          className="industries-header"
+          className="industries-header tv-section-title-box"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="subtitle-row">
-            <span className="industries-subtitle">INDUSTRIES</span>
-            <span className="subtitle-line">
-              <span className="subtitle-dot" />
-            </span>
-          </div>
+          <span className="industries-subtitle tv-section-subtitle">Industries</span>
 
-          <h2 className="industries-title">
+          <h2 className="industries-title tv-section-title">
             <span>Explore</span> Industries
           </h2>
 
