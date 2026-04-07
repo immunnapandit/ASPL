@@ -75,7 +75,7 @@ export default function HeaderOne() {
                   <div className="tv-header-logo">
                     <Link to="/">
                       <img
-                        src="/assets/img/logo/AtiSunyaLogo.png"
+                        src="/assets/img/logo/AtiSunya.png"
                         alt="AtiSunya-logo"
                       />
                     </Link>

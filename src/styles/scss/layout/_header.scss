@@ -300,8 +300,7 @@
   height: 100%;
   content: '';
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg width='384' height='100' viewBox='0 0 384 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M324.5 51.2295C313.7 90.2459 287.333 100 275.5 100H0V0H384C368.667 0.819672 335.3 12.2131 324.5 51.2295Z' fill='%232B4DFF'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
+  display: none;
   @media #{$xxxl} {
     /* only screen and (min-width: 1600px) and (max-width: 1800px) */
   }
