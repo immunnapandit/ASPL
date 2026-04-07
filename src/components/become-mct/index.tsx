@@ -3,7 +3,6 @@ import FooterOne from '../../layouts/footers/FooterOne';
 import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
 import BecomeMCTPage from './BecomeMct';
-
 export default function BecomeMCT() {
   return (
     <Wrapper>

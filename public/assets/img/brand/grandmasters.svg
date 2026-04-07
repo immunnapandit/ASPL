@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 90" role="img" aria-labelledby="title">
+  <title id="title">Grandmasters</title>
+  <g transform="translate(8 12)">
+    <g fill="#231f20">
+      <path d="M22 6l9 18-9 18-9-18z"/>
+      <path d="M22 6l18 9-18 9-18-9z"/>
+      <path d="M22 42l18 9-18 9-18-9z"/>
+      <path d="M4 24l18 9-18 9L-4 33z" transform="translate(8 0)"/>
+      <path d="M40 24l18 9-18 9-18-9z"/>
+    </g>
+    <text x="82" y="42" fill="#3c78b5" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400" letter-spacing="3">GRAND</text>
+    <text x="236" y="42" fill="#202020" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="300" letter-spacing="3">MASTERS</text>
+  </g>
+</svg>

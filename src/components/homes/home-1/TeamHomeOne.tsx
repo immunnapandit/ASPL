@@ -1,11 +1,42 @@
-import { Link } from 'react-router-dom';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // swiper css
 import 'swiper/css';
-import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
+
+const teamMembers = [
+  {
+    name: 'Saroj Pandit',
+    designation: 'Director & Founder',
+    image: '/assets/img/team/Saroj.jpg',
+    linkedin: 'https://in.linkedin.com/in/sarojpandit',
+  },
+  {
+    name: 'Shalini Verma',
+    designation: 'Director',
+    image: '/assets/img/team/Shalini.jpg',
+    linkedin: 'https://in.linkedin.com/in/shalinivermaaspl',
+  },
+  {
+    name: 'Atul Verma',
+    designation: 'Managing Director',
+    image: '/assets/img/team/Atul.jpg',
+    linkedin: 'https://in.linkedin.com/in/atulk-verma',
+  },
+  {
+    name: 'Umesh Prajapati',
+    designation: 'Solution Architect',
+    image: '/assets/img/team/Umesh.jpg',
+    linkedin: 'https://in.linkedin.com/in/umeshprajapatiaspl',
+  },
+  {
+    name: 'Sangeeta Verma',
+    designation: 'Senior Consultant',
+    image: '/assets/img/team/Sangeeta.jpg',
+    linkedin: 'https://in.linkedin.com/in/sangeetavermasingh',
+  },
+] as const;
 
 export default function TeamHomeOne() {
   return (
@@ -32,14 +63,9 @@ export default function TeamHomeOne() {
                   el: '.tv-team-pagination',
                   clickable: true,
                   renderBullet: (index: number, className: string) => {
-                    const images = [
-                      '/assets/img/team/team-1-1.png',
-                      '/assets/img/team/team-1-2.png',
-                      '/assets/img/team/team-1-3.png',
-                    ];
                     return `
                   <span class="${className}">
-                    <img src="${images[index]}" alt="Thumb ${index + 1}" />
+                    <img src="${teamMembers[index].image}" alt="${teamMembers[index].name}" />
                   </span>
                 `;
                   },
@@ -48,100 +74,32 @@ export default function TeamHomeOne() {
                 modules={[Autoplay, Navigation, Pagination]}
                 className="swiper-container tv-team-slide-active"
               >
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-team-item">
-                    <img src="assets/img/team/team-1-1.png" alt="" />
-                    <div className="team-social">
-                      <a href="#">
-                        <i className="fa-brands fa-facebook-f"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-linkedin-in"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-twitter"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-instagram"></i>
-                      </a>
-                    </div>
-                    <div className="team-content d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2 className="team-name">
-                          <Link to="/team-details">Rosy Gaggero</Link>
-                        </h2>
-                        <p className="designation">Web Developer</p>
+                {teamMembers.map((member) => (
+                  <SwiperSlide className="swiper-slide" key={member.linkedin}>
+                    <div className="single-team-item">
+                      <img src={member.image} alt={member.name} />
+                      <div className="team-social">
+                        <a
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${member.name} LinkedIn profile`}
+                        >
+                          <i className="fa-brands fa-linkedin-in"></i>
+                        </a>
                       </div>
-                      <div>
-                        <div className="round-shape">-</div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-team-item">
-                    <img src="assets/img/team/team-1-2.png" alt="" />
-                    <div className="team-social">
-                      <a href="#">
-                        <i className="fa-brands fa-facebook-f"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-linkedin-in"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-twitter"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-instagram"></i>
-                      </a>
-                    </div>
-                    <div className="team-content d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2 className="team-name">
-                          <Link to="/team-details">Rosy Gaggero</Link>
-                        </h2>
-                        <p className="designation">Web Developer</p>
-                      </div>
-                      <div>
+                      <div className="team-content d-flex justify-content-between align-items-center">
+                        <div>
+                          <h2 className="team-name">{member.name}</h2>
+                          <p className="designation">{member.designation}</p>
+                        </div>
                         <div>
                           <div className="round-shape">-</div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide className="swiper-slide">
-                  <div className="single-team-item">
-                    <img src="assets/img/team/team-1-3.png" alt="" />
-                    <div className="team-social">
-                      <a href="#">
-                        <i className="fa-brands fa-facebook-f"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-linkedin-in"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-twitter"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-instagram"></i>
-                      </a>
-                    </div>
-                    <div className="team-content d-flex justify-content-between align-items-center">
-                      <div>
-                        <h2 className="team-name">
-                          <Link to="/team-details">Rosy Gaggero</Link>
-                        </h2>
-                        <p className="designation">Web Developer</p>
-                      </div>
-                      <div>
-                        <div>
-                          <div className="round-shape">-</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+                  </SwiperSlide>
+                ))}
               </Swiper>
             </div>
           </div>
@@ -149,14 +107,15 @@ export default function TeamHomeOne() {
             <div className="tv-team-right-area">
               <div className="tv-section-title-box mb-40">
                 <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
-                  Our Team Members
+                  AtiSunya Team
                 </span>
                 <h4 className="tv-section-title pb-20 tv-spltv-text tv-spltv-in-right">
-                  Our Team is Ready To Help.
+                  Meet the experts behind AtiSunya Private Limited.
                 </h4>
                 <p>
-                  It is a long established fact that a reader will be distracted
-                  the readable content of a page when looking.
+                  Our leadership and consulting team helps businesses move faster with
+                  Microsoft Dynamics 365, Azure, Power Platform, training, and digital
+                  transformation services.
                 </p>
               </div>
               <div className="tv-team-arrow-box d-flex justify-content-md-end">

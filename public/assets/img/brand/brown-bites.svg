@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" role="img" aria-labelledby="title">
+  <title id="title">Brown Bites</title>
+  <g transform="translate(8 12)">
+    <text x="0" y="46" fill="#6a210d" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-style="italic">B</text>
+    <text x="34" y="40" fill="#6a210d" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-style="italic">rown</text>
+    <text x="52" y="76" fill="#6a210d" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-style="italic">Bites</text>
+    <g transform="translate(220 26)">
+      <path d="M0 12c0-8 7-12 14-12s14 4 14 12" fill="#f0c173"/>
+      <path d="M2 14h24l-3 22H5z" fill="#a96b2c"/>
+      <path d="M7 13c0-4 3-7 7-7s7 3 7 7" fill="#7b3a19"/>
+      <circle cx="13" cy="6" r="3" fill="#f7ddb0"/>
+    </g>
+  </g>
+</svg>

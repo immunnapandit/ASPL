@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 386 128" role="img" aria-labelledby="title desc">
+  <title id="title">Global Knowledge logo</title>
+  <desc id="desc">A blue and gold globe icon with the Global Knowledge wordmark.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f1c453"/>
+      <stop offset="100%" stop-color="#c99218"/>
+    </linearGradient>
+    <clipPath id="globe-clip">
+      <circle cx="49" cy="42" r="32"/>
+    </clipPath>
+  </defs>
+
+  <g transform="translate(0 2)">
+    <g transform="translate(16 4)">
+      <circle cx="49" cy="42" r="32" fill="url(#gold)"/>
+
+      <g clip-path="url(#globe-clip)">
+        <path
+          d="M20 17c11 7 18 18 18 32s-7 25-18 32h16c10-8 16-19 16-32S46 25 36 17H20Zm39 0c9 8 15 19 15 32S68 73 59 81h16c7-8 12-19 12-32S82 25 75 17H59Z"
+          fill="#00539b"
+          opacity="0.96"
+        />
+        <path d="M14 45h70v10H14z" fill="#00539b"/>
+        <path d="M14 62h70v8H14z" fill="#00539b"/>
+        <path d="M35 10h12v66H35z" fill="#00539b"/>
+        <path d="M54 10h9v66h-9z" fill="#00539b"/>
+      </g>
+
+      <path
+        d="M14 55c2-22 19-39 41-39 7 0 13 1 18 4"
+        fill="none"
+        stroke="#00539b"
+        stroke-linecap="round"
+        stroke-width="4"
+      />
+      <path
+        d="M79 25c7 7 12 17 12 29 0 15-7 28-19 36"
+        fill="none"
+        stroke="#00539b"
+        stroke-linecap="round"
+        stroke-width="4"
+      />
+      <path
+        d="M16 64c4 18 20 31 40 31 10 0 20-4 28-10"
+        fill="none"
+        stroke="#00539b"
+        stroke-linecap="round"
+        stroke-width="4"
+      />
+      <path
+        d="M8 44c4-18 18-33 36-41"
+        fill="none"
+        stroke="#00539b"
+        stroke-linecap="round"
+        stroke-width="4"
+      />
+    </g>
+
+    <g fill="#00539b" font-family="Georgia, 'Times New Roman', serif">
+      <text x="0" y="110" font-size="34" letter-spacing="-0.4">Global Knowledge</text>
+      <text x="345" y="102" font-size="8">®</text>
+    </g>
+  </g>
+</svg>

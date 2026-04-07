@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" role="img" aria-labelledby="title">
+  <title id="title">Chartered HighTech</title>
+  <g transform="translate(8 16)">
+    <g transform="translate(0 0)">
+      <circle cx="16" cy="18" r="10" fill="#273aa7"/>
+      <circle cx="34" cy="10" r="8" fill="#1e69c8"/>
+      <circle cx="34" cy="30" r="8" fill="#39a7de"/>
+      <circle cx="16" cy="42" r="8" fill="#3456b8"/>
+      <circle cx="52" cy="18" r="8" fill="#0e5db5"/>
+      <circle cx="52" cy="42" r="8" fill="#142c8e"/>
+      <circle cx="70" cy="30" r="10" fill="#1f88d2"/>
+    </g>
+    <text x="88" y="28" fill="#15248d" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">Chartered</text>
+    <text x="88" y="60" fill="#1f1f1f" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700">HighTech</text>
+  </g>
+</svg>
