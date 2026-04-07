@@ -1,5 +1,21 @@
 @use '../utils' as *;
 
+.tv-blog2-area {
+  background-color: var(--tv-common-white);
+}
+
+.training-area + .tv-blog2-area {
+  padding-top: 60px;
+
+  @media #{$lg} {
+    padding-top: 50px;
+  }
+
+  @media #{$md, $sm, $xs} {
+    padding-top: 40px;
+  }
+}
+
 .single-blog-item {
   img {
     width: 100%;

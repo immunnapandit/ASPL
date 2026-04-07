@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function BlogHomeTwo() {
   return (
-    <div className="tv-blog2-area pt-130 pb-130 gray-bg">
+    <div className="tv-blog2-area pt-130 pb-130">
       <div className="container">
         <div className="row">
           <div className="col text-center">

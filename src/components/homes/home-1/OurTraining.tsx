@@ -24,7 +24,7 @@ const trainings = [
   {
     title: "Cloud Technology",
     desc: "CI/CD pipelines & automation workflows.",
-    logo: "/assets/img/service/Cloud.svg",
+    logo: "/assets/img/service/cloud.png",
   },
   {
     title: "Microsoft Power Platform",
