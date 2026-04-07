@@ -23,10 +23,11 @@ export default function HomeOne() {
         <ServiceHomeTwo/>
         <SolutionsSection />
         <IndustriesSection />
+        <OurTraining />
         
+
         {/* <ServiceHomeOne /> */}
         {/* <TeamHomeThree /> */}
-        <OurTraining />
         <BlogHomeTwo />
         <TestimonialHomeOne />
         <OurClient />

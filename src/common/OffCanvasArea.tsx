@@ -21,7 +21,7 @@ export default function OffCanvasArea({
           </div>
           <div className="itoffcanvas__logo">
             <Link to="/">
-              <img src="assets/img/logo/logo-white.png" alt="" />
+              <img src="../../assets/img/logo/AtiSunyaLogo.png" alt="" />
             </Link>
           </div>
           <div className="itoffcanvas__text">
@@ -43,7 +43,7 @@ export default function OffCanvasArea({
               </div>
               <div className="itoffcanvas__info-address">
                 <span>Email</span>
-                <a href="maito:hello@yourmail.com">hello@yourmail.com</a>
+                <a href="mailto:info@atisunya.co">info@atisunya.co</a>
               </div>
             </div>
             <div className="tv-info-wrapper mb-20 d-flex align-items-center">
@@ -54,7 +54,7 @@ export default function OffCanvasArea({
               </div>
               <div className="itoffcanvas__info-address">
                 <span>Phone</span>
-                <a href="tel:(00)45611227890">(00) 456 1122 7890</a>
+                <a href="tel:(+91) 80-8181-0673">(+91) 80-8181-0673</a>
               </div>
             </div>
             <div className="tv-info-wrapper mb-20 d-flex align-items-center">
@@ -69,7 +69,7 @@ export default function OffCanvasArea({
                   href="htits://www.google.com/maps/@37.4801311,22.8928877,3z"
                   target="_blank"
                 >
-                  Riverside 255, San Francisco, USA{' '}
+                  Logix Technova,Block A, Sec-132 Noida{' '}
                 </a>
               </div>
             </div>

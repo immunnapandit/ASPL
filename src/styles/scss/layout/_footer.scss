@@ -2,6 +2,15 @@
 
 .tv-footer {
   &-widget {
+    &-logo {
+      margin-bottom: 18px;
+
+      & img {
+        max-width: 205px;
+        width: 100%;
+        height: auto;
+      }
+    }
     &-title {
       font-weight: 700;
       font-size: 20px;
@@ -260,30 +269,30 @@
 // Footer Top area css
 .tv-footer-top-area-form {
   background: var(--tv-theme-1);
-  padding: 60px;
+  padding: 28px 48px;
   margin-bottom: 130px;
   border-radius: 50px 0 50px 0;
   align-items: center;
   @media #{ $xs} {
     /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
-    padding: 30px;
+    padding: 20px;
   }
 }
 
 .tv-footer-top-heading h2 {
-  font-size: 60px;
+  font-size: 46px;
   color: var(--tv-common-white);
 
-  line-height: 70px;
+  line-height: 56px;
   @media #{$xl, $lg, $md, $sm} {
     /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
-    font-size: 50px;
-    line-height: 60px;
+    font-size: 40px;
+    line-height: 50px;
   }
   @media #{ $xs} {
     /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
-    font-size: 32px;
-    line-height: 42px;
+    font-size: 28px;
+    line-height: 36px;
   }
 }
 
@@ -299,15 +308,26 @@
 
 .tv-footer-top-form button {
   position: absolute;
-  right: 1%;
-  top: 10%;
-  padding: 9px 32px;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 20px;
   border-radius: 10px 0 10px 0;
 }
 
 .tv-footer-top-form input {
   border: none;
   border-radius: 10px 0 10px 0;
+  height: 52px;
+  padding: 0 170px 0 20px;
+  font-size: 16px;
+  width: 100%;
+
+  @media #{$xs} {
+    height: 48px;
+    padding: 0 140px 0 16px;
+    font-size: 14px;
+  }
 }
 
 .tv-footer-top-form .tv-btn-orange::after {

@@ -18,7 +18,7 @@ export default function SearchArea({
               <div className="search__top d-flex justify-content-between align-items-center">
                 <div className="search__logo">
                   <Link to="/">
-                    <img src="assets/img/logo/logo-white.png" alt="" />
+                    <img src="../../assets/img/logo/AtiSunyaLogo.png" alt="" />
                   </Link>
                 </div>
                 <div className="search__close">

@@ -5,14 +5,14 @@
 }
 
 .training-area + .tv-blog2-area {
-  padding-top: 60px;
+  padding-top: 25px;
 
   @media #{$lg} {
-    padding-top: 50px;
+    padding-top: 20px;
   }
 
   @media #{$md, $sm, $xs} {
-    padding-top: 40px;
+    padding-top: 15px;
   }
 }
 

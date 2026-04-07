@@ -28,12 +28,12 @@ const industries: IndustryItem[] = [
   { title: "Manufacturing", icon: Factory, color: "#C48A3A", tint: "rgba(196, 138, 58, 0.12)" },
   { title: "Retail & E-Commerce", icon: ShoppingCart, color: "#F97316", tint: "rgba(249, 115, 22, 0.12)" },
   { title: "Healthcare", icon: HeartPulse, color: "#EF4444", tint: "rgba(239, 68, 68, 0.12)" },
-  { title: "Food and Beverages", icon: UtensilsCrossed, color: "#E11D48", tint: "rgba(225, 29, 72, 0.12)" },
+  { title: "Food & Beverages", icon: UtensilsCrossed, color: "#E11D48", tint: "rgba(225, 29, 72, 0.12)" },
   { title: "Engineering", icon: Cog, color: "#F59E0B", tint: "rgba(245, 158, 11, 0.12)" },
   { title: "Education", icon: GraduationCap, color: "#7C3AED", tint: "rgba(124, 58, 237, 0.12)" },
   { title: "Telecommunication", icon: RadioTower, color: "#0EA5E9", tint: "rgba(14, 165, 233, 0.12)" },
   { title: "Technology", icon: LaptopMinimal, color: "#2563EB", tint: "rgba(37, 99, 235, 0.12)" },
-  { title: "And Many More", icon: MoreHorizontal, color: "#8B5CF6", tint: "rgba(139, 92, 246, 0.12)" },
+  { title: "Many More", icon: MoreHorizontal, color: "#8B5CF6", tint: "rgba(139, 92, 246, 0.12)" },
 ];
 
 const containerVariants: Variants = {
