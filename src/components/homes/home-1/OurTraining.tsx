@@ -37,10 +37,12 @@ export default function TrainingsSection() {
   return (
     <section className="training-area">
       <div className="training-heading tv-section-title-box">
-        <span className="training-subtitle tv-section-subtitle">TRAININGS</span>
+        <span className="training-subtitle tv-section-subtitle tv-spltv-text tv-spltv-in-right">
+          TRAININGS
+        </span>
 
-        <h2 className="training-title tv-section-title">
-          Our <span>Training Programs</span>
+        <h2 className="training-title tv-section-title tv-spltv-text tv-spltv-in-right">
+          Our Training Programs
         </h2>
 
         <p className="training-text">
