@@ -5,16 +5,17 @@ const pageConfig: ServicePageConfig = {
   title: 'Product Engineering',
   subtitle: 'Microsoft Dynamics 365 Finance and Supply Chain Management',
   category: 'service',
-  focus: 'enterprise operations, finance workflows, and supply chain visibility',
+  focus:
+    'enterprise operations, finance workflows, and supply chain visibility',
   summary:
     'Implement a connected operations platform that helps teams streamline finance, procurement, manufacturing, warehousing, and reporting.',
-  image: '/assets/img/service/MicrosoftD365.jpg',
+  image: '/assets/img/service/Product-engineering.png',
   highlights: [
     'Financial, sales and procurement management',
     'Planning and advanced warehouse management',
     'Discrete, process and lean manufacturing',
-    'Retail, project accounting and field service'
-  ]
+    'Retail, project accounting and field service',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +23,3 @@ export { pageConfig };
 export default function ProductEngineering() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-

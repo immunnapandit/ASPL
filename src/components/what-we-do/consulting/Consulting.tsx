@@ -8,13 +8,13 @@ const pageConfig: ServicePageConfig = {
   focus: 'strategy, assessments, roadmap planning, and transformation guidance',
   summary:
     'Get advisory support on platform choices, delivery strategy, operating models, and execution planning across business applications.',
-  image: '/assets/img/service/service-thumb-2.png',
+  image: '/assets/img/service/Consulting1.png',
   highlights: [
     'Assessments and current-state reviews',
     'Roadmap and business case development',
     'Solution and delivery strategy',
-    'Execution guidance and governance'
-  ]
+    'Execution guidance and governance',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +22,3 @@ export { pageConfig };
 export default function Consulting() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-
