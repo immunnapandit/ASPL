@@ -4,7 +4,7 @@ export default function FooterTwo() {
     <footer>
       <div
         className="tv-footer-wrap sytle-2 footer-bg z-index-1 pt-130"
-        style={{ backgroundImage: 'url(assets/img/footer/footer-bg-2-1.png)' }}
+        style={{ backgroundImage: 'url(/assets/img/footer/footer-bg-2-1.png)' }}
       >
         <div className="tv-footer-area mb-65">
           <div className="container">
@@ -13,7 +13,7 @@ export default function FooterTwo() {
                 <div className="tv-footer-widget tv-footer-col-1">
                   <div className="tv-footer-widget-logo mb-30">
                     <Link to="/">
-                      <img src="assets/img/logo/logo-white2.png" alt="" />
+                      <img src="/assets/img/logo/logo-white2.png" alt="" />
                     </Link>
                   </div>
                   <div className="tv-footer-widget-text">

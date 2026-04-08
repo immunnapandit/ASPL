@@ -43,7 +43,7 @@ export default function FooterOne() {
                 <div className="tv-footer-widget tv-footer-col-1">
                   <div className="tv-footer-widget-logo mb-30">
                     <Link to="/">
-                      <img src="assets/img/logo/AtiSunyaLogo.png" alt="" />
+                      <img src="/assets/img/logo/AtiSunyaLogo.png" alt="" />
                     </Link>
                   </div>
                   <div className="tv-footer-widget-text">
