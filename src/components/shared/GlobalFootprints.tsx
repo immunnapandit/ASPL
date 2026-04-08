@@ -3,33 +3,32 @@ import { useEffect, useState, type CSSProperties } from 'react';
 const globalLocations = [
   {
     id: 'india',
-    title: 'India',
+    title: 'India, Noida',
     address: 'Logix Technova, A-522, Tower-A',
     email: 'info@atisunya.co',
     phone: '(+91) 82-9915-6511',
     thumbClassName: 'is-ahmedabad',
     thumbSrc: '/assets/img/slider/India.jpg',
-    mapSrc: 'https://www.google.com/maps?q=Logix%20Technova%20A-522%20Tower-A%20India&z=12&output=embed',
-    mapLabel: 'India',
-    flagClassName: 'is-india',
-    flagText: 'IND',
-    markerPosition: { x: '76%', y: '53%' }
+    mapSrc: 'https://www.google.com/maps?q=Noida%2C%20India&z=10&output=embed',
+    mapCountry: 'India',
+    mapLabel: 'Noida',
+    flagSrc: 'https://flagcdn.com/w160/in.png',
+    markerPosition: { x: '57%', y: '52%' }
   },
   {
     id: 'Aus',
-    title: 'Australia',
+    title: 'Australia, Melbourne',
     address:
       'Level 40/140 William St, Melbourne VIC 300',
     email: 'info@atisunya.co',
     phone: 'AUS: (+61) 478006757',
     thumbClassName: 'is-leeds',
     thumbSrc: '/assets/img/slider/Australia.jpg',
-    mapSrc:
-      'https://www.google.com/maps?q=2%2F2%20Crescent%20Road%20Auckland%20New%20Zealand&z=10&output=embed',
-    mapLabel: 'Auckland / Melbourne',
-    flagClassName: 'is-anz',
-    flagText: 'ANZ',
-    markerPosition: { x: '89%', y: '80%' }
+    mapSrc: 'https://www.google.com/maps?q=Melbourne%2C%20Australia&z=10&output=embed',
+    mapCountry: 'Australia',
+    mapLabel: 'Melbourne',
+    flagSrc: 'https://flagcdn.com/w160/au.png',
+    markerPosition: { x: '61%', y: '63%' }
   },
   {
     id: 'anz',
@@ -40,53 +39,50 @@ const globalLocations = [
     phone: 'NZ: (+64) 220937158',
     thumbClassName: 'is-leeds',
     thumbSrc: '/assets/img/slider/ANZ.png',
-    mapSrc:
-      'https://www.google.com/maps?q=2%2F2%20Crescent%20Road%20Auckland%20New%20Zealand&z=10&output=embed',
-    mapLabel: 'Auckland / Melbourne',
-    flagClassName: 'is-anz',
-    flagText: 'ANZ',
-    markerPosition: { x: '89%', y: '80%' }
+    mapSrc: 'https://www.google.com/maps?q=Auckland%2C%20New%20Zealand&z=10&output=embed',
+    mapCountry: 'New Zealand',
+    mapLabel: 'Auckland',
+    flagSrc: 'https://flagcdn.com/w160/nz.png',
+    markerPosition: { x: '64%', y: '54%' }
   },
   {
     id: 'germany',
-    title: 'Germany',
+    title: 'Germany, Berlin',
     address: 'Heidestrasse 17 Mitte, 10557 Berlin, Germany',
     email: 'info@atisunya.co',
     phone: '(+49) 17890 84425',
     thumbClassName: 'is-new-jersey',
     thumbSrc: '/assets/img/slider/Germany.jpg',
-    mapSrc: 'https://www.google.com/maps?q=Heidestra%C3%9Fe%2017%20Mitte%2010557%20Berlin%20Germany&z=12&output=embed',
+    mapSrc: 'https://www.google.com/maps?q=Berlin%2C%20Germany&z=10&output=embed',
+    mapCountry: 'Germany',
     mapLabel: 'Berlin',
-    flagClassName: 'is-germany',
-    flagText: 'DE',
-    markerPosition: { x: '59%', y: '37%' }
+    flagSrc: 'https://flagcdn.com/w160/de.png',
+    markerPosition: { x: '54%', y: '47%' }
   }
 ];
 
 export default function GlobalFootprints({ className = '' }: { className?: string }) {
   const [activeLocationId, setActiveLocationId] = useState(globalLocations[0].id);
-  const [displayedLocationId, setDisplayedLocationId] = useState(globalLocations[0].id);
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [previousLocationId, setPreviousLocationId] = useState<string | null>(null);
+  const [slideDirection, setSlideDirection] = useState<'forward' | 'backward'>('forward');
+  const [loadedMapIds, setLoadedMapIds] = useState<string[]>([]);
 
   const activeLocation =
     globalLocations.find((location) => location.id === activeLocationId) ??
     globalLocations[0];
-  const displayedLocation =
-    globalLocations.find((location) => location.id === displayedLocationId) ??
-    globalLocations[0];
+  const isActiveMapLoaded = loadedMapIds.includes(activeLocation.id);
 
   useEffect(() => {
-    if (activeLocationId === displayedLocationId) {
+    if (!previousLocationId) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      setDisplayedLocationId(activeLocationId);
-      setIsMapLoaded(false);
-    }, 420);
+      setPreviousLocationId(null);
+    }, 900);
 
     return () => window.clearTimeout(timer);
-  }, [activeLocationId, displayedLocationId]);
+  }, [previousLocationId]);
 
   return (
     <div className={`tv-about2-footprints ${className}`.trim()}>
@@ -107,6 +103,14 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
                   className={`tv-about2-location-card ${isActive ? 'is-active' : ''}`}
                   onClick={() => {
                     if (location.id !== activeLocationId) {
+                      const currentIndex = globalLocations.findIndex(
+                        (item) => item.id === activeLocationId
+                      );
+                      const nextIndex = globalLocations.findIndex(
+                        (item) => item.id === location.id
+                      );
+                      setSlideDirection(nextIndex > currentIndex ? 'forward' : 'backward');
+                      setPreviousLocationId(activeLocationId);
                       setActiveLocationId(location.id);
                     }
                   }}
@@ -157,28 +161,46 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
               } as CSSProperties
             }
           >
-            <div className={`tv-about2-map-frame ${isMapLoaded ? 'is-loaded' : ''}`}>
-              <iframe
-                key={displayedLocation.id}
-                title={`${displayedLocation.title} map`}
-                src={displayedLocation.mapSrc}
-                allowFullScreen={true}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                onLoad={() => setIsMapLoaded(true)}
-              ></iframe>
-            </div>
+            {globalLocations.map((location) => {
+              const isActiveMap = location.id === activeLocation.id;
+              const isPreviousMap = location.id === previousLocationId;
+              const isLoaded = loadedMapIds.includes(location.id);
 
-            <div className={`tv-about2-map-overlay ${isMapLoaded ? 'is-hidden' : ''}`}></div>
+              return (
+                <div
+                  key={location.id}
+                  className={`tv-about2-map-frame ${isActiveMap ? 'is-active' : ''} ${isPreviousMap ? 'is-previous' : ''} ${isLoaded ? 'is-loaded' : ''} ${slideDirection === 'forward' ? 'is-forward' : 'is-backward'}`}
+                >
+                  <iframe
+                    title={`${location.title} map`}
+                    src={location.mapSrc}
+                    allowFullScreen={true}
+                    loading="eager"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    onLoad={() => {
+                      setLoadedMapIds((prev) =>
+                        prev.includes(location.id) ? prev : [...prev, location.id]
+                      );
+                    }}
+                  ></iframe>
+                </div>
+              );
+            })}
+
+            <div className={`tv-about2-map-overlay ${isActiveMapLoaded ? 'is-hidden' : ''}`}></div>
             <div className="tv-about2-map-flight">
               <i className="fa-solid fa-location-arrow"></i>
             </div>
 
             <div className="tv-about2-map-badge">
-              <div className={`tv-about2-map-flag ${activeLocation.flagClassName}`}>
-                {activeLocation.flagText}
+              <div className="tv-about2-map-flag">
+                <img
+                  src={activeLocation.flagSrc}
+                  alt={`${activeLocation.mapCountry} flag`}
+                />
               </div>
-              <span>{activeLocation.mapLabel}</span>
+              <span className="tv-about2-map-country">{activeLocation.mapCountry}</span>
+              <small className="tv-about2-map-city">{activeLocation.mapLabel}</small>
             </div>
           </div>
         </div>
