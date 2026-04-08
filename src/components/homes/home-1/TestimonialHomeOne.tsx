@@ -23,9 +23,9 @@ const settings = {
 const testimonials = [
   {
     quote:
-      'AtiSunya gave us a dependable team, clean execution, and strong communication throughout the project. The quality of delivery and overall experience were excellent.',
-    name: 'Marvin McKinney',
-    role: 'Product Manager',
+      'AtiSunya training program played a key role in my journey to becoming a Microsoft Certified Trainer. The mentorship and practical approach truly made a difference.',
+    name: 'Rizwan Ul Haq, Dubai',
+    role: 'MCT Certified Trainer',
   },
   {
     quote:
