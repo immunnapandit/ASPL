@@ -8,7 +8,7 @@ const pageConfig: ServicePageConfig = {
   focus: 'AI copilots, process automation, and intelligent decision support',
   summary:
     'Use practical AI solutions to automate repetitive work, improve decision quality, and create better experiences across the enterprise.',
-  image: '/assets/img/service/MicrosoftD365.jpg',
+  image: '/assets/img/service/AI.png',
   highlights: [
     'AI use-case discovery and prioritization',
     'Copilot and workflow automation design',
