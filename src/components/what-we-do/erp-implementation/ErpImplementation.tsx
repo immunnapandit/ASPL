@@ -8,13 +8,13 @@ const pageConfig: ServicePageConfig = {
   focus: 'planning, design, rollout, and adoption for ERP programs',
   summary:
     'Deliver ERP programs with the right mix of process design, configuration, testing, change management, and post-go-live support.',
-  image: '/assets/img/service/MicrosoftD365.jpg',
+  image: '/assets/img/service/ERP_H.jpg',
   highlights: [
     'Program planning and fit-gap workshops',
     'Configuration, testing, and deployment',
     'Change management and adoption',
-    'Stabilization after go-live'
-  ]
+    'Stabilization after go-live',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +22,3 @@ export { pageConfig };
 export default function ErpImplementation() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-

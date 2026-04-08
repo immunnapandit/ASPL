@@ -8,13 +8,13 @@ const pageConfig: ServicePageConfig = {
   focus: 'modernization, process redesign, and change enablement',
   summary:
     'Transform business operations with a realistic roadmap that connects technology change, process redesign, and user adoption.',
-  image: '/assets/img/service/service-thumb-1.png',
+  image: '/assets/img/service/Digital-transformation.png',
   highlights: [
     'Transformation roadmap creation',
     'Process redesign and prioritization',
     'Technology and data modernization',
-    'Change leadership and adoption'
-  ]
+    'Change leadership and adoption',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +22,3 @@ export { pageConfig };
 export default function DigitalTransformation() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-

@@ -8,13 +8,13 @@ const pageConfig: ServicePageConfig = {
   focus: 'custom apps, workflow support, and user-focused digital tools',
   summary:
     'Create business applications that streamline operations, improve usability, and connect data across teams and systems.',
-  image: '/assets/img/service/service-thumb-3.png',
+  image: '/assets/img/service/App-development.png',
   highlights: [
     'Solution discovery and UX planning',
     'Custom app design and development',
     'Integration and workflow support',
-    'Release management and enhancement'
-  ]
+    'Release management and enhancement',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +22,3 @@ export { pageConfig };
 export default function AppDevelopment() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-
