@@ -37,6 +37,8 @@ function buildBenefits(page: ServicePageConfig) {
 
 export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutProps) {
   const benefits = buildBenefits(page);
+  const sectionLabel = page.category === 'solution' ? 'Solutions' : 'What We Do';
+  const benefitsLabel = page.category === 'solution' ? 'Solution Benefits' : 'Key Benefits';
 
   return (
     <main className="tv-product-engineering-page">
@@ -49,7 +51,7 @@ export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutPro
       >
         <div className="container">
           <div className="tv-pe-heading text-center">
-            <span className="tv-pe-kicker">What We Do</span>
+            <span className="tv-pe-kicker">{sectionLabel}</span>
             <h1>{page.title}</h1>
             <p>{page.subtitle}</p>
           </div>
@@ -123,7 +125,7 @@ export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutPro
       >
         <div className="container">
           <div className="tv-pe-heading text-center">
-            <span className="tv-pe-kicker">Key Benefits</span>
+            <span className="tv-pe-kicker">{benefitsLabel}</span>
             <h2>How {page.title} supports stronger business execution</h2>
           </div>
 

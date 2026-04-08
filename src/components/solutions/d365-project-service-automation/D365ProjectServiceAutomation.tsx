@@ -1,5 +1,5 @@
 import type { ServicePageConfig } from '../../../data/service-page-types';
-import GenericServiceArea from '../generic/GenericServiceArea';
+import WhatWeDoServiceLayout from '../../what-we-do/shared/WhatWeDoServiceLayout';
 
 const pageConfig: ServicePageConfig = {
   title: 'Dynamics 365 Project Service Automation',
@@ -20,6 +20,6 @@ const pageConfig: ServicePageConfig = {
 export { pageConfig };
 
 export default function D365ProjectServiceAutomation() {
-  return <GenericServiceArea page={pageConfig} />;
+  return <WhatWeDoServiceLayout page={pageConfig} />;
 }
 

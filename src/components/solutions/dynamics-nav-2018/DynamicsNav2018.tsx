@@ -1,5 +1,5 @@
 import type { ServicePageConfig } from '../../../data/service-page-types';
-import GenericServiceArea from '../generic/GenericServiceArea';
+import WhatWeDoServiceLayout from '../../what-we-do/shared/WhatWeDoServiceLayout';
 
 const pageConfig: ServicePageConfig = {
   title: 'Dynamics NAV 2018',
@@ -20,6 +20,6 @@ const pageConfig: ServicePageConfig = {
 export { pageConfig };
 
 export default function DynamicsNav2018() {
-  return <GenericServiceArea page={pageConfig} />;
+  return <WhatWeDoServiceLayout page={pageConfig} />;
 }
 
