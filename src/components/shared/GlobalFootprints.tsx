@@ -2,60 +2,64 @@ import { useEffect, useState, type CSSProperties } from 'react';
 
 const globalLocations = [
   {
-    id: 'california',
-    title: 'USA - California',
-    address: '8909 Veritas Road Manteca, CA 95337',
-    email: 'sales@dynatechconsultancy.com',
-    phone: '+1 844 787 3365',
-    thumbClassName: 'is-california',
-    thumbSrc: '/assets/img/slider/slider-1-1.jpg',
-    mapSrc: 'https://www.google.com/maps?q=California%2C%20USA&z=4&output=embed',
-    mapLabel: 'California',
-    flagClassName: 'is-usa',
-    flagText: 'USA',
-    markerPosition: { x: '46%', y: '58%' }
-  },
-  {
-    id: 'new-jersey',
-    title: 'USA - New Jersey',
-    address: '1547 B Finnegan Ln, North Brunswick, NJ 08902',
-    email: 'sales@dynatechconsultancy.com',
-    phone: '+1 551 722 7202',
-    thumbClassName: 'is-new-jersey',
-    thumbSrc: '/assets/img/slider/slider-1-2.jpg',
-    mapSrc: 'https://www.google.com/maps?q=New%20Jersey%2C%20USA&z=6&output=embed',
-    mapLabel: 'New Jersey',
-    flagClassName: 'is-usa',
-    flagText: 'USA',
-    markerPosition: { x: '62%', y: '45%' }
-  },
-  {
-    id: 'leeds',
-    title: 'UK - Leeds',
-    address: 'Annexe G, Oaktree House 408 Oakwood Lane, Leeds, UK LS8 3LG - 62020',
-    email: 'sales@dynatechconsultancy.com',
-    phone: '+44 113 328 0397',
-    thumbClassName: 'is-leeds',
-    thumbSrc: '/assets/img/slider/slider-1-3.jpg',
-    mapSrc: 'https://www.google.com/maps?q=Leeds%2C%20UK&z=6&output=embed',
-    mapLabel: 'Leeds',
-    flagClassName: 'is-uk',
-    flagText: 'UK',
-    markerPosition: { x: '57%', y: '34%' }
-  },
-  {
-    id: 'ahmedabad',
-    title: 'India - Ahmedabad',
-    address: '18, Times Corporate Park, Thaltej, Ahmedabad, India - 380059',
-    email: 'sales@dynatechconsultancy.com',
-    phone: '+91 722 705 2731 / +91 848 801 6596',
+    id: 'india',
+    title: 'India',
+    address: 'Logix Technova, A-522, Tower-A',
+    email: 'info@atisunya.co',
+    phone: '(+91) 82-9915-6511',
     thumbClassName: 'is-ahmedabad',
-    thumbSrc: '/assets/img/service/MicrosoftD365.jpg',
-    mapSrc: 'https://www.google.com/maps?q=Ahmedabad%2C%20India&z=8&output=embed',
-    mapLabel: 'Ahmedabad',
+    thumbSrc: '/assets/img/slider/India.jpg',
+    mapSrc: 'https://www.google.com/maps?q=Logix%20Technova%20A-522%20Tower-A%20India&z=12&output=embed',
+    mapLabel: 'India',
     flagClassName: 'is-india',
     flagText: 'IND',
     markerPosition: { x: '76%', y: '53%' }
+  },
+  {
+    id: 'Aus',
+    title: 'Australia',
+    address:
+      'Level 40/140 William St, Melbourne VIC 300',
+    email: 'info@atisunya.co',
+    phone: 'AUS: (+61) 478006757',
+    thumbClassName: 'is-leeds',
+    thumbSrc: '/assets/img/slider/Australia.jpg',
+    mapSrc:
+      'https://www.google.com/maps?q=2%2F2%20Crescent%20Road%20Auckland%20New%20Zealand&z=10&output=embed',
+    mapLabel: 'Auckland / Melbourne',
+    flagClassName: 'is-anz',
+    flagText: 'ANZ',
+    markerPosition: { x: '89%', y: '80%' }
+  },
+  {
+    id: 'anz',
+    title: 'ANZ',
+    address:
+      'NZ: S & A Solutions, 2/2 Crescent Road, Auckland, New Zealand | AUS: Level 40/140 William St, Melbourne VIC 300',
+    email: 'info@atisunya.co',
+    phone: 'NZ: (+64) 220937158',
+    thumbClassName: 'is-leeds',
+    thumbSrc: '/assets/img/slider/ANZ.png',
+    mapSrc:
+      'https://www.google.com/maps?q=2%2F2%20Crescent%20Road%20Auckland%20New%20Zealand&z=10&output=embed',
+    mapLabel: 'Auckland / Melbourne',
+    flagClassName: 'is-anz',
+    flagText: 'ANZ',
+    markerPosition: { x: '89%', y: '80%' }
+  },
+  {
+    id: 'germany',
+    title: 'Germany',
+    address: 'Heidestrasse 17 Mitte, 10557 Berlin, Germany',
+    email: 'info@atisunya.co',
+    phone: '(+49) 17890 84425',
+    thumbClassName: 'is-new-jersey',
+    thumbSrc: '/assets/img/slider/Germany.jpg',
+    mapSrc: 'https://www.google.com/maps?q=Heidestra%C3%9Fe%2017%20Mitte%2010557%20Berlin%20Germany&z=12&output=embed',
+    mapLabel: 'Berlin',
+    flagClassName: 'is-germany',
+    flagText: 'DE',
+    markerPosition: { x: '59%', y: '37%' }
   }
 ];
 
@@ -90,8 +94,8 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
         <h4 className="tv-section-title">Our Global Footprints</h4>
       </div>
 
-      <div className="row g-4 justify-content-center align-items-stretch">
-        <div className="col-xl-4 col-lg-5">
+      <div className="row g-4 align-items-stretch">
+        <div className="col-xl-5 col-lg-6">
           <div className="tv-about2-footprints-list tv-about2-footprints-list--compact">
             {globalLocations.map((location) => {
               const isActive = location.id === activeLocation.id;
@@ -114,22 +118,26 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
                     <h5>{location.title}</h5>
                     <ul>
                       <li>
-                        <span>
+                        <span className="tv-about2-location-icon">
                           <i className="fa-solid fa-location-dot"></i>
                         </span>
-                        {location.address}
+                        <span className="tv-about2-location-text tv-about2-location-text--address">
+                          {location.address}
+                        </span>
                       </li>
                       <li>
-                        <span>
+                        <span className="tv-about2-location-icon">
                           <i className="fa-solid fa-envelope"></i>
                         </span>
-                        {location.email}
+                        <span className="tv-about2-location-text">{location.email}</span>
                       </li>
                       <li>
-                        <span>
+                        <span className="tv-about2-location-icon">
                           <i className="fa-solid fa-phone"></i>
                         </span>
-                        {location.phone}
+                        <span className="tv-about2-location-text tv-about2-location-text--phone">
+                          {location.phone}
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -139,7 +147,7 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
           </div>
         </div>
 
-        <div className="col-xl-6 col-lg-7">
+        <div className="col-xl-7 col-lg-6">
           <div
             className="tv-about2-map-wrap tv-about2-map-wrap--compact"
             style={

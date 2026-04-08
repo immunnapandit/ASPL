@@ -34,6 +34,16 @@ type RazorpayOrderResponse = {
   currency: string;
 };
 
+type RazorpayVerifyResponse = {
+  verified: boolean;
+  payment?: {
+    id?: string;
+    status?: string;
+    method?: string;
+  };
+  error?: string;
+};
+
 const defaultAmount = '35400';
 
 const initialFormState: PaymentFormState = {
@@ -86,6 +96,7 @@ export default function PayNow() {
 
   const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
   const orderApiUrl = import.meta.env.VITE_RAZORPAY_ORDER_API_URL;
+  const verifyApiUrl = import.meta.env.VITE_RAZORPAY_VERIFY_API_URL;
 
   const amountInPaise = useMemo(() => {
     const parsed = Number(formState.amount || 0);
@@ -123,6 +134,13 @@ export default function PayNow() {
     if (!orderApiUrl) {
       setStatusMessage(
         'Missing order API URL. Add VITE_RAZORPAY_ORDER_API_URL to create Razorpay orders.'
+      );
+      return;
+    }
+
+    if (!verifyApiUrl) {
+      setStatusMessage(
+        'Missing verify API URL. Add VITE_RAZORPAY_VERIFY_API_URL to verify payments.'
       );
       return;
     }
@@ -210,8 +228,34 @@ export default function PayNow() {
         theme: {
           color: '#2563eb',
         },
-        handler: () => {
-          setStatusMessage('Payment completed successfully. Please verify it from your backend webhook.');
+        handler: async (paymentResponse) => {
+          setStatusMessage('Payment received. Verifying securely...');
+
+          try {
+            const verifyResponse = await fetch(verifyApiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(paymentResponse),
+            });
+
+            const verification: RazorpayVerifyResponse = await verifyResponse.json();
+
+            if (!verifyResponse.ok || !verification.verified) {
+              throw new Error(verification.error || 'Payment verification failed.');
+            }
+
+            setStatusMessage(
+              `Payment verified successfully. Payment ID: ${verification.payment?.id || 'N/A'}`
+            );
+          } catch (verificationError) {
+            const message =
+              verificationError instanceof Error
+                ? verificationError.message
+                : 'Payment verification failed.';
+            setStatusMessage(message);
+          }
         },
       });
 
@@ -502,8 +546,9 @@ export default function PayNow() {
                 </div>
 
                 <div className="pn-note">
-                  Add `VITE_RAZORPAY_KEY_ID` and `VITE_RAZORPAY_ORDER_API_URL` in your Vite
-                  environment before using live payments.
+                  Add `VITE_RAZORPAY_KEY_ID`, `VITE_RAZORPAY_ORDER_API_URL`, and
+                  `VITE_RAZORPAY_VERIFY_API_URL` in your Vite environment before using live
+                  payments.
                 </div>
               </div>
             </div>
