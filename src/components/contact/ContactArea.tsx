@@ -1,6 +1,67 @@
+import { useState } from 'react';
 import GlobalFootprints from '../shared/GlobalFootprints';
 
+type ContactFormState = {
+  fullName: string;
+  email: string;
+  service: string;
+  message: string;
+};
+
+const initialFormState: ContactFormState = {
+  fullName: '',
+  email: '',
+  service: '',
+  message: '',
+};
+
 export default function ContactArea() {
+  const [formState, setFormState] = useState<ContactFormState>(initialFormState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const contactApiUrl =
+    import.meta.env.VITE_CONTACT_API_URL || 'http://localhost:5001/api/contact';
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormState((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatusMessage('');
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(contactApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Unable to send your message right now.');
+      }
+
+      setStatusMessage('Message sent successfully.');
+      setFormState(initialFormState);
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : 'Unable to send your message right now.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <div className="tv-contact-area pt-130 pb-130">
@@ -151,26 +212,60 @@ export default function ContactArea() {
                 <div className="tv-contact-right-wrap">
                   <h1 className="text-white">Make an Appointment</h1>
                   <p>Feel free to contact with us, we don’t spam your email</p>
-                  <form action="#">
+                  <form onSubmit={handleSubmit}>
                     <div className="tv-contact-input-box mb-24">
-                      <input type="text" placeholder="Full Name *" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Full Name *"
+                        value={formState.fullName}
+                        onChange={handleChange}
+                        required
+                      />
                     </div>
                     <div className="tv-contact-input-box mb-24">
-                      <input type="email" placeholder="Email Here *" />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Here *"
+                        value={formState.email}
+                        onChange={handleChange}
+                        required
+                      />
                     </div>
                     <div className="tv-contact-input-box mb-24">
-                      <input type="text" placeholder="Select Service *" />
+                      <input
+                        type="text"
+                        name="service"
+                        placeholder="Select Service *"
+                        value={formState.service}
+                        onChange={handleChange}
+                        required
+                      />
                     </div>
                     <div className="it-contact-textarea-box mb-24">
                       <textarea
+                        name="message"
                         placeholder="Your Message *"
                         rows={3}
+                        value={formState.message}
+                        onChange={handleChange}
+                        required
                       ></textarea>
                     </div>
-                    <button className="tv-btn-primary">
+                    {statusMessage ? (
+                      <p className="mb-24 text-white" role="status">
+                        {statusMessage}
+                      </p>
+                    ) : null}
+                    <button className="tv-btn-primary" type="submit" disabled={isSubmitting}>
                       <span className="btn-wrap">
-                        <span className="btn-text1">Submit Message</span>
-                        <span className="btn-text2">Submit Message</span>
+                        <span className="btn-text1">
+                          {isSubmitting ? 'Sending...' : 'Submit Message'}
+                        </span>
+                        <span className="btn-text2">
+                          {isSubmitting ? 'Sending...' : 'Submit Message'}
+                        </span>
                       </span>
                     </button>
                   </form>

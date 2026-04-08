@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import nodemailer from 'nodemailer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const envPath = join(__dirname, '.env');
@@ -19,6 +20,13 @@ const ALLOWED_ORIGINS = FRONTEND_URL.split(',')
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || '';
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'munna@atisunya.co';
+const SMTP_HOST = process.env.SMTP_HOST || '';
+const SMTP_PORT = Number(process.env.SMTP_PORT || 465);
+const SMTP_SECURE = process.env.SMTP_SECURE !== 'false';
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER || CONTACT_TO_EMAIL;
 
 const supportedCurrencies = new Set(['INR', 'USD', 'EUR', 'GBP']);
 const supportedPaymentMethods = new Set(['card', 'bank_transfer', 'qr_upi']);
@@ -41,6 +49,10 @@ const server = BunLikeServe({
           timestamp: new Date().toISOString(),
         }
       );
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/contact') {
+      return handleContactForm(req);
     }
 
     if (req.method === 'POST' && url.pathname === '/api/razorpay/order') {
@@ -173,6 +185,51 @@ async function handleCreateOrder(req) {
     currency: razorpayOrder.currency,
     receipt,
     verifyUrl: `${FRONTEND_URL}/pay-now`,
+  });
+}
+
+async function handleContactForm(req) {
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+    return json(500, {
+      error: 'Missing SMTP configuration. Set SMTP_HOST, SMTP_USER, and SMTP_PASS in backend/.env.',
+    });
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' });
+  }
+
+  const validation = validateContactPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error });
+  }
+
+  const payload = validation.data;
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: SMTP_FROM,
+    to: CONTACT_TO_EMAIL,
+    replyTo: payload.email,
+    subject: `New contact form submission from ${payload.fullName}`,
+    text: buildContactEmailText(payload),
+    html: buildContactEmailHtml(payload),
+  });
+
+  return json(200, {
+    ok: true,
+    message: 'Your message has been sent successfully.',
   });
 }
 
@@ -343,11 +400,78 @@ function validateCreateOrderPayload(data) {
   };
 }
 
+function validateContactPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Request body is required.' };
+  }
+
+  const { fullName, email, service, message } = data;
+
+  if (!fullName || typeof fullName !== 'string') {
+    return { ok: false, error: 'Full name is required.' };
+  }
+
+  if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  if (!service || typeof service !== 'string') {
+    return { ok: false, error: 'Service is required.' };
+  }
+
+  if (!message || typeof message !== 'string') {
+    return { ok: false, error: 'Message is required.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      fullName: fullName.trim(),
+      email: email.trim(),
+      service: service.trim(),
+      message: message.trim(),
+    },
+  };
+}
+
 function safeJson(req) {
   return req
     .json()
     .then((data) => ({ ok: true, data }))
     .catch(() => ({ ok: false }));
+}
+
+function buildContactEmailText(payload) {
+  return [
+    'New contact form submission',
+    '',
+    `Name: ${payload.fullName}`,
+    `Email: ${payload.email}`,
+    `Service: ${payload.service}`,
+    '',
+    'Message:',
+    payload.message,
+  ].join('\n');
+}
+
+function buildContactEmailHtml(payload) {
+  return `
+    <h2>New contact form submission</h2>
+    <p><strong>Name:</strong> ${escapeHtml(payload.fullName)}</p>
+    <p><strong>Email:</strong> ${escapeHtml(payload.email)}</p>
+    <p><strong>Service:</strong> ${escapeHtml(payload.service)}</p>
+    <p><strong>Message:</strong></p>
+    <p>${escapeHtml(payload.message).replace(/\n/g, '<br />')}</p>
+  `;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 function json(status, data) {
