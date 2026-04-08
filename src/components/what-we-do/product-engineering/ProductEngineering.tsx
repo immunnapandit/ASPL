@@ -1,25 +1,25 @@
 import type { ServicePageConfig } from '../../../data/service-page-types';
-import GenericServiceArea from '../../solutions/generic/GenericServiceArea';
+import WhatWeDoServiceLayout from '../shared/WhatWeDoServiceLayout';
 
 const pageConfig: ServicePageConfig = {
   title: 'Product Engineering',
-  subtitle: 'Build scalable digital products with speed and confidence',
+  subtitle: 'Microsoft Dynamics 365 Finance and Supply Chain Management',
   category: 'service',
-  focus: 'product design, engineering execution, and iteration',
+  focus: 'enterprise operations, finance workflows, and supply chain visibility',
   summary:
-    'Support product-led teams with planning, architecture, development, quality, and continuous improvement across the product lifecycle.',
-  image: '/assets/img/service/service-thumb-3.png',
+    'Implement a connected operations platform that helps teams streamline finance, procurement, manufacturing, warehousing, and reporting.',
+  image: '/assets/img/service/MicrosoftD365.jpg',
   highlights: [
-    'Product discovery and architecture',
-    'Engineering delivery and quality',
-    'Release planning and iteration',
-    'Scale, reliability, and improvement'
+    'Financial, sales and procurement management',
+    'Planning and advanced warehouse management',
+    'Discrete, process and lean manufacturing',
+    'Retail, project accounting and field service'
   ]
 };
 
 export { pageConfig };
 
 export default function ProductEngineering() {
-  return <GenericServiceArea page={pageConfig} />;
+  return <WhatWeDoServiceLayout page={pageConfig} />;
 }
 

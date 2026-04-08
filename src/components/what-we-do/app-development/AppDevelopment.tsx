@@ -1,5 +1,5 @@
 import type { ServicePageConfig } from '../../../data/service-page-types';
-import GenericServiceArea from '../../solutions/generic/GenericServiceArea';
+import WhatWeDoServiceLayout from '../shared/WhatWeDoServiceLayout';
 
 const pageConfig: ServicePageConfig = {
   title: 'App Development',
@@ -20,6 +20,6 @@ const pageConfig: ServicePageConfig = {
 export { pageConfig };
 
 export default function AppDevelopment() {
-  return <GenericServiceArea page={pageConfig} />;
+  return <WhatWeDoServiceLayout page={pageConfig} />;
 }
 
