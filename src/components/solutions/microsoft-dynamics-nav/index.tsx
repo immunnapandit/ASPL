@@ -2,7 +2,8 @@ import Breadcrumb from '../../../common/Breadcrumb';
 import FooterOne from '../../../layouts/footers/FooterOne';
 import HeaderOne from '../../../layouts/headers/HeaderOne';
 import Wrapper from '../../../layouts/Wrapper';
-import MicrosoftDynamicsNav, { pageConfig } from './MicrosoftDynamicsNav';
+import MicrosoftDynamicsNav from './MicrosoftDynamicsNav';
+import { pageConfig } from './MicrosoftDynamicsNav.config';
 
 export default function MicrosoftDynamicsNavPage() {
   return (
