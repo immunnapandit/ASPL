@@ -8,13 +8,13 @@ const pageConfig: ServicePageConfig = {
   focus: 'business reporting, data visibility, and decision intelligence',
   summary:
     'Build reporting ecosystems that make it easier to track performance, identify trends, and support timely business decisions.',
-  image: '/assets/img/service/service-thumb-2.png',
+  image: '/assets/img/service/analytics.png',
   highlights: [
     'KPI and reporting framework design',
     'Dashboard and analytics delivery',
     'Data modeling and quality alignment',
-    'Decision-ready business insight'
-  ]
+    'Decision-ready business insight',
+  ],
 };
 
 export { pageConfig };
@@ -22,4 +22,3 @@ export { pageConfig };
 export default function BiAnalytics() {
   return <WhatWeDoServiceLayout page={pageConfig} />;
 }
-
