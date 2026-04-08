@@ -9,6 +9,19 @@
         max-width: 205px;
         width: 100%;
         height: auto;
+        display: block;
+      }
+    }
+    &-partner-badge {
+      margin-bottom: 24px;
+      width: 205px;
+
+      & img {
+        max-width: 190px;
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
       }
     }
     &-title {

@@ -46,18 +46,22 @@ export default function FooterOne() {
                       <img src="/assets/img/logo/AtiSunyaLogo.png" alt="" />
                     </Link>
                   </div>
+                  <div className="tv-footer-widget-partner-badge">
+                    <img
+                      src="/assets/img/footer/MicrosoftSilverPartner.png"
+                      alt="Microsoft Silver Partner"
+                    />
+                  </div>
                   <div className="tv-footer-widget-text">
                     <p>
-                      Each demo built with Teba will look different. You can
-                      customize almost anythin appearance of your website with
-                      only a few.
+                      Atisunya is a technology-driven company delivering smart digital solutions, including web development, CRM, ERP, and business automation to help businesses grow and scale efficiently.
                     </p>
                   </div>
                   <div className="tv-footer-widget-contact-info">
                     <ul>
                       <li>
                         <a href="">
-                          <i className="fa-solid fa-phone"></i>123-456-7890
+                          <i className="fa-solid fa-phone"></i>+91-80-8181-0673, +91-82-9915-6511
                         </a>
                       </li>
                       <li>
@@ -79,10 +83,10 @@ export default function FooterOne() {
                         <Link to="/about">About Us</Link>
                       </li>
                       <li>
-                        <Link to="/team">Our Team</Link>
+                        <Link to="/services">Services</Link>
                       </li>
                       <li>
-                        <Link to="/price">Pricing Plans</Link>
+                        <Link to="/careers">Careers</Link>
                       </li>
                       <li>
                         <Link to="/blog-grid">Blogs</Link>
@@ -101,16 +105,16 @@ export default function FooterOne() {
                     <div className="tv-footer-widget-menu">
                       <ul>
                         <li>
-                          <Link to="/service-details">UI/UX Design</Link>
+                          <Link to="/service-details">Dynamics 365</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">App Development</Link>
+                          <Link to="/service-details">Azure</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">Digital Marketing</Link>
+                          <Link to="/service-details">ERP Development</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">Web Development</Link>
+                          <Link to="/service-details">Artifical Intelligence</Link>
                         </li>
                         <li>
                           <Link to="/service-details">Cyber Security</Link>
@@ -153,7 +157,9 @@ export default function FooterOne() {
                 <div className="col-lg-6">
                   <div className="tv-copyright-left text-center text-lg-start">
                     <p className="mb-0">
-                      © 2025 <a href="#">AtiSunya</a> All Rights Reserved <a href="#"></a>
+                      © 2026 All Rights Reserved | 
+Developed by 
+<a href="https://www.atisunya.co" target="_blank"> Atisunya Pvt. Ltd.</a>
                     </p>
                   </div>
                 </div>
