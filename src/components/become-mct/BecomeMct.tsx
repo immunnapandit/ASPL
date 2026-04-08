@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { CalendarClock, Mail, MessageSquareText, Phone, ShieldCheck, User, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import "../../styles/scss/layout/_becomemct.scss";
 
 export default function BecomeMct() {
   const [openIndex, setOpenIndex] = useState(0);
+  const [isEnrollOpen, setIsEnrollOpen] = useState(false);
 
   const upcomingBatches = [
     { date: "2026-03-28" },
@@ -161,6 +164,45 @@ export default function BecomeMct() {
     setOpenIndex((current) => (current === index ? -1 : index));
   };
 
+  const openEnrollForm = () => {
+    setIsEnrollOpen(true);
+  };
+
+  const closeEnrollForm = () => {
+    setIsEnrollOpen(false);
+  };
+
+  const handleEnrollSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const fullName = formData.get("fullName");
+    const email = formData.get("email");
+    const microsoftAccountId = formData.get("microsoftAccountId");
+    const phone = formData.get("phone");
+    const preferredDateTime = formData.get("preferredDateTime");
+    const subject = formData.get("subject");
+    const message = formData.get("message");
+
+    const body = [
+      `Full Name: ${fullName}`,
+      `Email: ${email}`,
+      `Microsoft Account ID: ${microsoftAccountId}`,
+      `Phone: ${phone}`,
+      `Preferred Date/Time: ${preferredDateTime}`,
+      "",
+      "Message:",
+      `${message}`,
+    ].join("\n");
+
+    const mailtoLink = `mailto:info@atisunya.com?subject=${encodeURIComponent(
+      String(subject || "MCT Enrollment Inquiry")
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink;
+    closeEnrollForm();
+  };
+
   return (
     <div className="pm-page">
       <div className="container">
@@ -182,12 +224,16 @@ export default function BecomeMct() {
             </p>
 
             <div className="pm-actions">
-              <a href="/pay-now" className="pm-btn pm-btn-primary">
+              <Link to="/pay-now" className="pm-btn pm-btn-primary">
                 Pay Now
-              </a>
-              <a href="/enroll-now" className="pm-btn pm-btn-secondary">
+              </Link>
+              <button
+                type="button"
+                className="pm-btn pm-btn-secondary"
+                onClick={openEnrollForm}
+              >
                 Enroll Now
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -300,6 +346,143 @@ export default function BecomeMct() {
           </div>
         </div>
       </div>
+
+      {isEnrollOpen && (
+        <div className="pm-modal-overlay" onClick={closeEnrollForm}>
+          <div
+            className="pm-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="pm-modal-header">
+              <div className="pm-modal-header-copy">
+                <span className="pm-kicker">Enroll Now</span>
+                <h4>MCT Enrollment Form</h4>
+              </div>
+              <button
+                type="button"
+                className="pm-modal-close"
+                onClick={closeEnrollForm}
+                aria-label="Close enrollment form"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <form className="pm-enroll-form" onSubmit={handleEnrollSubmit}>
+              <div className="pm-form-grid">
+                <div className="pm-form-group">
+                  <label htmlFor="fullName">Full Name *</label>
+                  <div className="pm-input-shell">
+                    <User size={18} />
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pm-form-group">
+                  <label htmlFor="email">Email *</label>
+                  <div className="pm-input-shell">
+                    <Mail size={18} />
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email address"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pm-form-group">
+                  <label htmlFor="microsoftAccountId">
+                    Microsoft Account ID *
+                  </label>
+                  <div className="pm-input-shell">
+                    <ShieldCheck size={18} />
+                    <input
+                      id="microsoftAccountId"
+                      name="microsoftAccountId"
+                      type="text"
+                      placeholder="Enter your Microsoft account ID"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pm-form-group">
+                  <label htmlFor="phone">Phone *</label>
+                  <div className="pm-input-shell">
+                    <Phone size={18} />
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pm-form-group">
+                  <label htmlFor="preferredDateTime">Date / Time *</label>
+                  <div className="pm-input-shell">
+                    <CalendarClock size={18} />
+                    <input
+                      id="preferredDateTime"
+                      name="preferredDateTime"
+                      type="datetime-local"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pm-form-group">
+                  <label htmlFor="subject">Subject *</label>
+                  <div className="pm-input-shell">
+                    <MessageSquareText size={18} />
+                    <input
+                      id="subject"
+                      name="subject"
+                      type="text"
+                      placeholder="Enter the subject"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pm-form-group">
+                <label htmlFor="message">Your Message *</label>
+                <div className="pm-input-shell pm-input-shell-textarea">
+                  <MessageSquareText size={18} />
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    placeholder="Tell us about your goals, preferred batch, or any questions you have"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="pm-form-footer">
+                <p>
+                  Your details are used only for enrollment follow-up and
+                  schedule coordination.
+                </p>
+                <button type="submit" className="pm-btn pm-btn-primary">
+                  Submit Enrollment Request
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

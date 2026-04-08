@@ -18,6 +18,7 @@ import BlogDetails from './components/blog-details';
 import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
 import Careers from './components/careers';
+import PayNowPage from './components/pay-now';
 import D365Finance from './components/solutions/d365-finance';
 import { customPageRoutes } from './routes/custom-pages';
 
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
   { path: '/blog-details', element: <BlogDetails /> },
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
+  { path: '/pay-now', element: <PayNowPage /> },
   { path: '/solutions/d365-for-finance-and-operations', element: <D365Finance /> },
   ...customPageRoutes,
   { path: '*', element: <NotFound /> },
