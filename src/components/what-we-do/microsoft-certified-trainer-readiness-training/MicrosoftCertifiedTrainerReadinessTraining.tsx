@@ -1,4 +1,4 @@
-import { Check, MoveRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ServicePageConfig } from '../../../data/service-page-types';
 
