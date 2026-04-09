@@ -1,0 +1,384 @@
+@use '../utils' as *;
+
+.mctrt-page {
+  background:
+    radial-gradient(circle at top left, rgba(17, 94, 89, 0.08), transparent 28%),
+    linear-gradient(180deg, #f7fbfa 0%, #ffffff 22%, #f8fafc 100%);
+
+  .mctrt-hero,
+  .mctrt-overview,
+  .mctrt-audience,
+  .mctrt-benefits,
+  .mctrt-process,
+  .mctrt-outcome {
+    padding: 78px 0;
+  }
+
+  .mctrt-kicker,
+  .mctrt-section-tag,
+  .mctrt-step-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #0f766e;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .mctrt-hero-copy h1,
+  .mctrt-hero-card h2,
+  .mctrt-section-copy h2,
+  .mctrt-section-heading h2,
+  .mctrt-info-card h3,
+  .mctrt-prereq-copy h3,
+  .mctrt-prereq-item h4,
+  .mctrt-process-head h3,
+  .mctrt-outcome-card h2 {
+    color: #102a43;
+    font-family: var(--tv-ff-heading);
+  }
+
+  .mctrt-hero-copy h1 {
+    margin: 16px 0 22px;
+    font-size: 52px;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .mctrt-hero-copy p,
+  .mctrt-section-copy p,
+  .mctrt-info-card p,
+  .mctrt-prereq-copy p,
+  .mctrt-prereq-item p,
+  .mctrt-benefit-card p,
+  .mctrt-highlight-card p,
+  .mctrt-why-item p,
+  .mctrt-step-card p,
+  .mctrt-outcome-card p {
+    margin: 0;
+    color: #52606d;
+    font-size: 17px;
+    line-height: 1.8;
+  }
+
+  .mctrt-hero-copy p + p,
+  .mctrt-section-copy p + p,
+  .mctrt-outcome-card p + p {
+    margin-top: 16px;
+  }
+
+  .mctrt-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 30px;
+  }
+
+  .mctrt-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #102a43;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .mctrt-hero-card {
+    height: 100%;
+  }
+
+  .mctrt-media-panel {
+    height: 100%;
+    padding: 18px;
+    border-radius: 32px;
+    background: linear-gradient(180deg, #f4f9f8, #ffffff);
+    border: 1px solid rgba(16, 42, 67, 0.08);
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.08);
+  }
+
+  .mctrt-card-image,
+  .mctrt-media-panel,
+  .mctrt-highlight-card,
+  .mctrt-info-card,
+  .mctrt-prerequisites,
+  .mctrt-prereq-item,
+  .mctrt-benefit-card,
+  .mctrt-process-panel,
+  .mctrt-step-card,
+  .mctrt-outcome-card {
+    border: 1px solid rgba(16, 42, 67, 0.08);
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.07);
+  }
+
+  .mctrt-card-image,
+  .mctrt-info-card,
+  .mctrt-prerequisites,
+  .mctrt-benefit-card,
+  .mctrt-process-panel,
+  .mctrt-outcome-card {
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .mctrt-card-image {
+    overflow: hidden;
+    border-radius: 26px;
+    height: 100%;
+  }
+
+  .mctrt-card-image img {
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+
+  .mctrt-section-copy,
+  .mctrt-section-heading {
+    max-width: 760px;
+  }
+
+  .mctrt-section-copy h2,
+  .mctrt-section-heading h2,
+  .mctrt-outcome-card h2 {
+    margin: 14px 0 18px;
+    font-size: 40px;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+  }
+
+  .mctrt-highlight-stack {
+    display: grid;
+    gap: 16px;
+  }
+
+  .mctrt-highlight-card,
+  .mctrt-benefit-card,
+  .mctrt-why-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .mctrt-highlight-card {
+    padding: 22px 24px;
+    border-radius: 22px;
+    background: #ffffff;
+  }
+
+  .mctrt-check {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #0f766e;
+    background: rgba(15, 118, 110, 0.12);
+  }
+
+  .mctrt-section-heading {
+    margin: 0 auto 34px;
+  }
+
+  .mctrt-info-card {
+    height: 100%;
+    padding: 28px 26px;
+  }
+
+  .mctrt-info-card h3,
+  .mctrt-prereq-copy h3,
+  .mctrt-process-head h3 {
+    margin-bottom: 12px;
+    font-size: 28px;
+    line-height: 1.3;
+  }
+
+  .mctrt-prerequisites {
+    margin-top: 28px;
+    padding: 30px;
+  }
+
+  .mctrt-prereq-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .mctrt-prereq-item {
+    padding: 22px 24px;
+    border-radius: 22px;
+    background: #f8fafc;
+  }
+
+  .mctrt-prereq-item h4 {
+    margin-bottom: 8px;
+    font-size: 22px;
+    line-height: 1.35;
+  }
+
+  .mctrt-benefits {
+    background:
+      linear-gradient(180deg, rgba(232, 250, 245, 0.9), rgba(255, 255, 255, 0.96)),
+      url('/assets/img/service/service-bg.png') center / cover no-repeat;
+  }
+
+  .mctrt-sticky-copy {
+    position: sticky;
+    top: 120px;
+  }
+
+  .mctrt-benefit-card {
+    height: 100%;
+    padding: 24px;
+  }
+
+  .mctrt-why-list,
+  .mctrt-step-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .mctrt-why-list {
+    margin-top: 26px;
+  }
+
+  .mctrt-why-item {
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(16, 42, 67, 0.08);
+  }
+
+  .mctrt-why-item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .mctrt-process-panel {
+    padding: 30px;
+  }
+
+  .mctrt-process-head {
+    max-width: 620px;
+    margin-bottom: 24px;
+  }
+
+  .mctrt-step-card {
+    padding: 22px 24px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+  }
+
+  .mctrt-step-number {
+    margin-bottom: 12px;
+  }
+
+  .mctrt-outcome {
+    padding-top: 0;
+  }
+
+  .mctrt-outcome-card {
+    padding: 38px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 1199px) {
+  .mctrt-page {
+    .mctrt-hero-copy h1 {
+      font-size: 44px;
+    }
+
+    .mctrt-section-copy h2,
+    .mctrt-section-heading h2,
+    .mctrt-outcome-card h2 {
+      font-size: 34px;
+    }
+
+    .mctrt-card-image img {
+      min-height: 440px;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .mctrt-page {
+    .mctrt-hero,
+    .mctrt-overview,
+    .mctrt-audience,
+    .mctrt-benefits,
+    .mctrt-process,
+    .mctrt-outcome {
+      padding: 64px 0;
+    }
+
+    .mctrt-hero-copy h1 {
+      font-size: 38px;
+    }
+
+    .mctrt-section-copy h2,
+    .mctrt-section-heading h2,
+    .mctrt-outcome-card h2 {
+      font-size: 31px;
+    }
+
+    .mctrt-sticky-copy {
+      position: static;
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .mctrt-page {
+    .mctrt-hero,
+    .mctrt-overview,
+    .mctrt-audience,
+    .mctrt-benefits,
+    .mctrt-process,
+    .mctrt-outcome {
+      padding: 52px 0;
+    }
+
+    .mctrt-hero-copy h1 {
+      font-size: 31px;
+    }
+
+    .mctrt-section-copy h2,
+    .mctrt-section-heading h2,
+    .mctrt-outcome-card h2 {
+      font-size: 27px;
+    }
+
+    .mctrt-batch-card,
+    .mctrt-media-panel,
+    .mctrt-info-card,
+    .mctrt-prerequisites,
+    .mctrt-benefit-card,
+    .mctrt-process-panel,
+    .mctrt-outcome-card {
+      padding: 22px 20px;
+      border-radius: 22px;
+    }
+
+    .mctrt-batch-card {
+      padding: 0;
+    }
+
+    .mctrt-media-panel {
+      padding: 14px;
+    }
+
+    .mctrt-card-image {
+      border-radius: 18px;
+    }
+
+    .mctrt-card-image img {
+      min-height: 280px;
+    }
+  }
+}
