@@ -41,7 +41,10 @@ export default function HeroHomeOne() {
                       <span className="tv-slider-subtitle">
                         Microsoft Technology Experts
                       </span>
-                      <h1 className="tv-slider-title p-relative">
+                      <h1
+                        className="tv-slider-title p-relative"
+                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                      >
                         Transform Your Business with Intelligent Digital Solutions
                       </h1>
                       <div className="tv-slider-text pb-20">
@@ -83,7 +86,10 @@ export default function HeroHomeOne() {
                       <span className="tv-slider-subtitle">
                         Microsoft Technology Experts
                       </span>
-                      <h1 className="tv-slider-title p-relative">
+                      <h1
+                        className="tv-slider-title p-relative"
+                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                      >
                         Empowering Businesses with Microsoft Dynamics 365
                       </h1>
                       <div className="tv-slider-text pb-20">
@@ -125,7 +131,10 @@ export default function HeroHomeOne() {
                       <span className="tv-slider-subtitle">
                         Microsoft Technology Experts
                       </span>
-                      <h1 className="tv-slider-title p-relative">
+                      <h1
+                        className="tv-slider-title p-relative"
+                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                      >
                         Build Powerful Software for the Future
                       </h1>
                       <div className="tv-slider-text pb-20">

@@ -246,6 +246,28 @@
         font-size: 44px;
       }
     }
+    & .tv-slider-title--compact {
+      font-size: 64px;
+      line-height: 1.15;
+      @media #{$xxl} {
+        font-size: 60px;
+      }
+      @media #{$xl} {
+        font-size: 54px;
+      }
+      @media #{$lg} {
+        font-size: 48px;
+      }
+      @media #{$md} {
+        font-size: 44px;
+      }
+      @media #{$xs} {
+        font-size: 29px;
+      }
+      @media #{$sm} {
+        font-size: 38px;
+      }
+    }
     & .tv-slider-content {
       padding: 0;
     }

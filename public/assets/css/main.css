@@ -9702,29 +9702,53 @@ img.shap-icon {
   color: var(--tv-common-white);
   font-family: var(--tv-ff-heading);
 }
+.tv-slider-title--compact {
+  font-size: 64px;
+  line-height: 1.15;
+}
+@media only screen and (min-width: 1400px) and (max-width: 1599px) {
+  .tv-slider-title--compact {
+    font-size: 60px;
+  }
+}
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {
   .tv-slider-title {
     font-size: 60px;
+  }
+  .tv-slider-title--compact {
+    font-size: 54px;
   }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .tv-slider-title {
     font-size: 55px;
   }
+  .tv-slider-title--compact {
+    font-size: 48px;
+  }
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .tv-slider-title {
     font-size: 60px;
+  }
+  .tv-slider-title--compact {
+    font-size: 44px;
   }
 }
 @media (max-width: 575px) {
   .tv-slider-title {
     font-size: 37px;
   }
+  .tv-slider-title--compact {
+    font-size: 29px;
+  }
 }
 @media only screen and (min-width: 576px) and (max-width: 767px) {
   .tv-slider-title {
     font-size: 49px;
+  }
+  .tv-slider-title--compact {
+    font-size: 38px;
   }
 }
 .tv-slider-content {
