@@ -92,16 +92,11 @@ export default function MicrosoftCertifiedTrainerReadinessTraining() {
                 </p>
 
                 <div className="mctrt-actions">
-                  <Link to="/enroll-now" className="tv-btn-primary">
+                  <Link to="/contact" className="tv-btn-primary">
                     <span className="btn-wrap">
                       <span className="btn-text1">Enroll Now</span>
                       <span className="btn-text2">Enroll Now</span>
                     </span>
-                  </Link>
-
-                  <Link to="/contact" className="mctrt-text-link">
-                    Book Now
-                    <MoveRight size={16} />
                   </Link>
                 </div>
               </div>
@@ -325,7 +320,7 @@ export default function MicrosoftCertifiedTrainerReadinessTraining() {
             </p>
 
             <div className="mctrt-actions">
-              <Link to="/enroll-now" className="tv-btn-primary">
+              <Link to="/contact" className="tv-btn-primary">
                 <span className="btn-wrap">
                   <span className="btn-text1">Enroll Now</span>
                   <span className="btn-text2">Enroll Now</span>
