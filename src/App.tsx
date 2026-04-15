@@ -20,6 +20,10 @@ import BecomeMCTPage from './components/become-mct';
 import Careers from './components/careers';
 import PayNowPage from './components/pay-now';
 import D365Finance from './components/solutions/d365-finance';
+import WorkingProcess from './components/working-process';
+import PrivacyPolicy from './components/privacy-policy';
+import TermsConditions from './components/terms-conditions';
+import CyberSecurity from './components/solutions/cyber-security';
 import { customPageRoutes } from './routes/custom-pages';
 
 const router = createBrowserRouter([
@@ -42,6 +46,10 @@ const router = createBrowserRouter([
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
   { path: '/pay-now', element: <PayNowPage /> },
+  { path: '/working-process', element: <WorkingProcess /> },
+  { path: '/privacy-policy', element: <PrivacyPolicy /> },
+  { path: '/terms-and-conditions', element: <TermsConditions /> },
+  { path: '/solutions/cyber-security', element: <CyberSecurity /> },
   { path: '/solutions/d365-for-finance-and-operations', element: <D365Finance /> },
   ...customPageRoutes,
   { path: '*', element: <NotFound /> },

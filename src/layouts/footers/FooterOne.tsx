@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { socialLinks } from '../../data/social-links';
 
 export default function FooterOne() {
   return (
@@ -83,7 +84,7 @@ export default function FooterOne() {
                         <Link to="/about">About Us</Link>
                       </li>
                       <li>
-                        <Link to="/services">Services</Link>
+                        <Link to="/#services">Services</Link>
                       </li>
                       <li>
                         <Link to="/careers">Careers</Link>
@@ -105,19 +106,19 @@ export default function FooterOne() {
                     <div className="tv-footer-widget-menu">
                       <ul>
                         <li>
-                          <Link to="/service-details">Dynamics 365</Link>
+                          <Link to="/solutions/microsoft-dynamics-365">Dynamics 365</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">Azure</Link>
+                          <Link to="/solutions/microsoft-azure">Azure</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">ERP Development</Link>
+                          <Link to="/what-we-do/erp-implementation">ERP Development</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">Artifical Intelligence</Link>
+                          <Link to="/ai-solutions">Artificial Intelligence</Link>
                         </li>
                         <li>
-                          <Link to="/service-details">Cyber Security</Link>
+                          <Link to="/what-we-do/crm-implementation">CRM Development</Link>
                         </li>
                       </ul>
                     </div>
@@ -131,13 +132,13 @@ export default function FooterOne() {
                     <div className="tv-footer-widget-menu">
                       <ul>
                         <li>
-                          <Link to="/contact">Working Process</Link>
+                          <Link to="/working-process">Working Process</Link>
                         </li>
                         <li>
-                          <Link to="/contact">Privacy Policy</Link>
+                          <Link to="/privacy-policy">Privacy Policy</Link>
                         </li>
                         <li>
-                          <Link to="/contact">Terms & Conditions</Link>
+                          <Link to="/terms-and-conditions">Terms & Conditions</Link>
                         </li>
                         <li>
                           <Link to="/faq">Faqs</Link>
@@ -165,16 +166,25 @@ Developed by
                 </div>
                 <div className="col-lg-6 text-end">
                   <div className="tv-footer-widget-social">
-                    <a href="#">
+                    <a
+                      href={socialLinks.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-facebook-f"></i>
                     </a>
-                    <a href="#">
-                      <i className="fa-brands fa-twitter"></i>
-                    </a>
-                    <a href="#">
+                    <a
+                      href={socialLinks.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-instagram"></i>
                     </a>
-                    <a href="#">
+                    <a
+                      href={socialLinks.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-linkedin-in"></i>
                     </a>
                   </div>
