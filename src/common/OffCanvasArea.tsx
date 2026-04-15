@@ -26,8 +26,9 @@ export default function OffCanvasArea({
           </div>
           <div className="itoffcanvas__text">
             <p>
-              Suspendisse interdum consectetur libero id. Fermentum leo vel orci
-              porta non. Euismod viverra nibh cras pulvinar suspen.
+              Delivering innovative ERP, CRM, Azure, and Power Platform
+              services to help businesses accelerate digital transformation and
+              achieve measurable success.
             </p>
           </div>
           <div className="tv-menu-mobile d-xl-none">

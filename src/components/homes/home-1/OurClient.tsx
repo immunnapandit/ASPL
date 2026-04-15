@@ -51,6 +51,37 @@ const clientLogos = [
     name: 'Global Knowledge',
     logo: '/assets/img/brand/global-knowledge.svg',
   },
+  {
+    id: 16,
+    name: 'Verdant Enterprises',
+    logo: '/assets/img/brand/verdant-enterprises.png',
+    logoClassName: 'our-client-logo--multiply',
+  },
+  {
+    id: 17,
+    name: 'Dakhila',
+    logo: '/assets/img/brand/dakhila-campus.png',
+  },
+  {
+    id: 18,
+    name: 'Queen Logistics',
+    logo: '/assets/img/brand/queen-logistics.png',
+  },
+  {
+    id: 19,
+    name: 'Orient Electric',
+    logo: '/assets/img/brand/orient-electric.png',
+  },
+  {
+    id: 20,
+    name: 'Genius',
+    logo: '/assets/img/brand/genius.png',
+  },
+  {
+    id: 21,
+    name: 'Ksquare99 Web Services',
+    logo: '/assets/img/brand/ksquare99-web-services.png',
+  },
 ];
 
 export default function OurClient() {
@@ -107,6 +138,10 @@ export default function OurClient() {
           max-height: 58px;
           object-fit: contain;
           transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .our-client-item img.our-client-logo--multiply {
+          mix-blend-mode: multiply;
         }
 
         .our-client-item:hover img {
@@ -184,7 +219,11 @@ export default function OurClient() {
               {clientLogos.map((client) => (
                 <SwiperSlide className="swiper-slide" key={client.id}>
                   <div className="tv-brand-single-item our-client-item">
-                    <img src={client.logo} alt={client.name} />
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      className={client.logoClassName}
+                    />
                   </div>
                 </SwiperSlide>
               ))}
