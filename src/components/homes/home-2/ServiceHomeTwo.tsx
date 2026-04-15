@@ -68,7 +68,7 @@ const fadeUp: Variants = {
 
 export default function ServiceHomeTwo() {
   return (
-    <section className="service-premium-section">
+    <section id="services" className="service-premium-section">
       <div className="service-bg-blur service-bg-blur-1" />
       <div className="service-bg-blur service-bg-blur-2" />
 

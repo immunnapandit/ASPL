@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import UseSticky from '../../hooks/UseSticky';
 import OffCanvasArea from '../../common/OffCanvasArea';
+import { socialLinks } from '../../data/social-links';
 
 export default function HeaderOne() {
   const { sticky } = UseSticky();
@@ -46,16 +47,25 @@ export default function HeaderOne() {
               <div className="col-xl-4 col-lg-5 col-md-6 col-sm-6 d-none d-sm-block">
                 <div className="tv-header-top-right d-flex align-items-center justify-content-end">
                   <div className="tv-header-top-social-box">
-                    <a href="#">
+                    <a
+                      href={socialLinks.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-facebook-f"></i>
                     </a>
-                    <a href="#">
-                      <i className="fa-brands fa-twitter"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/company/atisunyaprivatelimited/">
+                    <a
+                      href={socialLinks.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-linkedin-in"></i>
                     </a>
-                    <a href="#">
+                    <a
+                      href={socialLinks.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <i className="fa-brands fa-instagram"></i>
                     </a>
                   </div>
