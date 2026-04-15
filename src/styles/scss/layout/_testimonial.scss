@@ -147,9 +147,27 @@ img.shap-icon {
   .author-info {
     display: flex;
     align-items: center;
+    gap: 16px;
 
-    img {
+    .author-profile {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .author-avatar-linkedin {
+      width: 92px;
+      height: 92px;
+      min-width: 92px;
       margin-right: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--tv-theme-1);
+      color: var(--tv-common-white);
+      font-size: 36px;
+      transition: 0.3s all;
     }
 
     h2 {
@@ -166,6 +184,19 @@ img.shap-icon {
         margin-top: 8px;
       }
     }
+
+    @media #{$xs} {
+      .author-avatar-linkedin {
+        width: 76px;
+        height: 76px;
+        min-width: 76px;
+        font-size: 30px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+    }
   }
 
   &:hover {
@@ -175,6 +206,11 @@ img.shap-icon {
 
     .author-info h2 span {
       color: var(--tv-common-white);
+    }
+
+    .author-info .author-avatar-linkedin {
+      background: var(--tv-common-white);
+      color: var(--tv-theme-1);
     }
   }
 }

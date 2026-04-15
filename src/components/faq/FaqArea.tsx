@@ -12,58 +12,58 @@ const faqData: FaqAreaProps[] = [
   {
     isOpen: true,
     id: 'one',
-    question: 'Q1. What Is The Design Process For Branding?',
+    question: 'Q1. What services does AtiSunya provide?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'AtiSunya provides consulting, ERP and CRM implementation, Microsoft Dynamics solutions, Azure services, app development, BI and analytics, managed support, digital transformation, and Microsoft Certified Trainer readiness programs.',
   },
   {
     isOpen: false,
     id: 'two',
-    question: 'Q2. How Much Does Logo Design Services Cost?',
+    question: 'Q2. Do you support Microsoft Certified Trainer readiness?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'Yes. We offer Microsoft Certified Trainer readiness support and structured training to help eligible professionals understand the application process, documentation expectations, and practical preparation steps.',
   },
   {
     isOpen: false,
     id: 'three',
-    question: 'Q3. How Long Will It Take To Complete My Project?',
+    question: 'Q3. Which Microsoft solutions do you work with?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'We work across Microsoft Dynamics 365, Microsoft Azure, Power Platform, Power BI, Dynamics AX, Dynamics NAV, and Dynamics CRM, along with related modernization, support, and optimization services.',
   },
   {
     isOpen: false,
     id: 'four',
-    question: 'Q4. What Is Included In A Round Of Revisions?',
+    question: 'Q4. How do you approach a new client project?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'Our approach starts with discovery and business understanding, followed by solution planning, implementation, validation, user enablement, and post-go-live improvement. The exact delivery model depends on scope, timeline, and business priorities.',
   },
   {
     isOpen: false,
     id: 'five',
-    question: 'Q5. Are we too small for managed IT services?',
+    question: 'Q5. Do you work only with large enterprises?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'No. We support both growing businesses and enterprise clients. Engagements are shaped around actual business needs, whether that means advisory support, targeted implementation, or long-term managed services.',
   },
   {
     isOpen: false,
     id: 'six',
-    question: "Q6. Why can't we print on both sides of the paper?",
+    question: 'Q6. Can you help after implementation is complete?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'Yes. We provide post-implementation support, managed services, optimization, issue resolution, change requests, and guidance for continuous improvement after go-live.',
   },
   {
     isOpen: false,
     id: 'seven',
-    question: 'Q7. What is a statement of work in project management?',
+    question: 'Q7. Do you offer custom development and integrations?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'Yes. We support app development, workflow automation, integrations, reporting solutions, and custom enhancements when standard platform capabilities need to be extended for business requirements.',
   },
   {
     isOpen: false,
     id: 'eight',
-    question: 'Q8. How to become an agile project manager?',
+    question: 'Q8. How can I contact AtiSunya for a consultation?',
     answer:
-      'How quick is quick? For most design, we’re talking 2–3 business days. We balance speed with quality, ensuring you get top-notch design swiftly.',
+      'You can reach us through the Contact Us page, email us at info@atisunya.co, or use the contact details listed in the footer to discuss your requirements.',
   },
 ];
 
@@ -117,22 +117,24 @@ export default function FaqArea() {
             <div className="tv-faq-left-wrap">
               <div className="tv-section-title-box mb-50">
                 <span className="tv-section-subtitle tv-spltv-text tv-spltv-in-right">
-                  Question
+                  FAQ
                 </span>
                 <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
-                  Frequently asked asked question
+                  Frequently Asked Questions
                 </h4>
                 <p>
-                  If you need immediate assistance, click the button below to
-                  chat live with a Customer Service Customer live with
-                  representative.
+                  Find quick answers about our services, Microsoft solution expertise,
+                  project delivery approach, and training support.
                 </p>
               </div>
               <div className="tv-faq-form">
-                <h4>Have any Question</h4>
+                <h4>Have a Question?</h4>
                 <form action="#">
                   <div className="tv-contact-input-box mb-24">
                     <input type="text" placeholder="Full Name *" />
+                  </div>
+                  <div className="tv-contact-input-box mb-24">
+                    <input type="email" placeholder="Email Address *" />
                   </div>
                   <div className="it-contact-textarea-box mb-24">
                     <textarea placeholder="Your Message *"></textarea>
