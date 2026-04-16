@@ -23,7 +23,7 @@ const settings = {
 const testimonials = [
   {
     quote:
-      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate. The entire process was smooth, well‑coordinated, and hassle‑free. Their responsiveness and attention to detail made the certification journey straightforward and stress‑free. I would confidently recommend AtiSunya to professionals pursuing Microsoft certifications.',
+      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate."',
     name: 'Nishit Parikh, Australia',
     role: 'MCT Certified Trainer',
   },
@@ -95,10 +95,10 @@ export default function TestimonialHomeOne() {
                       </div>
                       <p>"{item.quote}"</p>
                       <div className="author-info d-flex align-items-center">
-                        <img
+                        {/* <img
                           src="assets/img/testimonial/testi-avatar-1.png"
                           alt={item.name}
-                        />
+                        /> */}
                         <h5>
                           {item.name}
                           <span>{item.role}</span>
