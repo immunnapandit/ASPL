@@ -23,7 +23,7 @@ const settings = {
 const testimonials = [
   {
     quote:
-      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate."',
+      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate.',
     name: 'Nishit Parikh, Australia',
     role: 'MCT Certified Trainer',
   },
