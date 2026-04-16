@@ -63,6 +63,8 @@ const processSteps = [
   'Receive a welcome email from Microsoft after processing, confirming successful enrollment as an MCT.',
 ];
 
+const upcomingBatches = ['2026-03-28', '2026-03-29'];
+
 export { pageConfig };
 
 export default function MicrosoftCertifiedTrainerReadinessTraining() {
@@ -110,6 +112,25 @@ export default function MicrosoftCertifiedTrainerReadinessTraining() {
                   </div>
                 </div>
               </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mctrt-batches">
+        <div className="container">
+          <div className="mctrt-batch-card">
+            <div className="mctrt-batch-card-head">
+              <h2>Upcoming Global Batches</h2>
+            </div>
+
+            <div className="mctrt-batch-strip">
+              {upcomingBatches.map((batch, index) => (
+                <div key={batch} className="mctrt-batch-cell">
+                  <span>{batch}</span>
+                  {index === 0 && <i aria-hidden="true" />}
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -99,7 +99,7 @@ export default function HeroHomeOne() {
                         </p>
                       </div>
                       <div className="tv-slider-btn">
-                        <Link to="/contact" className="tv-btn-primary">
+                        <a href="#solutions" className="tv-btn-primary">
                           <span className="btn-wrap">
                             <span className="btn-text1">
                               Our Solutions
@@ -108,7 +108,7 @@ export default function HeroHomeOne() {
                               Our Solutions
                             </span>
                           </span>
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>

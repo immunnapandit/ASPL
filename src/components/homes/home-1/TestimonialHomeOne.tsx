@@ -23,21 +23,15 @@ const settings = {
 const testimonials = [
   {
     quote:
-      'AtiSunya training program played a key role in my journey to becoming a Microsoft Certified Trainer. The mentorship and practical approach truly made a difference.',
-    name: 'Rizwan Ul Haq, Dubai',
+      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate. The entire process was smooth, well‑coordinated, and hassle‑free. Their responsiveness and attention to detail made the certification journey straightforward and stress‑free. I would confidently recommend AtiSunya to professionals pursuing Microsoft certifications.',
+    name: 'Nishit Parikh, Australia',
     role: 'MCT Certified Trainer',
   },
   {
     quote:
-      'From planning to implementation, the team stayed focused on business value. Their technical depth and responsiveness made the engagement smooth and effective.',
-    name: 'Marvin McKinney',
-    role: 'Product Manager',
-  },
-  {
-    quote:
-      'The solution was delivered with care, speed, and the right technical approach. We appreciated the clarity, ownership, and consistency from start to finish.',
-    name: 'Marvin McKinney',
-    role: 'Product Manager',
+      'AtiSunya training program played a key role in my journey to becoming a Microsoft Certified Trainer. The mentorship and practical approach truly made a difference.',
+    name: 'Rizwan Ul Haq, Dubai',
+    role: 'MCT Certified Trainer',
   },
 ] as const;
 
@@ -87,7 +81,10 @@ export default function TestimonialHomeOne() {
                 className="swiper-container tv-testi-slider-active"
               >
                 {testimonials.map((item, index) => (
-                  <SwiperSlide className="swiper-slide" key={`${item.name}-${index}`}>
+                  <SwiperSlide
+                    className="swiper-slide"
+                    key={`${item.name}-${index}`}
+                  >
                     <div className="single-testi-slider-item">
                       <div className="rating">
                         <i className="fa-solid fa-star-sharp"></i>

@@ -1,6 +1,8 @@
 import type { RouteObject } from 'react-router-dom';
 import AiSolutionsPage from '../components/solutions/ai-solutions';
 import Ax7Page from '../components/solutions/ax-7';
+import AwsPage from '../components/solutions/aws';
+import BusinessCentralPage from '../components/solutions/business-central';
 import Crm2015Page from '../components/solutions/crm-2015';
 import Crm2016Page from '../components/solutions/crm-2016';
 import D365CustomerInsightsPage from '../components/solutions/d365-customer-insights';
@@ -23,6 +25,7 @@ import Office365Page from '../components/solutions/office-365';
 import MicrosoftPowerBiPage from '../components/solutions/microsoft-power-bi';
 import MicrosoftPowerPlatformPage from '../components/solutions/microsoft-power-platform';
 import PowerAutomateSolutionsPage from '../components/solutions/power-automate-solutions';
+import SalesforcePage from '../components/solutions/salesforce';
 import AppDevelopmentPage from '../components/what-we-do/app-development';
 import BiAnalyticsPage from '../components/what-we-do/bi-analytics';
 import ConsultingPage from '../components/what-we-do/consulting';
@@ -40,6 +43,9 @@ import WebinarsEventsPage from '../components/insights/webinars-events';
 
 export const customPageRoutes: RouteObject[] = [
   { path: '/solutions/microsoft-dynamics-365', element: <MicrosoftDynamics365Page /> },
+  { path: '/solutions/business-central', element: <BusinessCentralPage /> },
+  { path: '/solutions/salesforce', element: <SalesforcePage /> },
+  { path: '/solutions/aws', element: <AwsPage /> },
   {
     path: '/solutions/d365-for-supply-chain-management',
     element: <D365SupplyChainManagementPage />
