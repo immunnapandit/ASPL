@@ -118,7 +118,10 @@ export default function FooterOne() {
                           <Link to="/ai-solutions">Artificial Intelligence</Link>
                         </li>
                         <li>
-                          <Link to="/what-we-do/crm-implementation">CRM Development</Link>
+                          <Link to="/solutions/office-365">Office 365</Link>
+                        </li>
+                        <li>
+                          <Link to="/what-we-do/web-development">Web Development</Link>
                         </li>
                       </ul>
                     </div>

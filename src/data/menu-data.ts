@@ -76,6 +76,10 @@ const menu_data: MenuDataType[] = [
         link: '/ai-solutions',
       },
       {
+        title: 'Office 365',
+        link: '/solutions/office-365',
+      },
+      {
         title: 'Microsoft Dynamics AX',
         link: '/solutions/microsoft-dynamics-ax',
         sub_menus: [
@@ -142,6 +146,7 @@ const menu_data: MenuDataType[] = [
       { title: 'Consulting', link: '/what-we-do/consulting' },
       { title: 'Product Engineering', link: '/what-we-do/product-engineering' },
       { title: 'Training', link: '/what-we-do/training' },
+      { title: 'Web Development', link: '/what-we-do/web-development' },
       { title: 'Microsoft Certified Trainer Readiness Training', link: '/microsoft-certified-trainer-readiness-training' },
     ],
   },

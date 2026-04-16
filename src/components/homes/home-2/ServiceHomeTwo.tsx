@@ -2,9 +2,10 @@ import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 
 import 'swiper/css';
+import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const services = [
@@ -42,6 +43,34 @@ const services = [
     img: '/assets/img/service/Cloud.svg',
     accent: '#4F46E5',
     href: '/solutions/cloud-technology',
+  },
+  {
+    title: 'Artificial Intelligence',
+    desc: 'Applied AI solutions that automate workflows, generate insights, and help teams make faster decisions.',
+    img: '/assets/img/service/aichip.svg',
+    accent: '#EC4899',
+    href: '/ai-solutions',
+  },
+  {
+    title: 'ERP Implementation',
+    desc: 'End-to-end ERP implementation services covering planning, configuration, deployment, and post-go-live support.',
+    img: '/assets/img/service/erp-icon.svg',
+    accent: '#F97316',
+    href: '/what-we-do/erp-implementation',
+  },
+  {
+    title: 'Office 365',
+    desc: 'Microsoft 365 and Office 365 services for secure collaboration, productivity, migration, and user enablement.',
+    img: '/assets/img/service/Microsoft_365.svg',
+    accent: '#2563EB',
+    href: '/solutions/office-365',
+  },
+  {
+    title: 'Web Development',
+    desc: 'Modern website and web application development focused on performance, usability, integrations, and growth.',
+    img: '/assets/img/service/webdevelopment.svg',
+    accent: '#10B981',
+    href: '/what-we-do/web-development',
   },
 ] as const;
 
@@ -96,10 +125,12 @@ export default function ServiceHomeTwo() {
             with Dynamics 365
           </motion.h2>
 
-          <motion.p className="section-subtitle" variants={fadeUp}>
-            Premium Microsoft technology services built to help your business
-            scale with confidence, clarity, and speed.
-          </motion.p>
+          <motion.div className="service-subtitle-row" variants={fadeUp}>
+            <p className="section-subtitle">
+              Premium Microsoft technology services built to help your business
+              scale with confidence, clarity, and speed.
+            </p>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -112,14 +143,36 @@ export default function ServiceHomeTwo() {
             ease: 'easeOut',
           }}
         >
+          <div className="service-corner-controls">
+            <button
+              type="button"
+              className="service-nav-btn service-arrow-prev"
+              aria-label="Previous service"
+            >
+              <i className="fa-light fa-arrow-left-long" aria-hidden="true"></i>
+            </button>
+
+            <button
+              type="button"
+              className="service-nav-btn service-arrow-next"
+              aria-label="Next service"
+            >
+              <i className="fa-light fa-arrow-right-long" aria-hidden="true"></i>
+            </button>
+          </div>
+
           <Swiper
-            modules={[Autoplay, Pagination]}
+            modules={[Autoplay, Pagination, Navigation]}
             autoplay={{
               delay: 3200,
               disableOnInteraction: false,
             }}
             loop
             speed={1100}
+            navigation={{
+              prevEl: '.service-arrow-prev',
+              nextEl: '.service-arrow-next',
+            }}
             pagination={{ clickable: true, el: '.service-pagination' }}
             spaceBetween={24}
             breakpoints={{

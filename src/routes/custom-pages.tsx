@@ -19,6 +19,7 @@ import MicrosoftDynamics365Page from '../components/solutions/microsoft-dynamics
 import MicrosoftDynamicsAxPage from '../components/solutions/microsoft-dynamics-ax';
 import MicrosoftDynamicsCrmPage from '../components/solutions/microsoft-dynamics-crm';
 import MicrosoftDynamicsNavPage from '../components/solutions/microsoft-dynamics-nav';
+import Office365Page from '../components/solutions/office-365';
 import MicrosoftPowerBiPage from '../components/solutions/microsoft-power-bi';
 import MicrosoftPowerPlatformPage from '../components/solutions/microsoft-power-platform';
 import PowerAutomateSolutionsPage from '../components/solutions/power-automate-solutions';
@@ -33,6 +34,7 @@ import MicrosoftCertifiedTrainerReadinessTrainingPage from '../components/what-w
 import ProductEngineeringPage from '../components/what-we-do/product-engineering';
 import SupportManagedServicesPage from '../components/what-we-do/support-managed-services';
 import TrainingPage from '../components/what-we-do/training';
+import WebDevelopmentPage from '../components/what-we-do/web-development';
 import SuccessStoriesPage from '../components/insights/success-stories';
 import WebinarsEventsPage from '../components/insights/webinars-events';
 
@@ -57,6 +59,7 @@ export const customPageRoutes: RouteObject[] = [
   },
   { path: '/solutions/microsoft-azure', element: <MicrosoftAzurePage /> },
   { path: '/ai-solutions', element: <AiSolutionsPage /> },
+  { path: '/solutions/office-365', element: <Office365Page /> },
   { path: '/solutions/microsoft-dynamics-ax', element: <MicrosoftDynamicsAxPage /> },
   { path: '/solutions/microsoft-dynamics-ax/ax-7', element: <Ax7Page /> },
   { path: '/solutions/microsoft-dynamics-crm', element: <MicrosoftDynamicsCrmPage /> },
@@ -91,6 +94,7 @@ export const customPageRoutes: RouteObject[] = [
   { path: '/what-we-do/consulting', element: <ConsultingPage /> },
   { path: '/what-we-do/product-engineering', element: <ProductEngineeringPage /> },
   { path: '/what-we-do/training', element: <TrainingPage /> },
+  { path: '/what-we-do/web-development', element: <WebDevelopmentPage /> },
   {
     path: '/microsoft-certified-trainer-readiness-training',
     element: <MicrosoftCertifiedTrainerReadinessTrainingPage />
