@@ -6,6 +6,7 @@
     linear-gradient(180deg, #f7fbfa 0%, #ffffff 22%, #f8fafc 100%);
 
   .mctrt-hero,
+  .mctrt-batches,
   .mctrt-overview,
   .mctrt-audience,
   .mctrt-benefits,
@@ -101,6 +102,7 @@
 
   .mctrt-card-image,
   .mctrt-media-panel,
+  .mctrt-batch-card,
   .mctrt-highlight-card,
   .mctrt-info-card,
   .mctrt-prerequisites,
@@ -114,6 +116,7 @@
   }
 
   .mctrt-card-image,
+  .mctrt-batch-card,
   .mctrt-info-card,
   .mctrt-prerequisites,
   .mctrt-benefit-card,
@@ -128,6 +131,64 @@
     overflow: hidden;
     border-radius: 26px;
     height: 100%;
+  }
+
+  .mctrt-batches {
+    padding-top: 0;
+  }
+
+  .mctrt-batch-card {
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .mctrt-batch-card-head {
+    padding: 34px 46px;
+    background: #172033;
+  }
+
+  .mctrt-batch-card-head h2 {
+    margin: 0;
+    color: #ffffff;
+    font-family: var(--tv-ff-heading);
+    font-size: 54px;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .mctrt-batch-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .mctrt-batch-cell {
+    position: relative;
+    min-height: 128px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 26px 20px;
+    text-align: center;
+    background: #ffffff;
+  }
+
+  .mctrt-batch-cell span {
+    color: #172033;
+    font-family: var(--tv-ff-heading);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .mctrt-batch-cell i {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: rgba(23, 32, 51, 0.12);
   }
 
   .mctrt-card-image img {
@@ -309,6 +370,7 @@
 @media (max-width: 991px) {
   .mctrt-page {
     .mctrt-hero,
+    .mctrt-batches,
     .mctrt-overview,
     .mctrt-audience,
     .mctrt-benefits,
@@ -327,6 +389,22 @@
       font-size: 31px;
     }
 
+    .mctrt-batch-card-head {
+      padding: 28px 32px;
+    }
+
+    .mctrt-batch-card-head h2 {
+      font-size: 42px;
+    }
+
+    .mctrt-batch-cell {
+      min-height: 110px;
+    }
+
+    .mctrt-batch-cell span {
+      font-size: 34px;
+    }
+
     .mctrt-sticky-copy {
       position: static;
     }
@@ -336,6 +414,7 @@
 @media (max-width: 575px) {
   .mctrt-page {
     .mctrt-hero,
+    .mctrt-batches,
     .mctrt-overview,
     .mctrt-audience,
     .mctrt-benefits,
@@ -352,6 +431,36 @@
     .mctrt-section-heading h2,
     .mctrt-outcome-card h2 {
       font-size: 27px;
+    }
+
+    .mctrt-batch-card-head {
+      padding: 24px 22px;
+    }
+
+    .mctrt-batch-card-head h2 {
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .mctrt-batch-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .mctrt-batch-cell {
+      min-height: 88px;
+      padding: 20px 18px;
+    }
+
+    .mctrt-batch-cell span {
+      font-size: 24px;
+    }
+
+    .mctrt-batch-cell i {
+      display: none;
+    }
+
+    .mctrt-batch-cell:first-child {
+      border-bottom: 1px solid rgba(23, 32, 51, 0.12);
     }
 
     .mctrt-batch-card,
