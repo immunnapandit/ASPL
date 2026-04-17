@@ -43,25 +43,25 @@ export default function HeroHomeOne() {
                       </span>
                       <h1
                         className="tv-slider-title p-relative"
-                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                        style={{
+                          fontSize: 'clamp(2rem, 4.5vw, 4rem)',
+                          lineHeight: 1.15,
+                        }}
                       >
                         Transform Your Business with Intelligent Digital Solutions
                       </h1>
                       <div className="tv-slider-text pb-20">
                         <p>
-                          AtiSunya helps organizations modernize operations with Microsoft Dynamics 365, 
-                          Azure Cloud, and innovative technology solutions designed for scalability and growth.
+                          AtiSunya helps organizations modernize operations with
+                          Microsoft Dynamics 365, Azure Cloud, and innovative
+                          technology solutions designed for scalability and growth.
                         </p>
                       </div>
                       <div className="tv-slider-btn">
                         <Link to="/contact" className="tv-btn-primary">
                           <span className="btn-wrap">
-                            <span className="btn-text1">
-                              Let’s Talk With Us
-                            </span>
-                            <span className="btn-text2">
-                              Let’s Talk With Us
-                            </span>
+                            <span className="btn-text1">Let's Talk</span>
+                            <span className="btn-text2">Let's Talk</span>
                           </span>
                         </Link>
                       </div>
@@ -71,6 +71,7 @@ export default function HeroHomeOne() {
               </div>
             </div>
           </SwiperSlide>
+
           <SwiperSlide className="swiper-slide">
             <div className="tv-slider-overlay z-index-1 fix p-relative">
               <div
@@ -88,27 +89,27 @@ export default function HeroHomeOne() {
                       </span>
                       <h1
                         className="tv-slider-title p-relative"
-                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                        style={{
+                          fontSize: 'clamp(2rem, 4.5vw, 4rem)',
+                          lineHeight: 1.15,
+                        }}
                       >
                         Empowering Businesses with Microsoft Dynamics 365
                       </h1>
                       <div className="tv-slider-text pb-20">
                         <p>
-                          Streamline operations, automate processes, and gain real-time insights with powerful ERP and 
-                          CRM solutions built on Microsoft Dynamics 365 and Power Platform.
+                          Streamline operations, automate processes, and gain
+                          real-time insights with powerful ERP and CRM solutions
+                          built on Microsoft Dynamics 365 and Power Platform.
                         </p>
                       </div>
                       <div className="tv-slider-btn">
-                        <a href="#solutions" className="tv-btn-primary">
+                        <Link to="/contact" className="tv-btn-primary">
                           <span className="btn-wrap">
-                            <span className="btn-text1">
-                              Our Solutions
-                            </span>
-                            <span className="btn-text2">
-                              Our Solutions
-                            </span>
+                            <span className="btn-text1">Let's Talk</span>
+                            <span className="btn-text2">Let's Talk</span>
                           </span>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -116,6 +117,7 @@ export default function HeroHomeOne() {
               </div>
             </div>
           </SwiperSlide>
+
           <SwiperSlide className="swiper-slide">
             <div className="tv-slider-overlay z-index-1 fix p-relative">
               <div
@@ -133,25 +135,25 @@ export default function HeroHomeOne() {
                       </span>
                       <h1
                         className="tv-slider-title p-relative"
-                        style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.15 }}
+                        style={{
+                          fontSize: 'clamp(2rem, 4.5vw, 4rem)',
+                          lineHeight: 1.15,
+                        }}
                       >
                         Build Powerful Software for the Future
                       </h1>
                       <div className="tv-slider-text pb-20">
                         <p>
-                          From modern web applications to enterprise systems, our expert team develops 
-                          scalable solutions using Azure, React, .NET, and the latest technologies.
+                          From modern web applications to enterprise systems, our
+                          expert team develops scalable solutions using Azure,
+                          React, .NET, and the latest technologies.
                         </p>
                       </div>
                       <div className="tv-slider-btn">
                         <Link to="/contact" className="tv-btn-primary">
                           <span className="btn-wrap">
-                            <span className="btn-text1">
-                              Let’s Talk With Us
-                            </span>
-                            <span className="btn-text2">
-                              Let’s Talk With Us
-                            </span>
+                            <span className="btn-text1">Let's Talk</span>
+                            <span className="btn-text2">Let's Talk</span>
                           </span>
                         </Link>
                       </div>
