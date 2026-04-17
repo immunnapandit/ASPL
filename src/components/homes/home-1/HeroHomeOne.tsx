@@ -31,7 +31,7 @@ export default function HeroHomeOne() {
               <div
                 className="tv-slider-bg"
                 style={{
-                  backgroundImage: `url(/assets/img/slider/CloudComputing.png)`,
+                  backgroundImage: `url(/assets/img/slider/financilabuilding.jpg)`,
                 }}
               ></div>
               <div className="container">
@@ -77,7 +77,7 @@ export default function HeroHomeOne() {
               <div
                 className="tv-slider-bg"
                 style={{
-                  backgroundImage: `url(/assets/img/slider/slider-1-2.jpg)`,
+                  backgroundImage: `url(/assets/img/slider/Businees.jpg)`,
                 }}
               ></div>
               <div className="container">
@@ -123,7 +123,7 @@ export default function HeroHomeOne() {
               <div
                 className="tv-slider-bg"
                 style={{
-                  backgroundImage: `url(/assets/img/slider/slider-1-3.jpg)`,
+                  backgroundImage: `url(/assets/img/slider/Cloud1.jpg)`,
                 }}
               ></div>
               <div className="container">
