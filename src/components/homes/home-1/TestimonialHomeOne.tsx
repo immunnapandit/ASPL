@@ -27,6 +27,7 @@ const testimonials = [
     name: 'Nishit Parikh, Australia',
     role: 'MCT Certified Trainer',
     linkedinUrl: 'https://www.linkedin.com/in/nishitpparikh/',
+    avatarUrl: '/assets/img/testimonial/test-avatar-2-2.png',
   },
   {
     quote:
@@ -34,6 +35,7 @@ const testimonials = [
     name: 'Rizwan Ul Haq, Dubai',
     role: 'MCT Certified Trainer',
     linkedinUrl: 'https://www.linkedin.com/in/rizulhaq/',
+    avatarUrl: '/assets/img/testimonial/Rizuan.png',
   },
 ] as const;
 
@@ -97,10 +99,17 @@ export default function TestimonialHomeOne() {
                       </div>
                       <p>"{item.quote}"</p>
                       <div className="author-info d-flex align-items-center">
-                        {/* <img
-                          src="assets/img/testimonial/testi-avatar-1.png"
+                        <img
+                          src={item.avatarUrl}
                           alt={item.name}
-                        /> */}
+                          style={{
+                            width: '64px',
+                            height: '64px',
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            flexShrink: 0,
+                          }}
+                        />
                         <h5>
                           {item.name}
                           <span>{item.role}</span>
