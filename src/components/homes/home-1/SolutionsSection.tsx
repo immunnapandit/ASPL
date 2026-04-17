@@ -41,7 +41,7 @@ const solutions = [
     desc: 'Build, scale, and secure your applications with AWS, enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
     button: 'Know More',
     href: '/solutions/aws',
-    image: '/assets/img/service/saas-concept-collage.jpg',
+    image: '/assets/img/service/aws.png',
   },
 ] as const;
 
