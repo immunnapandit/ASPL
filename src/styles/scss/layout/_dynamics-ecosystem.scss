@@ -1,0 +1,170 @@
+.dynamics-ecosystem-section {
+  position: relative;
+  padding: 40px 0 32px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.dynamics-ecosystem-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 56px;
+}
+
+.dynamics-ecosystem-text {
+  max-width: 590px;
+  width: 100%;
+}
+
+.dynamics-ecosystem-heading {
+  max-width: 100%;
+  margin: 0 0 22px;
+  text-align: left;
+}
+
+.dynamics-ecosystem-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.dynamics-ecosystem-title {
+  margin: 0;
+  color: var(--tv-heading-primary);
+  font-family: var(--tv-ff-heading);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.dynamics-ecosystem-desc {
+  margin: 0;
+  color: var(--tv-text-body);
+  font-family: var(--tv-ff-body);
+  font-size: 18px;
+  line-height: 30px;
+  max-width: 56ch;
+}
+
+.dynamics-ecosystem-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.dynamics-ecosystem-circle {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(43, 77, 255, 0.16) 0%,
+    rgba(43, 77, 255, 0.06) 45%,
+    rgba(43, 77, 255, 0) 72%
+  );
+  filter: blur(2px);
+  z-index: 0;
+}
+
+.dynamics-ecosystem-glow {
+  position: absolute;
+  inset: 12% 8%;
+  border-radius: 36px;
+  background: linear-gradient(
+    135deg,
+    rgba(43, 77, 255, 0.14) 0%,
+    rgba(90, 75, 218, 0.08) 45%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  filter: blur(28px);
+  z-index: 0;
+}
+
+.dynamics-ecosystem-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 660px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eef4ff 0%, #f7faff 48%, #e9f1ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 10px;
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.1), 0 12px 28px rgba(43, 77, 255, 0.06);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+}
+
+.dynamics-ecosystem-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.dynamics-ecosystem-card:hover {
+  box-shadow: 0 30px 68px rgba(15, 23, 42, 0.13), 0 16px 36px rgba(43, 77, 255, 0.09);
+  filter: saturate(1.02);
+}
+
+.dynamics-ecosystem-image {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: 24px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+@media (max-width: 1199px) {
+  .dynamics-ecosystem-panel {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .dynamics-ecosystem-text {
+    max-width: 100%;
+  }
+
+  .dynamics-ecosystem-heading {
+    text-align: center;
+  }
+
+  .dynamics-ecosystem-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .dynamics-ecosystem-section {
+    padding: 24px 0 18px;
+  }
+
+  .dynamics-ecosystem-title {
+    font-size: 28px;
+  }
+
+  .dynamics-ecosystem-desc {
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  .dynamics-ecosystem-card {
+    border-radius: 24px;
+    padding: 8px;
+  }
+
+  .dynamics-ecosystem-image {
+    border-radius: 18px;
+  }
+}

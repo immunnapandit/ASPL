@@ -4,6 +4,7 @@ import { animationCreate } from '../utils/utils';
 import ScrollToTop from '../common/ScrollToTop';
 import AnimationProvider from '../common/AnimationProvider';
 import BackToTop from '../common/BackToTop';
+import DefaultSeo from '../common/DefaultSeo';
 
 interface WrapperProps {
   children: ReactNode;
@@ -38,6 +39,7 @@ export default function Wrapper({ children }: WrapperProps) {
 
   return (
     <>
+      <DefaultSeo />
       {children}
       <ScrollToTop />
       <BackToTop />

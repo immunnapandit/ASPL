@@ -12,6 +12,7 @@ import IndustriesSection from './IndustriesSection';
 import OurTraining from './OurTraining';
 import OurClient from './OurClient';
 import SolutionsSection from './SolutionsSection';
+import Dynamics365EcosystemSection from './Dynamics365EcosystemSection';
 
 export default function HomeOne() {
   return (
@@ -21,7 +22,9 @@ export default function HomeOne() {
         <HeroHomeOne />
         <AboutHomeTwo />
         <ServiceHomeTwo />
+        <Dynamics365EcosystemSection />
         <SolutionsSection />
+        
         <IndustriesSection />
         <OurTraining />
 
