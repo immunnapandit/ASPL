@@ -2,7 +2,11 @@
 
 .mctrt-page {
   background:
-    radial-gradient(circle at top left, rgba(17, 94, 89, 0.08), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(17, 94, 89, 0.08),
+      transparent 28%
+    ),
     linear-gradient(180deg, #f7fbfa 0%, #ffffff 22%, #f8fafc 100%);
 
   .mctrt-hero,
@@ -140,6 +144,8 @@
   .mctrt-batch-card {
     overflow: hidden;
     background: rgba(255, 255, 255, 0.96);
+    max-width: 720px;
+    margin: 0 auto;
   }
 
   .mctrt-batch-card-head {
@@ -164,11 +170,11 @@
 
   .mctrt-batch-cell {
     position: relative;
-    min-height: 128px;
+    min-height: 96px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 26px 20px;
+    padding: 18px 16px;
     text-align: center;
     background: #ffffff;
   }
@@ -176,9 +182,9 @@
   .mctrt-batch-cell span {
     color: #172033;
     font-family: var(--tv-ff-heading);
-    font-size: 42px;
+    font-size: 28px;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.2;
     letter-spacing: -0.02em;
   }
 
@@ -286,7 +292,11 @@
 
   .mctrt-benefits {
     background:
-      linear-gradient(180deg, rgba(232, 250, 245, 0.9), rgba(255, 255, 255, 0.96)),
+      linear-gradient(
+        180deg,
+        rgba(232, 250, 245, 0.9),
+        rgba(255, 255, 255, 0.96)
+      ),
       url('/assets/img/service/service-bg.png') center / cover no-repeat;
   }
 

@@ -63,7 +63,10 @@ const processSteps = [
   'Receive a welcome email from Microsoft after processing, confirming successful enrollment as an MCT.',
 ];
 
-const upcomingBatches = ['2026-03-28', '2026-03-29'];
+const upcomingBatches = [
+  '20 Apr-2026 to 21 Apr-2026',
+  '23 Apr-2026 to 24 Apr-2026',
+];
 
 export { pageConfig };
 
