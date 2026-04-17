@@ -2,33 +2,9 @@
 
 .service-premium-section {
   position: relative;
-  padding: 48px 0 90px;
+  padding: 16px 0 90px;
   background: var(--tv-common-white);
   overflow: hidden;
-
-  .service-bg-blur {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(60px);
-    opacity: 0.45;
-    pointer-events: none;
-  }
-
-  .service-bg-blur-1 {
-    width: 260px;
-    height: 260px;
-    background: rgba(43, 77, 255, 0.16);
-    top: -80px;
-    left: -80px;
-  }
-
-  .service-bg-blur-2 {
-    width: 320px;
-    height: 320px;
-    background: rgba(20, 184, 166, 0.14);
-    bottom: -100px;
-    right: -100px;
-  }
 
   .section-header {
     max-width: 980px;
@@ -385,7 +361,7 @@
 
 @media (max-width: 1199px) {
   .service-premium-section {
-    padding: 40px 0 70px;
+    padding: 12px 0 70px;
 
     .service-image-wrap {
       height: 230px;
@@ -395,7 +371,7 @@
 
 @media (max-width: 991px) {
   .service-premium-section {
-    padding: 36px 0 70px;
+    padding: 8px 0 70px;
 
     .service-image-wrap {
       height: 240px;
@@ -427,7 +403,7 @@
 
 @media (max-width: 575px) {
   .service-premium-section {
-    padding: 28px 0 60px;
+    padding: 0 0 60px;
 
     .section-header {
       margin-bottom: 32px;

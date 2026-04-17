@@ -143,6 +143,18 @@
   }
 }
 
+.about-home-two-compact {
+  padding-bottom: 72px;
+
+  @media #{$lg} {
+    padding-bottom: 56px;
+  }
+
+  @media #{$sm, $xs} {
+    padding-bottom: 60px;
+  }
+}
+
 .tv-list-item {
   margin-bottom: 50px;
   ul {

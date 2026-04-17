@@ -17,27 +17,42 @@ export default function HeaderOne() {
             <div className="row align-items-center">
               <div className="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                 <div className="tv-header-top-list-box">
-                  <ul>
+                  <ul className="d-flex align-items-center flex-nowrap mb-0">
                     <li className="d-none d-lg-inline-block">
-                      <span>
+                      <span
+                        className="d-inline-flex align-items-center flex-nowrap"
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
                         <i className="fa-solid fa-phone"></i>
-                        <a href="tel:+91-80-8181-0673  ">(+91) 80-8181-0673  </a>
+                        <a
+                          href="tel:+91-80-8181-0673"
+                          style={{ whiteSpace: 'nowrap' }}
+                        >
+                          (+91) 80-8181-0673, +91-82-9915-6511
+                        </a>
                       </span>
                     </li>
                     <li>
-                      <span>
+                      <span
+                        className="d-inline-flex align-items-center flex-nowrap"
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
                         <i className="fa-solid fa-envelope"></i>
                         <a href="mailto:info@atisunya.co">info@atisunya.co</a>
                       </span>
                     </li>
                     <li className="d-none d-xxl-inline-block">
-                      <span>
+                      <span
+                        className="d-inline-flex align-items-center flex-nowrap"
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
                         <i className="fa-solid fa-location-dot"></i>
                         <a
                           target="_blank"
                           href="https://www.google.com/maps/@23.843848,90.3081992,17.5z?entry=ttu&amp;g_ep=EgoyMDI1MDEwMS4wIKXMDSoASAFQAw%3D%3D"
+                          style={{ whiteSpace: 'nowrap' }}
                         >
-                          Logix Technova,Block A, Sec-132 Noida
+                          Logix Technova, Block A-522, Sec-132 Noida
                         </a>
                       </span>
                     </li>

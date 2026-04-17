@@ -3,7 +3,7 @@ import VideoPopup from '../../../modal/VideoPopup';
 
 export default function AboutHomeTwo() {
   return (
-    <div className="tv-about2-area tv-about-area-2 pt-130 pb-130">
+    <div className="tv-about2-area tv-about-area-2 pt-130 pb-130 about-home-two-compact">
       <div className="container">
         <div className="row">
           <div className="col-xl-6 col-lg-6 col-12">

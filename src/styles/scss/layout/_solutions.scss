@@ -142,7 +142,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 18px;
+  padding: 0;
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
@@ -180,19 +180,19 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 580px;
+  max-width: 660px;
   min-height: auto;
   aspect-ratio: auto;
-  border-radius: 28px;
+  border-radius: 32px;
   overflow: hidden;
   background: linear-gradient(135deg, #eef4ff 0%, #f7faff 48%, #e9f1ff 100%);
   border: 1px solid rgba(255, 255, 255, 0.88);
   display: flex;
   align-items: stretch;
   justify-content: center;
-  padding: 0;
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.12), 0 10px 24px rgba(43, 77, 255, 0.08);
-  transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease;
+  padding: 10px;
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.1), 0 12px 28px rgba(43, 77, 255, 0.06);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
 
 .visual-card::before {
@@ -205,7 +205,8 @@
 }
 
 .visual-card:hover {
-  box-shadow: 0 34px 70px rgba(15, 23, 42, 0.15), 0 14px 30px rgba(43, 77, 255, 0.12);
+  box-shadow: 0 30px 68px rgba(15, 23, 42, 0.13), 0 16px 36px rgba(43, 77, 255, 0.09);
+  filter: saturate(1.02);
 }
 
 .visual-image {
@@ -214,6 +215,7 @@
   width: 100%;
   height: auto;
   max-width: 100%;
+  border-radius: 24px;
   object-fit: contain;
   object-position: center;
   display: block;
@@ -294,6 +296,11 @@
   .visual-card {
     border-radius: 22px;
     min-height: 320px;
+    padding: 8px;
+  }
+
+  .visual-image {
+    border-radius: 18px;
   }
 }
 

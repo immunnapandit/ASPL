@@ -97,10 +97,7 @@ const fadeUp: Variants = {
 
 export default function ServiceHomeTwo() {
   return (
-    <section id="services" className="service-premium-section">
-      <div className="service-bg-blur service-bg-blur-1" />
-      <div className="service-bg-blur service-bg-blur-2" />
-
+    <section id="services" className="service-premium-section white-bg">
       <div className="container position-relative">
         <motion.div
           className="section-header text-center tv-section-title-box"
