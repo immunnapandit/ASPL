@@ -16,6 +16,7 @@ export default function HeroHomeOne() {
           spaceBetween={0}
           slidesPerView={1}
           effect="fade"
+          fadeEffect={{ crossFade: true }}
           autoplay={{ delay: 4500, disableOnInteraction: true }}
           pagination={{
             clickable: true,
