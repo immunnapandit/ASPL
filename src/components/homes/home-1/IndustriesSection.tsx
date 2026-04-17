@@ -89,7 +89,7 @@ export default function IndustriesSection() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5 }}
         >
-          <span className="industries-subtitle">
+          <span className="industries-subtitle tv-section-subtitle tv-spltv-text tv-spltv-in-right">
             Industries
           </span>
 
