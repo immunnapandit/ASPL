@@ -7,6 +7,25 @@
   background: var(--tv-gray-1);
 }
 
+.testimonial-left-content .tv-section-title-box,
+.tv-testimonial-area2 .tv-section-title-box {
+  .tv-section-subtitle {
+    margin-bottom: 12px;
+  }
+
+  .tv-section-title {
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin-top: 18px;
+    font-size: 18px;
+    line-height: 30px;
+    color: var(--tv-text-body);
+  }
+}
+
 .tv-testmonial-wrap {
   margin-left: 109px;
   background: var(--tv-common-white);
@@ -41,7 +60,7 @@
 .single-testi-slider-item p {
   font-size: 24px;
   line-height: 40px;
-  text-align: justify;
+  text-align: left;
   color: var(--tv-heading-primary);
   margin-bottom: 32px;
 }
@@ -116,11 +135,11 @@ img.shap-icon {
   }
 
   .testimonial-quote {
-    margin: 22px 0 30px;
+    margin: 18px 0 28px;
     color: #14287b;
     font-family: var(--tv-ff-heading);
     font-size: 21px;
-    line-height: 1.7;
+    line-height: 1.65;
     letter-spacing: -0.01em;
   }
 
@@ -157,7 +176,7 @@ img.shap-icon {
 
     span {
       display: block;
-      margin-top: 4px;
+      margin-top: 6px;
       font-size: 14px;
       line-height: 1.45;
       font-weight: 500;
@@ -265,9 +284,9 @@ img.shap-icon {
     }
 
     .testimonial-quote {
-      margin: 22px 0 28px;
+      margin: 18px 0 24px;
       font-size: 18px;
-      line-height: 1.7;
+      line-height: 1.65;
     }
 
     .author-info h2 {
@@ -297,9 +316,9 @@ img.shap-icon {
     }
 
     .testimonial-quote {
-      margin: 18px 0 22px;
+      margin: 16px 0 20px;
       font-size: 17px;
-      line-height: 1.7;
+      line-height: 1.6;
     }
 
     .author-info {

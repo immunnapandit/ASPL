@@ -14,8 +14,13 @@
   margin-bottom: 56px;
   
   .industries-subtitle {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: inline-block;
+  }
+
+  .industries-title {
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 }
 
@@ -27,7 +32,7 @@
 
 .industries-description {
   max-width: 860px;
-  margin: 28px auto 0;
+  margin: 18px auto 0;
   font-family: var(--tv-ff-body);
   font-size: 18px;
   line-height: 30px;

@@ -105,12 +105,15 @@ export default function OurClient() {
         }
 
         .our-client-header .tv-section-title {
-          margin-bottom: 14px;
+          margin-bottom: 18px;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
         }
 
         .our-client-header p {
           margin-bottom: 0;
           color: #5b6472;
+          line-height: 30px;
         }
 
         .our-client-slider {

@@ -21,10 +21,21 @@
     p {
       font-size: 18px;
       line-height: 30px;
-      margin-top: 28px;
+      margin-top: 18px;
     }
     .tv-list-item {
       margin-bottom: 54px;
+    }
+
+    .tv-section-title-box {
+      .tv-section-subtitle {
+        margin-bottom: 12px;
+      }
+
+      .tv-section-title {
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
     }
   }
 
