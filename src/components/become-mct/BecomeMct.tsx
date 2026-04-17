@@ -1,41 +1,49 @@
-import { useState } from "react";
-import { CalendarClock, Mail, MessageSquareText, Phone, ShieldCheck, User, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import "../../styles/scss/layout/_becomemct.scss";
+import { useState } from 'react';
+import {
+  CalendarClock,
+  Mail,
+  MessageSquareText,
+  Phone,
+  ShieldCheck,
+  User,
+  X,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import '../../styles/scss/layout/_becomemct.scss';
 
 export default function BecomeMct() {
   const [openIndex, setOpenIndex] = useState(0);
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
 
   const upcomingBatches = [
-    { date: "2026-03-28" },
-    { date: "2026-03-29" },
+    { date: '20-april-2026 to 21-april-2026' },
+    { date: '23-april-2026 to 24-april-2026' },
   ];
 
   const sections = [
     {
-      title: "Program Overview",
-      subtitle: "A structured path to becoming MCT-ready.",
+      title: 'Program Overview',
+      subtitle: 'A structured path to becoming MCT-ready.',
       content: (
         <>
           <p>
             AtiSunya helps IT professionals and aspiring educators grow into
-            confident, certified trainers. Our MCT Readiness Program is
-            designed to strengthen your instructional skills, improve delivery
-            quality, and help you step into the Microsoft training ecosystem
-            with confidence and recognition.
+            confident, certified trainers. Our MCT Readiness Program is designed
+            to strengthen your instructional skills, improve delivery quality,
+            and help you step into the Microsoft training ecosystem with
+            confidence and recognition.
           </p>
           <p className="mb-0">
             The course focuses on practical presentation skills, learner
-            engagement, and professional delivery for onsite, remote, and
-            hybrid environments.
+            engagement, and professional delivery for onsite, remote, and hybrid
+            environments.
           </p>
         </>
       ),
     },
     {
-      title: "Why Choose AtiSunya",
-      subtitle: "A guided and professional learning experience.",
+      title: 'Why Choose AtiSunya',
+      subtitle: 'A guided and professional learning experience.',
       content: (
         <>
           <p>
@@ -66,14 +74,14 @@ export default function BecomeMct() {
       ),
     },
     {
-      title: "What You Will Learn",
-      subtitle: "Skills that improve your teaching impact.",
+      title: 'What You Will Learn',
+      subtitle: 'Skills that improve your teaching impact.',
       content: (
         <>
           <p>
             Our Instructional Skills for Technical Trainers course equips you to
-            deliver high-quality Microsoft training in onsite, remote, or
-            hybrid settings.
+            deliver high-quality Microsoft training in onsite, remote, or hybrid
+            settings.
           </p>
 
           <ul className="pm-list">
@@ -89,8 +97,8 @@ export default function BecomeMct() {
       ),
     },
     {
-      title: "Who Should Join",
-      subtitle: "Ideal for future trainers and technical presenters.",
+      title: 'Who Should Join',
+      subtitle: 'Ideal for future trainers and technical presenters.',
       content: (
         <>
           <p>
@@ -101,7 +109,9 @@ export default function BecomeMct() {
           <div className="pm-grid">
             <div className="pm-mini-card">
               <h6>Technical professionals</h6>
-              <p>Perfect for people transitioning from development or support.</p>
+              <p>
+                Perfect for people transitioning from development or support.
+              </p>
             </div>
             <div className="pm-mini-card">
               <h6>Existing trainers</h6>
@@ -109,7 +119,9 @@ export default function BecomeMct() {
             </div>
             <div className="pm-mini-card">
               <h6>Corporate educators</h6>
-              <p>Useful for those delivering learning sessions in organizations.</p>
+              <p>
+                Useful for those delivering learning sessions in organizations.
+              </p>
             </div>
             <div className="pm-mini-card">
               <h6>Career upgraders</h6>
@@ -120,8 +132,8 @@ export default function BecomeMct() {
       ),
     },
     {
-      title: "Program Outcome",
-      subtitle: "A stronger and more confident trainer profile.",
+      title: 'Program Outcome',
+      subtitle: 'A stronger and more confident trainer profile.',
       content: (
         <>
           <p>
@@ -138,8 +150,8 @@ export default function BecomeMct() {
       ),
     },
     {
-      title: "Next Steps",
-      subtitle: "Start your MCT journey with confidence.",
+      title: 'Next Steps',
+      subtitle: 'Start your MCT journey with confidence.',
       content: (
         <>
           <p>
@@ -176,13 +188,13 @@ export default function BecomeMct() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const fullName = formData.get("fullName");
-    const email = formData.get("email");
-    const microsoftAccountId = formData.get("microsoftAccountId");
-    const phone = formData.get("phone");
-    const preferredDateTime = formData.get("preferredDateTime");
-    const subject = formData.get("subject");
-    const message = formData.get("message");
+    const fullName = formData.get('fullName');
+    const email = formData.get('email');
+    const microsoftAccountId = formData.get('microsoftAccountId');
+    const phone = formData.get('phone');
+    const preferredDateTime = formData.get('preferredDateTime');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
 
     const body = [
       `Full Name: ${fullName}`,
@@ -190,13 +202,13 @@ export default function BecomeMct() {
       `Microsoft Account ID: ${microsoftAccountId}`,
       `Phone: ${phone}`,
       `Preferred Date/Time: ${preferredDateTime}`,
-      "",
-      "Message:",
+      '',
+      'Message:',
       `${message}`,
-    ].join("\n");
+    ].join('\n');
 
     const mailtoLink = `mailto:info@atisunya.com?subject=${encodeURIComponent(
-      String(subject || "MCT Enrollment Inquiry")
+      String(subject || 'MCT Enrollment Inquiry')
     )}&body=${encodeURIComponent(body)}`;
 
     window.location.href = mailtoLink;
@@ -257,7 +269,7 @@ export default function BecomeMct() {
                   return (
                     <article
                       key={section.title}
-                      className={`pm-section-card ${isOpen ? "active" : ""}`}
+                      className={`pm-section-card ${isOpen ? 'active' : ''}`}
                     >
                       <button
                         type="button"
@@ -269,13 +281,17 @@ export default function BecomeMct() {
                           <h3>{section.title}</h3>
                           <p>{section.subtitle}</p>
                         </div>
-                        <span className={`pm-toggle ${isOpen ? "open" : ""}`}>
-                          {isOpen ? "−" : "+"}
+                        <span className={`pm-toggle ${isOpen ? 'open' : ''}`}>
+                          {isOpen ? '−' : '+'}
                         </span>
                       </button>
 
-                      <div className={`pm-section-body ${isOpen ? "open" : ""}`}>
-                        <div className="pm-section-inner">{section.content}</div>
+                      <div
+                        className={`pm-section-body ${isOpen ? 'open' : ''}`}
+                      >
+                        <div className="pm-section-inner">
+                          {section.content}
+                        </div>
                       </div>
                     </article>
                   );
