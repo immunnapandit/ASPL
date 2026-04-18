@@ -12,27 +12,35 @@ import IndustriesSection from './IndustriesSection';
 import OurTraining from './OurTraining';
 import OurClient from './OurClient';
 import SolutionsSection from './SolutionsSection';
-import Dynamics365EcosystemSection from './Dynamics365EcosystemSection';
+// import Dynamics365EcosystemSection from './Dynamics365EcosystemSection';
+import WhyChooseUsSection from './WhyChooseUsSection';
 
 export default function HomeOne() {
   return (
     <Wrapper>
       <HeaderOne />
-      <main>
+      <main className="home-one-page">
         <HeroHomeOne />
         <AboutHomeTwo />
         <ServiceHomeTwo />
-        <Dynamics365EcosystemSection />
         <SolutionsSection />
-        
         <IndustriesSection />
+        <WhyChooseUsSection />
+        
+        
+        {/* <Dynamics365EcosystemSection /> */}
+        
+        
+        
         <OurTraining />
+        <TestimonialHomeOne />
+         <OurClient />
 
         {/* <ServiceHomeOne /> */}
         {/* <TeamHomeThree /> */}
         <BlogHomeTwo />
-        <TestimonialHomeOne />
-        <OurClient />
+        
+       
       </main>
       <FooterOne />
     </Wrapper>

@@ -1,0 +1,196 @@
+@use '../utils' as *;
+
+.home-one-page {
+  --home-section-space: 100px;
+  --home-section-space-mobile: 72px;
+
+  .tv-about2-area.about-home-two-compact {
+    padding-top: 118px;
+    padding-bottom: var(--home-section-space);
+  }
+
+  .service-premium-section,
+  .industries-section,
+  .tv-blog2-area {
+    padding-top: var(--home-section-space);
+    padding-bottom: var(--home-section-space);
+  }
+
+  .tv-about2-area.about-home-two-compact + .service-premium-section {
+    padding-top: 12px;
+  }
+
+  .service-premium-section + .solutions-section {
+    padding-top: 12px;
+  }
+
+  .solutions-section + .industries-section {
+    padding-top: 32px;
+  }
+
+  .industries-section + .why-choose-us-section {
+    padding-top: 12px;
+  }
+
+  .tv-about2-area.about-home-two-compact:has(+ .service-premium-section) {
+    padding-bottom: 52px;
+  }
+
+  .why-choose-us-section,
+  .training-area,
+  .tv-testimonial-area,
+  .our-client-area {
+    padding-top: var(--home-section-space);
+    padding-bottom: var(--home-section-space);
+  }
+
+  .our-client-area {
+    .tv-brand-content {
+      padding-top: 0;
+      padding-bottom: 34px;
+      border-top: 0;
+    }
+  }
+
+  .our-client-slider {
+    padding-top: 34px;
+  }
+
+  .our-client-area + .tv-blog2-area {
+    padding-top: 36px;
+  }
+
+  .our-client-area:has(+ .tv-blog2-area) {
+    padding-bottom: 36px;
+  }
+
+  @media #{$lg} {
+    --home-section-space: 84px;
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: 104px;
+    }
+
+    .tv-about2-area.about-home-two-compact + .service-premium-section {
+      padding-top: 10px;
+    }
+
+    .tv-about2-area.about-home-two-compact:has(+ .service-premium-section) {
+      padding-bottom: 44px;
+    }
+
+    .service-premium-section + .solutions-section {
+      padding-top: 10px;
+    }
+
+    .solutions-section + .industries-section {
+      padding-top: 28px;
+    }
+
+    .industries-section + .why-choose-us-section {
+      padding-top: 10px;
+    }
+
+    .our-client-area + .tv-blog2-area {
+      padding-top: 32px;
+    }
+
+    .our-client-area:has(+ .tv-blog2-area) {
+      padding-bottom: 32px;
+    }
+
+  }
+
+  @media #{$md} {
+    --home-section-space: 76px;
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: 92px;
+    }
+
+    .tv-about2-area.about-home-two-compact + .service-premium-section {
+      padding-top: 8px;
+    }
+
+    .tv-about2-area.about-home-two-compact:has(+ .service-premium-section) {
+      padding-bottom: 40px;
+    }
+
+    .service-premium-section + .solutions-section {
+      padding-top: 8px;
+    }
+
+    .solutions-section + .industries-section {
+      padding-top: 24px;
+    }
+
+    .industries-section + .why-choose-us-section {
+      padding-top: 8px;
+    }
+
+    .our-client-area + .tv-blog2-area {
+      padding-top: 28px;
+    }
+
+    .our-client-area:has(+ .tv-blog2-area) {
+      padding-bottom: 28px;
+    }
+
+  }
+
+  @media #{$sm, $xs} {
+    .tv-about2-area.about-home-two-compact,
+    .service-premium-section,
+    .industries-section,
+    .why-choose-us-section,
+    .training-area,
+    .tv-testimonial-area,
+    .our-client-area,
+    .tv-blog2-area {
+      padding-top: var(--home-section-space-mobile);
+      padding-bottom: var(--home-section-space-mobile);
+    }
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: 84px;
+    }
+
+    .our-client-area {
+      .tv-brand-content {
+        padding-bottom: 26px;
+      }
+    }
+
+    .our-client-slider {
+      padding-top: 24px;
+    }
+
+    .tv-about2-area.about-home-two-compact + .service-premium-section {
+      padding-top: 6px;
+    }
+
+    .tv-about2-area.about-home-two-compact:has(+ .service-premium-section) {
+      padding-bottom: 36px;
+    }
+
+    .service-premium-section + .solutions-section {
+      padding-top: 6px;
+    }
+
+    .solutions-section + .industries-section {
+      padding-top: 20px;
+    }
+
+    .industries-section + .why-choose-us-section {
+      padding-top: 6px;
+    }
+
+    .our-client-area + .tv-blog2-area {
+      padding-top: 24px;
+    }
+
+    .our-client-area:has(+ .tv-blog2-area) {
+      padding-bottom: 24px;
+    }
+  }
+}

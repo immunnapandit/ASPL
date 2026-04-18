@@ -1,4 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
+import GenericIndustryPage from '../components/industries/generic';
 import AiSolutionsPage from '../components/solutions/ai-solutions';
 import Ax7Page from '../components/solutions/ax-7';
 import AwsPage from '../components/solutions/aws';
@@ -40,6 +41,7 @@ import TrainingPage from '../components/what-we-do/training';
 import WebDevelopmentPage from '../components/what-we-do/web-development';
 import SuccessStoriesPage from '../components/insights/success-stories';
 import WebinarsEventsPage from '../components/insights/webinars-events';
+import { industryPages } from '../data/industry-pages';
 
 export const customPageRoutes: RouteObject[] = [
   { path: '/solutions/microsoft-dynamics-365', element: <MicrosoftDynamics365Page /> },
@@ -106,5 +108,9 @@ export const customPageRoutes: RouteObject[] = [
     element: <MicrosoftCertifiedTrainerReadinessTrainingPage />
   },
   { path: '/insights/webinars-events', element: <WebinarsEventsPage /> },
-  { path: '/insights/success-stories', element: <SuccessStoriesPage /> }
+  { path: '/insights/success-stories', element: <SuccessStoriesPage /> },
+  ...industryPages.map((page) => ({
+    path: `/industries/${page.slug}`,
+    element: <GenericIndustryPage page={page} />
+  }))
 ];

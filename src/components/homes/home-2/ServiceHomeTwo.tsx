@@ -140,24 +140,6 @@ export default function ServiceHomeTwo() {
             ease: 'easeOut',
           }}
         >
-          <div className="service-corner-controls">
-            <button
-              type="button"
-              className="service-nav-btn service-arrow-prev"
-              aria-label="Previous service"
-            >
-              <i className="fa-light fa-arrow-left-long" aria-hidden="true"></i>
-            </button>
-
-            <button
-              type="button"
-              className="service-nav-btn service-arrow-next"
-              aria-label="Next service"
-            >
-              <i className="fa-light fa-arrow-right-long" aria-hidden="true"></i>
-            </button>
-          </div>
-
           <Swiper
             modules={[Autoplay, Pagination, Navigation]}
             autoplay={{
@@ -166,10 +148,6 @@ export default function ServiceHomeTwo() {
             }}
             loop
             speed={1100}
-            navigation={{
-              prevEl: '.service-arrow-prev',
-              nextEl: '.service-arrow-next',
-            }}
             pagination={{ clickable: true, el: '.service-pagination' }}
             spaceBetween={24}
             breakpoints={{
