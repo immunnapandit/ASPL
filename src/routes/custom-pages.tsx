@@ -39,6 +39,7 @@ import ProductEngineeringPage from '../components/what-we-do/product-engineering
 import SupportManagedServicesPage from '../components/what-we-do/support-managed-services';
 import TrainingPage from '../components/what-we-do/training';
 import WebDevelopmentPage from '../components/what-we-do/web-development';
+import GalleryPage from '../components/insights/gallery';
 import SuccessStoriesPage from '../components/insights/success-stories';
 import WebinarsEventsPage from '../components/insights/webinars-events';
 import { industryPages } from '../data/industry-pages';
@@ -107,6 +108,7 @@ export const customPageRoutes: RouteObject[] = [
     path: '/microsoft-certified-trainer-readiness-training',
     element: <MicrosoftCertifiedTrainerReadinessTrainingPage />
   },
+  { path: '/insights/gallery', element: <GalleryPage /> },
   { path: '/insights/webinars-events', element: <WebinarsEventsPage /> },
   { path: '/insights/success-stories', element: <SuccessStoriesPage /> },
   ...industryPages.map((page) => ({

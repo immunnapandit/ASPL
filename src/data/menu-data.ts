@@ -157,6 +157,7 @@ const menu_data: MenuDataType[] = [
     has_dropdown: true,
     sub_menus: [
       { title: 'Blog', link: '/blog' },
+      { title: 'Gallery', link: '/insights/gallery' },
       { title: 'Webinar & Events', link: '/insights/webinars-events' },
       { title: 'Success Stories', link: '/insights/success-stories' },
     ],
