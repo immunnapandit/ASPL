@@ -4,7 +4,7 @@ import { socialLinks } from '../../data/social-links';
 export default function FooterOne() {
   return (
     <footer>
-      <div className="tv-footer-wrap footer-bg z-index-1 pt-130">
+      <div className="tv-footer-wrap footer-one-wrap footer-bg z-index-1 pt-130">
         <div className="tv-footer-top-area">
           <div className="container">
             <div className="tv-footer-top-area-form">
@@ -161,9 +161,11 @@ export default function FooterOne() {
                 <div className="col-lg-6">
                   <div className="tv-copyright-left text-center text-lg-start">
                     <p className="mb-0">
-                      © 2026 All Rights Reserved | 
-Developed by 
-<a href="https://www.atisunya.co" target="_blank"> Atisunya Pvt. Ltd.</a>
+                      © 2026 All Rights Reserved | Developed by
+                      <a href="https://www.atisunya.co" target="_blank">
+                        {' '}
+                        Atisunya Pvt. Ltd.
+                      </a>
                     </p>
                   </div>
                 </div>

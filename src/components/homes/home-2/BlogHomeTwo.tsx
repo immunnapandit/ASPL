@@ -11,7 +11,7 @@ export default function BlogHomeTwo() {
                 Our Blogs
               </span>
               <h4 className="tv-section-title  tv-spltv-text tv-spltv-in-right">
-                Recent Blog & Articles <br /> About Technology
+                Recent Blog & Articles About Technology
               </h4>
             </div>
           </div>

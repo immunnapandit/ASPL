@@ -117,9 +117,7 @@ export default function ServiceHomeTwo() {
             className="section-title tv-section-title tv-spltv-text tv-spltv-in-right"
             variants={fadeUp}
           >
-            Smart Business Solutions
-            <br />
-            with Dynamics 365
+            Smart Business Solutions with Dynamics 365
           </motion.h2>
 
           <motion.div className="service-subtitle-row" variants={fadeUp}>
@@ -199,7 +197,9 @@ export default function ServiceHomeTwo() {
 
                     <Link to={item.href} className="service-read-more">
                       Explore Service
-                      <span className="arrow">↗</span>
+                      <span className="arrow" aria-hidden="true">
+                        {'\u2192'}
+                      </span>
                     </Link>
                   </div>
                 </motion.div>
