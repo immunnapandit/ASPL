@@ -15,11 +15,15 @@ export default function Wrapper({ children }: WrapperProps) {
 
   useEffect(() => {
     // animation
+    let cleanupAnimation: (() => void) | undefined;
     const timer = setTimeout(() => {
-      animationCreate();
+      cleanupAnimation = animationCreate();
     }, 100);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      cleanupAnimation?.();
+    };
   }, []);
 
   useEffect(() => {

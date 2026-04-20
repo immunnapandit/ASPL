@@ -15,6 +15,8 @@ const initialFormState: ContactFormState = {
   message: '',
 };
 
+const CONTACT_EMAIL = 'munna@atisunya.co';
+
 export default function ContactArea() {
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -196,7 +198,7 @@ export default function ContactArea() {
                       </svg>
                     </div>
                     <div className="content">
-                      <h4>500+ Happy Clients e</h4>
+                      <h4>500+ Happy Clients</h4>
                       <p>
                         From banking and insurance to wealth the management and
                         security on there
@@ -211,7 +213,13 @@ export default function ContactArea() {
               >
                 <div className="tv-contact-right-wrap">
                   <h1 className="text-white">Make an Appointment</h1>
-                  <p>Feel free to contact with us, we don’t spam your email</p>
+                  <p>
+                    Feel free to contact us at{' '}
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="text-white">
+                      {CONTACT_EMAIL}
+                    </a>
+                    , we do not spam your email.
+                  </p>
                   <form onSubmit={handleSubmit}>
                     <div className="tv-contact-input-box mb-24">
                       <input
