@@ -28,7 +28,7 @@ export default function HeaderOne() {
                           href="tel:+91-80-8181-0673"
                           style={{ whiteSpace: 'nowrap' }}
                         >
-                          (+91) 80-8181-0673, +91-82-9915-6511
+                          (+91) 80-8181-0673, (+91) 82-9915-6511
                         </a>
                       </span>
                     </li>
