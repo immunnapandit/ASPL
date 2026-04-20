@@ -11,11 +11,12 @@ export default function AboutHomeOne() {
                 About Company
               </span>
               <h4 className="tv-section-title pb-20 tv-spltv-text tv-spltv-in-right">
-                AtiSunya is a trusted Microsoft partner delivering digital solutions.
+                AtiSunya is a trusted Microsoft partner delivering digital
+                solutions.
               </h4>
             </div>
           </div>
-          <div className="col-xl-7 col-lg-7 text-end  ">
+          <div className="col-xl-7 col-lg-7 text-end">
             <div
               className="tv-fade-anim button"
               data-fade-from="top"
@@ -41,34 +42,37 @@ export default function AboutHomeOne() {
               <div className="tv-about-left">
                 <div className="single-icon-box">
                   <span>
-                    <img src="assets/img/icon/about-icon-1.png" alt="" />
+                    <img src="/assets/img/icon/about-icon-1.png" alt="" />
                   </span>
                   <div className="icon-box-content">
                     <h3>Our Mission</h3>
                     <p>
-                      To drive digital transformation through reliable Microsoft-based solutions.
+                      To drive digital transformation through reliable
+                      Microsoft-based solutions.
                     </p>
                   </div>
                 </div>
                 <div className="single-icon-box">
                   <span>
-                    <img src="assets/img/icon/about-icon-2.png" alt="" />
+                    <img src="/assets/img/icon/about-icon-2.png" alt="" />
                   </span>
                   <div className="icon-box-content">
-                    <h3>Our Vission</h3>
+                    <h3>Our Vision</h3>
                     <p>
-                      To drive innovation and excellence across industries worldwide.
+                      To drive innovation and excellence across industries
+                      worldwide.
                     </p>
                   </div>
                 </div>
                 <div className="single-icon-box">
                   <span>
-                    <img src="assets/img/icon/about-icon-3.png" alt="" />
+                    <img src="/assets/img/icon/about-icon-3.png" alt="" />
                   </span>
                   <div className="icon-box-content">
                     <h3>Our Awards</h3>
                     <p>
-                      Recognized for excellence in delivering Microsoft-based solutions and digital transformation services.
+                      Recognized for excellence in delivering Microsoft-based
+                      solutions and digital transformation services.
                     </p>
                   </div>
                 </div>
@@ -80,9 +84,10 @@ export default function AboutHomeOne() {
               data-wow-delay=".5s"
             >
               <div className="tv-about-middle">
-                <img src="assets/img/about/about-1-1.png" alt="" />
+                <img src="/assets/img/about/about-1-1.png" alt="" />
                 <p>
-                  Honored for delivering excellence through certified expertise, trusted partnerships, and innovative technology solutions.{` `}
+                  Honored for delivering excellence through certified expertise,
+                  trusted partnerships, and innovative technology solutions.
                 </p>
               </div>
             </div>
@@ -92,7 +97,7 @@ export default function AboutHomeOne() {
               data-wow-delay=".7s"
             >
               <div className="tv-about-right">
-                <img src="assets/img/about/about-1-2.png" alt="" />
+                <img src="/assets/img/about/about-1-2.png" alt="" />
               </div>
             </div>
           </div>

@@ -174,7 +174,7 @@ export default function WhyChooseUsSection() {
               <motion.div className="why-choose-us-image" variants={imageInnerVariants}>
                 <img
                   src="/assets/img/service/Dynamics365Ecosystem.png"
-                  alt="Professional consultant working on a laptop"
+                  alt="Microsoft Dynamics 365 ecosystem diagram"
                 />
               </motion.div>
             </div>
