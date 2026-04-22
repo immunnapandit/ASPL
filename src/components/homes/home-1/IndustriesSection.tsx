@@ -49,6 +49,7 @@ export default function IndustriesSection() {
           <Swiper
             modules={[Navigation]}
             loop
+            loopAddBlankSlides={false}
             speed={800}
             watchOverflow
             onBeforeInit={(swiper: SwiperType) => {
@@ -75,12 +76,13 @@ export default function IndustriesSection() {
               });
             }}
             spaceBetween={24}
+            slidesPerGroup={2}
             breakpoints={{
-              0: { slidesPerView: 1, spaceBetween: 16 },
-              576: { slidesPerView: 1.2, spaceBetween: 18 },
-              768: { slidesPerView: 2, spaceBetween: 20 },
-              992: { slidesPerView: 3, spaceBetween: 22 },
-              1200: { slidesPerView: 4, spaceBetween: 24 },
+              0: { slidesPerView: 1, slidesPerGroup: 1, spaceBetween: 16 },
+              576: { slidesPerView: 1.2, slidesPerGroup: 1, spaceBetween: 18 },
+              768: { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 20 },
+              992: { slidesPerView: 3, slidesPerGroup: 2, spaceBetween: 22 },
+              1200: { slidesPerView: 4, slidesPerGroup: 2, spaceBetween: 24 },
             }}
             className="industries-swiper"
           >
