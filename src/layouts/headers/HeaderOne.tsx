@@ -11,7 +11,7 @@ export default function HeaderOne() {
 
   return (
     <>
-      <header className="tv-header-height">
+      <header className="tv-header-height tv-header-one">
         <div className="tv-header-top-area tv-header-top-ptb">
           <div className="container container-1750">
             <div className="row align-items-center">

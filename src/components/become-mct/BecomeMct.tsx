@@ -1,23 +1,105 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import {
-  CalendarClock,
-  Mail,
-  MessageSquareText,
-  Phone,
-  ShieldCheck,
-  User,
-  X,
+  ArrowRight,
+  CheckCircle2,
+  Clock3,
+  Globe2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import '../../styles/scss/layout/_becomemct.scss';
 
+type UpcomingBatch = {
+  leftDate: Date;
+  rightDate?: Date;
+};
+
+const batchWeekdays = new Set([1, 3, 4, 5]);
+
+const buildUpcomingBatches = (today = new Date()): UpcomingBatch[] => {
+  const currentDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const batchDates: Date[] = [];
+  const dateCursor = new Date(currentDate);
+
+  while (batchDates.length < 10) {
+    if (batchWeekdays.has(dateCursor.getDay())) {
+      batchDates.push(new Date(dateCursor));
+    }
+
+    dateCursor.setDate(dateCursor.getDate() + 1);
+  }
+
+  return Array.from({ length: Math.ceil(batchDates.length / 2) }, (_, index) => {
+    const pairIndex = index * 2;
+
+    return {
+      leftDate: batchDates[pairIndex],
+      rightDate: batchDates[pairIndex + 1],
+    };
+  });
+};
+
+const formatBatchDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+
+  return `${day}-${month}-${date.getFullYear()}`;
+};
+
+const getBatchKey = ({ leftDate, rightDate }: UpcomingBatch) => {
+  return `${formatBatchDate(leftDate)}-${rightDate ? formatBatchDate(rightDate) : 'single'}`;
+};
+
+const formatBatchPair = ({ leftDate, rightDate }: UpcomingBatch) => {
+  return {
+    left: formatBatchDate(leftDate),
+    right: rightDate ? formatBatchDate(rightDate) : '',
+  };
+};
+
+const pageVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const fadeUpVariants: Variants = {
+  hidden: { y: 26 },
+  show: {
+    y: 0,
+    transition: {
+      duration: 0.58,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+const heroImageVariants: Variants = {
+  hidden: { scale: 1.06 },
+  show: {
+    scale: 1,
+    transition: {
+      duration: 0.9,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
 export default function BecomeMct() {
   const [openIndex, setOpenIndex] = useState(0);
-  const [isEnrollOpen, setIsEnrollOpen] = useState(false);
+  const upcomingBatches = useMemo(() => buildUpcomingBatches(), []);
 
-  const upcomingBatches = [
-    { date: '20-april-2026 to 21-april-2026' },
-    { date: '23-april-2026 to 24-april-2026' },
+  const heroHighlights = [
+    { icon: Clock3, label: '2-day live readiness program' },
+    { icon: Globe2, label: 'Upcoming global batches' },
+    { icon: CheckCircle2, label: 'Microsoft ISCP aligned' },
   ];
 
   const sections = [
@@ -176,88 +258,68 @@ export default function BecomeMct() {
     setOpenIndex((current) => (current === index ? -1 : index));
   };
 
-  const openEnrollForm = () => {
-    setIsEnrollOpen(true);
-  };
-
-  const closeEnrollForm = () => {
-    setIsEnrollOpen(false);
-  };
-
-  const handleEnrollSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const fullName = formData.get('fullName');
-    const email = formData.get('email');
-    const microsoftAccountId = formData.get('microsoftAccountId');
-    const phone = formData.get('phone');
-    const preferredDateTime = formData.get('preferredDateTime');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
-
-    const body = [
-      `Full Name: ${fullName}`,
-      `Email: ${email}`,
-      `Microsoft Account ID: ${microsoftAccountId}`,
-      `Phone: ${phone}`,
-      `Preferred Date/Time: ${preferredDateTime}`,
-      '',
-      'Message:',
-      `${message}`,
-    ].join('\n');
-
-    const mailtoLink = `mailto:info@atisunya.com?subject=${encodeURIComponent(
-      String(subject || 'MCT Enrollment Inquiry')
-    )}&body=${encodeURIComponent(body)}`;
-
-    window.location.href = mailtoLink;
-    closeEnrollForm();
-  };
-
   return (
-    <div className="pm-page">
+    <motion.div
+      className="pm-page"
+      initial="hidden"
+      animate="show"
+      variants={pageVariants}
+    >
       <div className="container">
-        <div className="pm-hero">
-          <img
+        <motion.div className="pm-hero" variants={fadeUpVariants}>
+          <motion.img
             src="assets/img/project/project-details.png"
             alt="Become a Microsoft Certified Trainer"
             className="pm-hero-img"
+            variants={heroImageVariants}
           />
 
-          <div className="pm-hero-overlay">
-            <span className="pm-badge">
+          <motion.div className="pm-hero-overlay" variants={pageVariants}>
+            <motion.span className="pm-badge" variants={fadeUpVariants}>
               Microsoft Instructional Skills Certification Program
-            </span>
-            <h1>Become a Microsoft Certified Trainer (MCT)</h1>
-            <p>
-              Unlock your potential with AtiSunya — a trusted Microsoft
+            </motion.span>
+            <motion.h1 variants={fadeUpVariants}>
+              Become a Microsoft Certified Trainer (MCT)
+            </motion.h1>
+            <motion.p variants={fadeUpVariants}>
+              Unlock your potential with AtiSunya - a trusted Microsoft
               Instructional Skills Certification Provider (ISCP).
-            </p>
+            </motion.p>
 
-            <div className="pm-actions">
+            <motion.div className="pm-hero-highlights" variants={fadeUpVariants}>
+              {heroHighlights.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <span key={item.label}>
+                    <Icon size={18} strokeWidth={2} />
+                    {item.label}
+                  </span>
+                );
+              })}
+            </motion.div>
+
+            <motion.div className="pm-actions" variants={fadeUpVariants}>
               <Link to="/pay-now" className="pm-btn pm-btn-primary">
                 Pay Now
+                <ArrowRight size={18} />
               </Link>
-              <button
-                type="button"
-                className="pm-btn pm-btn-secondary"
-                onClick={openEnrollForm}
-              >
+              <Link to="/become-mct/enroll" className="pm-btn pm-btn-secondary">
                 Enroll Now
-              </button>
-            </div>
-          </div>
-        </div>
+                <ArrowRight size={18} />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
         <div className="row g-4">
           <div className="col-xl-8 col-lg-8 col-12">
-            <div className="pm-content-card">
+            <motion.div className="pm-content-card" variants={fadeUpVariants}>
               <div className="pm-intro">
                 <span className="pm-kicker">MCT Program</span>
                 <h2>Become a Microsoft Certified Trainer (MCT)</h2>
                 <p>
-                  Unlock Your Potential with AtiSunya – A Trusted Microsoft
+                  Unlock your potential with AtiSunya - a trusted Microsoft
                   Instructional Skills Certification Provider (ISCP)
                 </p>
               </div>
@@ -267,9 +329,11 @@ export default function BecomeMct() {
                   const isOpen = openIndex === index;
 
                   return (
-                    <article
+                    <motion.article
                       key={section.title}
                       className={`pm-section-card ${isOpen ? 'active' : ''}`}
+                      variants={fadeUpVariants}
+                      whileHover={{ y: -2 }}
                     >
                       <button
                         type="button"
@@ -282,7 +346,7 @@ export default function BecomeMct() {
                           <p>{section.subtitle}</p>
                         </div>
                         <span className={`pm-toggle ${isOpen ? 'open' : ''}`}>
-                          {isOpen ? '−' : '+'}
+                          {isOpen ? '-' : '+'}
                         </span>
                       </button>
 
@@ -293,16 +357,19 @@ export default function BecomeMct() {
                           {section.content}
                         </div>
                       </div>
-                    </article>
+                    </motion.article>
                   );
                 })}
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <div className="col-xl-4 col-lg-4 col-12">
-            <div className="pm-sidebar">
-              <div className="pm-sidebar-card pm-details-card">
+            <motion.div className="pm-sidebar" variants={pageVariants}>
+              <motion.div
+                className="pm-sidebar-card pm-details-card"
+                variants={fadeUpVariants}
+              >
                 <h4>Program Details</h4>
                 <div className="pm-info">
                   <div>
@@ -319,26 +386,47 @@ export default function BecomeMct() {
                   </div>
                   <div>
                     <span>Website</span>
-                    <strong>example.site.com</strong>
+                    <strong>atisunya.com</strong>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="pm-sidebar-card pm-batch-card">
+              <motion.div
+                className="pm-sidebar-card pm-batch-card"
+                variants={fadeUpVariants}
+              >
                 <div className="pm-card-titlebar">
                   <h4>Upcoming Global Batches</h4>
                 </div>
 
-                <div className="pm-batch-strip">
-                  {upcomingBatches.map((batch, index) => (
-                    <div key={index} className="pm-batch-cell">
-                      {batch.date}
-                    </div>
-                  ))}
-                </div>
-              </div>
+                <div className="pm-batch-list">
+                  {upcomingBatches.length > 0 ? (
+                    upcomingBatches.map((batch) => {
+                      const batchPair = formatBatchPair(batch);
 
-              <div className="pm-sidebar-card pm-fee-card">
+                      return (
+                        <div key={getBatchKey(batch)} className="pm-batch-row">
+                          <span>{batchPair.left}</span>
+                          <span
+                            aria-hidden="true"
+                            className="pm-batch-divider"
+                          />
+                          <span>{batchPair.right}</span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p className="pm-batch-empty">
+                      New global batch dates will be announced soon.
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="pm-sidebar-card pm-fee-card"
+                variants={fadeUpVariants}
+              >
                 <div className="pm-card-titlebar">
                   <h4>Course Fee</h4>
                 </div>
@@ -357,148 +445,12 @@ export default function BecomeMct() {
                     learning for MCT readiness.
                   </p>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
 
-      {isEnrollOpen && (
-        <div className="pm-modal-overlay" onClick={closeEnrollForm}>
-          <div
-            className="pm-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="pm-modal-header">
-              <div className="pm-modal-header-copy">
-                <span className="pm-kicker">Enroll Now</span>
-                <h4>MCT Enrollment Form</h4>
-              </div>
-              <button
-                type="button"
-                className="pm-modal-close"
-                onClick={closeEnrollForm}
-                aria-label="Close enrollment form"
-              >
-                <X size={22} />
-              </button>
-            </div>
-
-            <form className="pm-enroll-form" onSubmit={handleEnrollSubmit}>
-              <div className="pm-form-grid">
-                <div className="pm-form-group">
-                  <label htmlFor="fullName">Full Name *</label>
-                  <div className="pm-input-shell">
-                    <User size={18} />
-                    <input
-                      id="fullName"
-                      name="fullName"
-                      type="text"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="email">Email *</label>
-                  <div className="pm-input-shell">
-                    <Mail size={18} />
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email address"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="microsoftAccountId">
-                    Microsoft Account ID *
-                  </label>
-                  <div className="pm-input-shell">
-                    <ShieldCheck size={18} />
-                    <input
-                      id="microsoftAccountId"
-                      name="microsoftAccountId"
-                      type="text"
-                      placeholder="Enter your Microsoft account ID"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="phone">Phone *</label>
-                  <div className="pm-input-shell">
-                    <Phone size={18} />
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="preferredDateTime">Date / Time *</label>
-                  <div className="pm-input-shell">
-                    <CalendarClock size={18} />
-                    <input
-                      id="preferredDateTime"
-                      name="preferredDateTime"
-                      type="datetime-local"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="subject">Subject *</label>
-                  <div className="pm-input-shell">
-                    <MessageSquareText size={18} />
-                    <input
-                      id="subject"
-                      name="subject"
-                      type="text"
-                      placeholder="Enter the subject"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pm-form-group">
-                <label htmlFor="message">Your Message *</label>
-                <div className="pm-input-shell pm-input-shell-textarea">
-                  <MessageSquareText size={18} />
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    placeholder="Tell us about your goals, preferred batch, or any questions you have"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="pm-form-footer">
-                <p>
-                  Your details are used only for enrollment follow-up and
-                  schedule coordination.
-                </p>
-                <button type="submit" className="pm-btn pm-btn-primary">
-                  Submit Enrollment Request
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+    </motion.div>
   );
 }

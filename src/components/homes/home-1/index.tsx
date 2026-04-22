@@ -6,13 +6,10 @@ import FooterOne from '../../../layouts/footers/FooterOne';
 import ServiceHomeTwo from '../home-2/ServiceHomeTwo';
 import BlogHomeTwo from '../home-2/BlogHomeTwo';
 import AboutHomeTwo from '../home-2/AboutHomeTwo';
-// import ServiceHomeOne from './ServiceHomeOne';
-// // import TeamHomeThree from '../home-3/TeamHomeThree';
 import IndustriesSection from './IndustriesSection';
 import OurTraining from './OurTraining';
 import OurClient from './OurClient';
 import SolutionsSection from './SolutionsSection';
-// import Dynamics365EcosystemSection from './Dynamics365EcosystemSection';
 import WhyChooseUsSection from './WhyChooseUsSection';
 
 export default function HomeOne() {
@@ -26,21 +23,10 @@ export default function HomeOne() {
         <SolutionsSection />
         <IndustriesSection />
         <WhyChooseUsSection />
-        
-        
-        {/* <Dynamics365EcosystemSection /> */}
-        
-        
-        
         <OurTraining />
         <TestimonialHomeOne />
          <OurClient />
-
-        {/* <ServiceHomeOne /> */}
-        {/* <TeamHomeThree /> */}
         <BlogHomeTwo />
-        
-       
       </main>
       <FooterOne />
     </Wrapper>

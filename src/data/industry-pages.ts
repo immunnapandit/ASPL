@@ -205,6 +205,102 @@ export const industryPages: IndustryPageConfig[] = [
     ]
   },
   {
+    slug: 'warehouse',
+    title: 'Warehouse',
+    cardTitle: 'Warehouse',
+    subtitle: 'Smarter warehouse operations with real-time control',
+    summary:
+      'Improve stock visibility, inbound and outbound movement, storage workflows, picking, packing, and operational reporting with connected warehouse systems.',
+    cardDescription:
+      'Improve warehouse visibility with connected workflows for inventory control, stock movement, picking, packing, dispatch, and reporting.',
+    image: '/assets/img/service/warehouse.jpg',
+    focus: 'Inventory control, stock movement, picking, packing, and warehouse reporting',
+    highlights: [
+      'Stock visibility',
+      'Picking workflows',
+      'Dispatch control',
+      'Warehouse reporting'
+    ],
+    capabilities: [
+      'Track inventory movement across receiving, storage, picking, packing, and dispatch.',
+      'Improve stock accuracy with structured workflows and clearer operational ownership.',
+      'Reduce manual coordination between warehouse, procurement, sales, and finance teams.',
+      'Use reporting dashboards to monitor warehouse performance and fulfillment speed.'
+    ]
+  },
+  {
+    slug: 'logistics',
+    title: 'Logistics',
+    cardTitle: 'Logistics',
+    subtitle: 'Connected logistics planning from order to delivery',
+    summary:
+      'Support transportation, dispatch planning, route coordination, shipment tracking, vendor workflows, and delivery reporting with practical digital systems.',
+    cardDescription:
+      'Coordinate logistics operations with better shipment visibility, dispatch planning, partner workflows, delivery tracking, and reporting.',
+    image: '/assets/img/service/Logistics.jpg',
+    focus: 'Shipment tracking, dispatch planning, vendor coordination, and delivery visibility',
+    highlights: [
+      'Shipment tracking',
+      'Dispatch planning',
+      'Route coordination',
+      'Delivery reporting'
+    ],
+    capabilities: [
+      'Coordinate dispatch, shipment status, delivery planning, and partner communication.',
+      'Improve visibility across order fulfillment, transportation, and delivery milestones.',
+      'Support route planning and exception handling with clearer operational data.',
+      'Connect logistics workflows with inventory, sales, procurement, and finance processes.'
+    ]
+  },
+  {
+    slug: 'hrms',
+    title: 'HRMS',
+    cardTitle: 'HRMS',
+    subtitle: 'Digital HR workflows for growing organizations',
+    summary:
+      'Simplify employee data, attendance, leave, payroll-adjacent workflows, onboarding, approvals, and HR reporting with systems designed for people operations.',
+    cardDescription:
+      'Modernize HR operations with connected workflows for employee records, attendance, leave, onboarding, approvals, and reporting.',
+    image: '/assets/img/service/hrms.jpg',
+    focus: 'Employee records, attendance, leave, onboarding, approvals, and HR reporting',
+    highlights: [
+      'Employee records',
+      'Leave workflows',
+      'Onboarding support',
+      'HR reporting'
+    ],
+    capabilities: [
+      'Centralize employee information, documents, attendance, and leave workflows.',
+      'Streamline onboarding, approvals, internal requests, and HR service processes.',
+      'Improve reporting for workforce visibility, compliance support, and management review.',
+      'Connect HR operations with finance, administration, and business leadership workflows.'
+    ]
+  },
+  {
+    slug: 'advanced-warehouse',
+    title: 'Advanced Warehouse',
+    cardTitle: 'Advanced Warehouse',
+    subtitle: 'Advanced warehouse management for complex operations',
+    summary:
+      'Support high-volume warehouse execution with location control, put-away logic, wave picking, barcode-enabled movement, replenishment, and performance reporting.',
+    cardDescription:
+      'Manage advanced warehouse operations with location control, barcode workflows, replenishment, wave picking, and performance reporting.',
+    image: '/assets/img/service/AdvanceWarehouse.jpg',
+    focus: 'Location control, barcode movement, replenishment, wave picking, and warehouse analytics',
+    highlights: [
+      'Location control',
+      'Barcode workflows',
+      'Wave picking',
+      'Replenishment'
+    ],
+    capabilities: [
+      'Support bin, zone, and location-based warehouse execution for complex stock flows.',
+      'Enable barcode-driven receiving, transfers, picking, packing, and cycle count workflows.',
+      'Improve replenishment, wave planning, and workload visibility across warehouse teams.',
+      'Use operational analytics to track accuracy, productivity, bottlenecks, and fulfillment KPIs.'
+    ]
+  },
+  {
     slug: 'many-more',
     title: 'Many More Industries',
     cardTitle: 'Many More',

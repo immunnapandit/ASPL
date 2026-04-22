@@ -18,26 +18,26 @@ const reasons: WhyChooseUsItem[] = [
   {
     title: "Certified Professionals",
     description:
-      "Our team consists of certified professionals who are experts in their field, ensuring high-quality work and exceptional customer service.",
+      "Certified consultants bring deep Microsoft platform expertise, reliable delivery practices, and responsive support to every engagement.",
     icon: Lightbulb,
   },
   {
-    title: "Delivering Business Solutions",
+    title: "Business-Fit Solutions",
     description:
-      "We provide tailored business solutions that address the unique needs of our clients, helping them achieve their goals and maximize their potential.",
+      "We shape ERP, CRM, cloud, and automation solutions around the way your business works, so technology supports measurable outcomes.",
     icon: BriefcaseBusiness,
     compactTitle: true,
   },
   {
     title: "Value for Money",
     description:
-      "We offer cost-effective solutions that provide value for money to our clients while maintaining the highest level of quality and customer satisfaction.",
+      "Focused implementation plans, clear priorities, and practical architecture help you get strong returns from your Microsoft investments.",
     icon: BadgeDollarSign,
   },
   {
-    title: "Fair Deals",
+    title: "Transparent Delivery",
     description:
-      "Our commitment to fairness and transparency ensures that we offer fair deals to both our clients and employees, creating a positive and sustainable work environment.",
+      "Open communication, fair estimates, and visible progress keep teams aligned from discovery through launch and ongoing support.",
     icon: BadgeHelp,
   },
 ];
@@ -87,11 +87,10 @@ const cardVariants: Variants = {
 };
 
 const imageVariants: Variants = {
-  hidden: { opacity: 0, x: 36, scale: 0.96 },
+  hidden: { opacity: 0, x: 36 },
   show: {
     opacity: 1,
     x: 0,
-    scale: 1,
     transition: {
       duration: 0.7,
       ease: [0.22, 1, 0.36, 1],
@@ -101,11 +100,10 @@ const imageVariants: Variants = {
 };
 
 const imageInnerVariants: Variants = {
-  hidden: { opacity: 0, y: 28, scale: 1.04 },
+  hidden: { opacity: 0, y: 28 },
   show: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
       duration: 0.85,
       ease: [0.22, 1, 0.36, 1],
@@ -171,10 +169,14 @@ export default function WhyChooseUsSection() {
 
           <motion.div className="why-choose-us-visual" variants={imageVariants}>
             <div className="why-choose-us-visual-frame">
-              <motion.div className="why-choose-us-image" variants={imageInnerVariants}>
+              <motion.div
+                className="why-choose-us-image"
+                variants={imageInnerVariants}
+              >
                 <img
-                  src="/assets/img/service/Dynamics365Ecosystem.png"
-                  alt="Microsoft Dynamics 365 ecosystem diagram"
+                  src="/assets/img/service/why.jpg"
+                  alt="Business consultant evaluating a technology decision"
+                  loading="lazy"
                 />
               </motion.div>
             </div>
