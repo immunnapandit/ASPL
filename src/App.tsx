@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import HomeOne from './components/homes/home-1';
 import HomeTwo from './components/homes/home-2';
 import HomeThree from './components/homes/home-3';
@@ -63,6 +64,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
+      <Analytics />
     </>
   );
 }
