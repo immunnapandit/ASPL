@@ -10,7 +10,9 @@ const envPath = join(__dirname, '.env');
 loadEnvFile(envPath);
 
 const PORT = Number(process.env.PORT || 5001);
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL =
+  process.env.FRONTEND_URL ||
+  'https://aspl.vercel.app,http://localhost:5173,http://localhost:3002';
 const ALLOWED_ORIGINS = FRONTEND_URL.split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
