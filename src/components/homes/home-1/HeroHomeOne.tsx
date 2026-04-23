@@ -141,7 +141,7 @@ export default function HeroHomeOne() {
                           lineHeight: 1.15,
                         }}
                       >
-                        Build Powerful Software for the Future
+                        Build Powerful Solutions for the Future
                       </h1>
                       <div className="tv-slider-text pb-20">
                         <p>
