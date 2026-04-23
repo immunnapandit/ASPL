@@ -55,14 +55,14 @@ export default function FooterOne() {
                   </div>
                   <div className="tv-footer-widget-text">
                     <p>
-                      Atisunya is a technology-driven company delivering smart digital solutions, including web development, CRM, ERP, and business automation to help businesses grow and scale efficiently.
+                      AtiSunya is a technology-driven company delivering smart digital solutions, including web development, CRM, ERP, and business automation to help businesses grow and scale efficiently.
                     </p>
                   </div>
                   <div className="tv-footer-widget-contact-info">
                     <ul>
                       <li>
                         <a href="">
-                          <i className="fa-solid fa-phone"></i>+91-80-8181-0673, +91-82-9915-6511
+                          <i className="fa-solid fa-phone"></i>(+91)-80-8181-0673, (+91)-82-9915-6511
                         </a>
                       </li>
                       <li>
@@ -90,7 +90,7 @@ export default function FooterOne() {
                         <Link to="/careers">Careers</Link>
                       </li>
                       <li>
-                        <Link to="/blog-grid">Blogs</Link>
+                        <Link to="/blog">Blogs</Link>
                       </li>
                       <li>
                         <Link to="/contact">Contact Us</Link>
@@ -164,7 +164,7 @@ export default function FooterOne() {
                       © 2026 All Rights Reserved | Developed by
                       <a href="https://www.atisunya.co" target="_blank">
                         {' '}
-                        Atisunya Pvt. Ltd.
+                        AtiSunya Pvt. Ltd.
                       </a>
                     </p>
                   </div>

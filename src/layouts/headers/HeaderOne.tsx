@@ -52,7 +52,7 @@ export default function HeaderOne() {
                           href="https://www.google.com/maps/@23.843848,90.3081992,17.5z?entry=ttu&amp;g_ep=EgoyMDI1MDEwMS4wIKXMDSoASAFQAw%3D%3D"
                           style={{ whiteSpace: 'nowrap' }}
                         >
-                          Logix Technova, Block A-522, Sec-132 Noida
+                          A-522, Tower-A, Logix Technova, Sec-132, Noida
                         </a>
                       </span>
                     </li>
