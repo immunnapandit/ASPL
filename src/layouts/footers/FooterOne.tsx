@@ -80,6 +80,9 @@ export default function FooterOne() {
                         name="email"
                         placeholder="Enter Your Email"
                         value={newsletterEmail}
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
                         onChange={(event) => setNewsletterEmail(event.target.value)}
                         disabled={newsletterStatus === 'submitting'}
                         required

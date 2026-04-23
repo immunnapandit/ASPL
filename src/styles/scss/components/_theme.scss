@@ -252,6 +252,14 @@ input {
   }
 }
 
+input[type='email'] {
+  text-transform: none;
+
+  @include tv-placeholder {
+    text-transform: none;
+  }
+}
+
 textarea {
   outline: none;
   width: 100%;
