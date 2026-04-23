@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   readonly VITE_RAZORPAY_ORDER_API_URL?: string;
   readonly VITE_RAZORPAY_VERIFY_API_URL?: string;
   readonly VITE_CONTACT_API_URL?: string;
+  readonly VITE_CAREER_API_URL?: string;
+  readonly VITE_NEWSLETTER_API_URL?: string;
 }
 
 interface ImportMeta {

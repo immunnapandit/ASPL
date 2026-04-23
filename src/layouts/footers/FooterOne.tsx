@@ -1,7 +1,63 @@
+import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { socialLinks } from '../../data/social-links';
 
 export default function FooterOne() {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterWebsite, setNewsletterWebsite] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState<
+    'idle' | 'submitting' | 'success' | 'error'
+  >('idle');
+  const [newsletterMessage, setNewsletterMessage] = useState('');
+
+  const newsletterApiUrl =
+    import.meta.env.VITE_NEWSLETTER_API_URL ||
+    'http://localhost:5001/api/newsletter/subscribe';
+
+  const handleNewsletterSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (newsletterStatus === 'submitting') {
+      return;
+    }
+
+    setNewsletterStatus('submitting');
+    setNewsletterMessage('');
+
+    try {
+      const response = await fetch(newsletterApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: newsletterEmail.trim(),
+          website: newsletterWebsite.trim(),
+          source: 'website-footer',
+        }),
+      });
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(result?.error || 'Unable to subscribe right now.');
+      }
+
+      setNewsletterStatus('success');
+      setNewsletterMessage(
+        result?.message || 'Thank you for subscribing to the AtiSunya newsletter.'
+      );
+      setNewsletterEmail('');
+      setNewsletterWebsite('');
+    } catch (error) {
+      setNewsletterStatus('error');
+      setNewsletterMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unable to subscribe right now. Please try again.'
+      );
+    }
+  };
+
   return (
     <footer>
       <div className="tv-footer-wrap footer-one-wrap footer-bg z-index-1 pt-130">
@@ -18,19 +74,50 @@ export default function FooterOne() {
                 </div>
                 <div className="col-xl-7 col-12 text-xl-end">
                   <div className="tv-footer-top-form">
-                    <form action="#">
+                    <form onSubmit={handleNewsletterSubmit}>
                       <input
                         type="email"
+                        name="email"
                         placeholder="Enter Your Email"
+                        value={newsletterEmail}
+                        onChange={(event) => setNewsletterEmail(event.target.value)}
+                        disabled={newsletterStatus === 'submitting'}
                         required
                       />
-                      <button className="tv-btn-primary p-relative">
+                      <input
+                        className="tv-newsletter-honeypot"
+                        type="text"
+                        name="website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={newsletterWebsite}
+                        onChange={(event) => setNewsletterWebsite(event.target.value)}
+                        aria-hidden="true"
+                      />
+                      <button
+                        className="tv-btn-primary p-relative"
+                        disabled={newsletterStatus === 'submitting'}
+                      >
                         <span className="btn-wrap">
-                          <span className="btn-text1">Submit Now</span>
-                          <span className="btn-text2">Submit Now</span>
+                          <span className="btn-text1">
+                            {newsletterStatus === 'submitting' ? 'Submitting...' : 'Submit Now'}
+                          </span>
+                          <span className="btn-text2">
+                            {newsletterStatus === 'submitting' ? 'Submitting...' : 'Submit Now'}
+                          </span>
                         </span>
                       </button>
                     </form>
+                    {newsletterMessage ? (
+                      <p
+                        className={`tv-newsletter-form-message ${
+                          newsletterStatus === 'error' ? 'is-error' : 'is-success'
+                        }`}
+                        role="status"
+                      >
+                        {newsletterMessage}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </div>

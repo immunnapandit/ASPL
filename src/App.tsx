@@ -19,6 +19,7 @@ import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
 import BecomeMctEnrollPage from './components/become-mct/enroll';
 import Careers from './components/careers';
+import CareerDetails from './components/careers/CareerDetails';
 import PayNowPage from './components/pay-now';
 import D365Finance from './components/solutions/d365-finance';
 import WorkingProcess from './components/working-process';
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
   { path: '/blog-details', element: <BlogDetails /> },
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
+  { path: '/careers/:slug', element: <CareerDetails /> },
   { path: '/pay-now', element: <PayNowPage /> },
   { path: '/working-process', element: <WorkingProcess /> },
   { path: '/privacy-policy', element: <PrivacyPolicy /> },
