@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CONTACT_API_URL } from '../../config/api';
 import GlobalFootprints from '../shared/GlobalFootprints';
 
 type ContactFormState = {
@@ -23,8 +24,7 @@ export default function ContactArea() {
   const [statusMessage, setStatusMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const contactApiUrl =
-    import.meta.env.VITE_CONTACT_API_URL || 'http://localhost:5001/api/contact';
+  const contactApiUrl = CONTACT_API_URL;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { NEWSLETTER_API_URL } from '../../config/api';
 import { socialLinks } from '../../data/social-links';
 
 export default function FooterOne() {
@@ -10,9 +11,7 @@ export default function FooterOne() {
   >('idle');
   const [newsletterMessage, setNewsletterMessage] = useState('');
 
-  const newsletterApiUrl =
-    import.meta.env.VITE_NEWSLETTER_API_URL ||
-    'http://localhost:5001/api/newsletter/subscribe';
+  const newsletterApiUrl = NEWSLETTER_API_URL;
 
   const handleNewsletterSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

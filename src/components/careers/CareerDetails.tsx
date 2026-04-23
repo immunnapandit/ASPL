@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, BriefcaseBusiness, MapPin, Upload } from 'lucide-react';
 import Breadcrumb from '../../common/Breadcrumb';
+import { CAREER_API_URL } from '../../config/api';
 import FooterOne from '../../layouts/footers/FooterOne';
 import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
@@ -17,8 +18,7 @@ export default function CareerDetails() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [resumeFileName, setResumeFileName] = useState('');
 
-  const careerApiUrl =
-    import.meta.env.VITE_CAREER_API_URL || 'http://localhost:5001/api/careers';
+  const careerApiUrl = CAREER_API_URL;
   const isGeneralApplication = job?.slug === 'general-application';
 
   const handleApplicationSubmit = async (e: FormEvent<HTMLFormElement>) => {
