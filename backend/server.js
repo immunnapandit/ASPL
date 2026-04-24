@@ -17,7 +17,7 @@ const ALLOWED_ORIGINS = FRONTEND_URL.split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-const CONTACT_TO_EMAIL = (process.env.CONTACT_TO_EMAIL || 'munna@atisunya.co').trim();
+const CONTACT_TO_EMAIL = (process.env.CONTACT_TO_EMAIL || 'info@atisunya.co').trim();
 const HR_TO_EMAIL = (process.env.HR_TO_EMAIL || 'hr@atisunya.co').trim();
 const NEWSLETTER_TO_EMAIL = (
   process.env.NEWSLETTER_TO_EMAIL ||
@@ -30,7 +30,7 @@ const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
 const GRAPH_FROM_EMAIL = (
   process.env.GRAPH_FROM_EMAIL ||
   process.env.CONTACT_FROM_EMAIL ||
-  CONTACT_TO_EMAIL
+  'info@atisunya.co'
 ).trim();
 
 let graphTokenCache = null;

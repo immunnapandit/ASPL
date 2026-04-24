@@ -229,6 +229,7 @@ export default function ContactArea() {
                     <a href={`mailto:${CONTACT_EMAIL}`} className="text-white">
                       {CONTACT_EMAIL}
                     </a>
+                    
                     , we do not spam your email.
                   </p>
 
