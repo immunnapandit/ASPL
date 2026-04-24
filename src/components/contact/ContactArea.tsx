@@ -5,6 +5,7 @@ import GlobalFootprints from '../shared/GlobalFootprints';
 type ContactFormState = {
   fullName: string;
   email: string;
+  phone: string;
   service: string;
   message: string;
 };
@@ -12,6 +13,7 @@ type ContactFormState = {
 const initialFormState: ContactFormState = {
   fullName: '',
   email: '',
+  phone: '',
   service: '',
   message: '',
 };
@@ -46,6 +48,7 @@ export default function ContactArea() {
         body: JSON.stringify({
           fullName: formState.fullName.trim(),
           email: formState.email.trim(),
+          phone: formState.phone.trim(),
           service: formState.service.trim(),
           message: formState.message.trim(),
         }),
@@ -249,6 +252,17 @@ export default function ContactArea() {
                         name="email"
                         placeholder="Work Email *"
                         value={formState.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="tv-contact-input-box mb-24">
+                      <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Phone Number *"
+                        value={formState.phone}
                         onChange={handleChange}
                         required
                       />

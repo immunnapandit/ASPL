@@ -1067,6 +1067,7 @@ function buildContactEmailText(contact, submittedAt) {
     '',
     `Name: ${contact.fullName}`,
     `Email: ${contact.email}`,
+    `Phone: ${contact.phone}`,
     `Service: ${contact.service}`,
     `Submitted at: ${submittedAt}`,
     '',
@@ -1207,6 +1208,7 @@ function validateContactPayload(data) {
 
   const fullName = typeof data.fullName === 'string' ? data.fullName.trim() : '';
   const email = typeof data.email === 'string' ? data.email.trim() : '';
+  const phone = typeof data.phone === 'string' ? data.phone.trim() : '';
   const service = typeof data.service === 'string' ? data.service.trim() : '';
   const message = typeof data.message === 'string' ? data.message.trim() : '';
 
@@ -1216,6 +1218,10 @@ function validateContactPayload(data) {
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  if (!phone) {
+    return { ok: false, error: 'Phone number is required.' };
   }
 
   if (!service) {
@@ -1231,6 +1237,7 @@ function validateContactPayload(data) {
     data: {
       fullName,
       email,
+      phone,
       service,
       message,
     },
