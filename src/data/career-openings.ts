@@ -1,20 +1,34 @@
+export type JobOpeningStatus = 'active' | 'draft';
+
 export type JobOpening = {
+  id: string;
   slug: string;
   title: string;
   type: string;
   location: string;
+  department: string;
+  experience: string;
   description: string;
   fullDescription: string;
   responsibilities: string[];
   requirements: string[];
+  status: JobOpeningStatus;
+  featured: boolean;
+  postedAt: string;
+  updatedAt: string;
 };
 
-export const careerOpenings: JobOpening[] = [
+const defaultPostedAt = '2026-04-24T09:00:00.000Z';
+
+export const fallbackCareerOpenings: JobOpening[] = [
   {
+    id: 'job-d365-functional-consultant',
     slug: 'dynamics-365-functional-consultant',
     title: 'Dynamics 365 Functional Consultant',
     type: 'Full Time',
     location: 'Noida / Hybrid',
+    department: 'Consulting',
+    experience: '5+ years',
     description:
       'Lead requirement discovery, process mapping, solution design, and stakeholder coordination for enterprise implementations.',
     fullDescription:
@@ -35,12 +49,19 @@ export const careerOpenings: JobOpening[] = [
       'Microsoft Dynamics 365 certification preferred',
       "Bachelor's degree in IT, Business, or related field",
     ],
+    status: 'active',
+    featured: true,
+    postedAt: defaultPostedAt,
+    updatedAt: defaultPostedAt,
   },
   {
+    id: 'job-power-platform-developer',
     slug: 'power-platform-developer',
     title: 'Power Platform Developer',
     type: 'Full Time',
     location: 'Remote / Hybrid',
+    department: 'Engineering',
+    experience: '3+ years',
     description:
       'Design scalable apps, automations, and integrations using Power Apps, Power Automate, and related Microsoft services.',
     fullDescription:
@@ -63,12 +84,19 @@ export const careerOpenings: JobOpening[] = [
       'Excellent problem-solving and analytical skills',
       'Industry certifications in Power Platform are a plus',
     ],
+    status: 'active',
+    featured: true,
+    postedAt: defaultPostedAt,
+    updatedAt: defaultPostedAt,
   },
   {
+    id: 'job-erp-support-specialist',
     slug: 'erp-support-specialist',
     title: 'ERP Support Specialist',
     type: 'Full Time',
     location: 'Noida',
+    department: 'Support',
+    experience: '2+ years',
     description:
       'Support live business systems, troubleshoot incidents, and help clients maintain smooth day-to-day operations.',
     fullDescription:
@@ -91,14 +119,20 @@ export const careerOpenings: JobOpening[] = [
       'Certification in relevant ERP systems is a plus',
       "Bachelor's degree in IT or related field",
     ],
+    status: 'active',
+    featured: false,
+    postedAt: defaultPostedAt,
+    updatedAt: defaultPostedAt,
   },
 ];
 
-export const generalApplication: JobOpening = {
+export const generalApplication = {
   slug: 'general-application',
   title: 'General Application',
   type: 'Open Application',
   location: 'Flexible',
+  department: 'Talent Pool',
+  experience: 'All levels',
   description:
     'Share your profile with us for future opportunities that match your skills.',
   fullDescription:
@@ -115,14 +149,10 @@ export const generalApplication: JobOpening = {
   ],
 };
 
-export function getCareerOpeningBySlug(slug?: string) {
+export function getFallbackCareerOpeningBySlug(slug?: string) {
   if (!slug) {
     return undefined;
   }
 
-  if (slug === generalApplication.slug) {
-    return generalApplication;
-  }
-
-  return careerOpenings.find((opening) => opening.slug === slug);
+  return fallbackCareerOpenings.find((opening) => opening.slug === slug);
 }

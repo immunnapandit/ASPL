@@ -1,4 +1,4 @@
-import { appendFile, mkdir } from 'node:fs/promises';
+import { appendFile, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -24,6 +24,9 @@ const NEWSLETTER_TO_EMAIL = (
   CONTACT_TO_EMAIL
 ).trim();
 const NEWSLETTER_STORE_FILE = join(__dirname, 'data', 'newsletter-subscribers.jsonl');
+const CAREERS_STORE_FILE = join(__dirname, 'data', 'career-openings.json');
+const CAREER_APPLICATIONS_STORE_FILE = join(__dirname, 'data', 'career-applications.json');
+const CAREERS_SETTINGS_STORE_FILE = join(__dirname, 'data', 'careers-settings.json');
 const GRAPH_TENANT_ID = (process.env.GRAPH_TENANT_ID || '').trim();
 const GRAPH_CLIENT_ID = (process.env.GRAPH_CLIENT_ID || '').trim();
 const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
@@ -32,8 +35,126 @@ const GRAPH_FROM_EMAIL = (
   process.env.CONTACT_FROM_EMAIL ||
   'info@atisunya.co'
 ).trim();
+const CAREERS_ADMIN_TOKEN = (
+  process.env.CAREERS_ADMIN_TOKEN || 'change-me-careers-admin-token'
+).trim();
 
 let graphTokenCache = null;
+
+const DEFAULT_CAREER_OPENINGS = [
+  {
+    id: 'job-d365-functional-consultant',
+    slug: 'dynamics-365-functional-consultant',
+    title: 'Dynamics 365 Functional Consultant',
+    type: 'Full Time',
+    location: 'Noida / Hybrid',
+    department: 'Consulting',
+    experience: '5+ years',
+    description:
+      'Lead requirement discovery, process mapping, solution design, and stakeholder coordination for enterprise implementations.',
+    fullDescription:
+      'We are looking for an experienced Dynamics 365 Functional Consultant to join our team. You will work with enterprise clients to understand their business processes, design comprehensive solutions, and oversee successful implementations.',
+    responsibilities: [
+      'Conduct requirement gathering and process mapping with stakeholders',
+      'Design scalable and efficient Dynamics 365 solutions',
+      'Lead solution design workshops and documentation',
+      'Coordinate with technical teams for implementation',
+      'Provide post-implementation support and training',
+      'Stay updated with latest D365 features and best practices',
+    ],
+    requirements: [
+      '5+ years of experience with Dynamics 365 implementations',
+      'Strong knowledge of ERP processes and best practices',
+      'Excellent communication and stakeholder management skills',
+      'Experience with project management methodologies',
+      'Microsoft Dynamics 365 certification preferred',
+      "Bachelor's degree in IT, Business, or related field",
+    ],
+    status: 'active',
+    featured: true,
+    postedAt: '2026-04-24T09:00:00.000Z',
+    updatedAt: '2026-04-24T09:00:00.000Z',
+  },
+  {
+    id: 'job-power-platform-developer',
+    slug: 'power-platform-developer',
+    title: 'Power Platform Developer',
+    type: 'Full Time',
+    location: 'Remote / Hybrid',
+    department: 'Engineering',
+    experience: '3+ years',
+    description:
+      'Design scalable apps, automations, and integrations using Power Apps, Power Automate, and related Microsoft services.',
+    fullDescription:
+      "Join our development team to create innovative solutions using Microsoft Power Platform. You'll design and develop custom applications, workflows, and integrations that solve real business problems.",
+    responsibilities: [
+      'Develop custom Power Apps based on business requirements',
+      'Create and optimize Power Automate workflows',
+      'Design and implement integrations with external systems',
+      'Write clean, maintainable code following best practices',
+      'Conduct code reviews and provide technical mentorship',
+      'Debug and resolve technical issues and performance bottlenecks',
+      'Document solutions and create technical specifications',
+    ],
+    requirements: [
+      '3+ years of development experience with Power Platform',
+      'Strong proficiency in Power Apps and Power Automate',
+      'Experience with Power BI and data modeling',
+      'Knowledge of C# or JavaScript',
+      'Understanding of API integrations and REST services',
+      'Excellent problem-solving and analytical skills',
+      'Industry certifications in Power Platform are a plus',
+    ],
+    status: 'active',
+    featured: true,
+    postedAt: '2026-04-24T09:00:00.000Z',
+    updatedAt: '2026-04-24T09:00:00.000Z',
+  },
+  {
+    id: 'job-erp-support-specialist',
+    slug: 'erp-support-specialist',
+    title: 'ERP Support Specialist',
+    type: 'Full Time',
+    location: 'Noida',
+    department: 'Support',
+    experience: '2+ years',
+    description:
+      'Support live business systems, troubleshoot incidents, and help clients maintain smooth day-to-day operations.',
+    fullDescription:
+      'We are seeking a dedicated ERP Support Specialist to provide Tier-2 technical support for our ERP implementations. You will work with clients to resolve issues, optimize system performance, and ensure continuous business operations.',
+    responsibilities: [
+      'Provide technical support to end-users and clients',
+      'Troubleshoot and resolve ERP system incidents',
+      'Perform system analysis and root cause analysis',
+      'Deploy patches, fixes, and system updates',
+      'Maintain documentation of issues and resolutions',
+      'Collaborate with development teams for issue resolution',
+      'Monitor system performance and identify optimization opportunities',
+    ],
+    requirements: [
+      '2+ years of ERP support experience (Dynamics 365 or similar)',
+      'Strong troubleshooting and technical analysis skills',
+      'Knowledge of database management and SQL basics',
+      'Excellent customer service and communication skills',
+      'Ability to work in shifts if required',
+      'Certification in relevant ERP systems is a plus',
+      "Bachelor's degree in IT or related field",
+    ],
+    status: 'active',
+    featured: false,
+    postedAt: '2026-04-24T09:00:00.000Z',
+    updatedAt: '2026-04-24T09:00:00.000Z',
+  },
+];
+
+const DEFAULT_CAREERS_SETTINGS = {
+  careersPageTitle: 'Careers',
+  careersPageSubtitle: 'Build your future with ASPL',
+  generalCtaTitle: 'Send Us Your Resume',
+  generalCtaDescription:
+    'Share your profile with us and tell us what kind of role you are looking for. If a matching opportunity opens up, our team will get in touch.',
+  notificationEmail: HR_TO_EMAIL,
+};
 
 const server = createHttpApp({
   port: PORT,
@@ -63,6 +184,60 @@ const server = createHttpApp({
 
     if (req.method === 'POST' && url.pathname === '/api/careers') {
       return handleCareerApplication(req);
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/careers/openings') {
+      return handleCareerOpeningsRequest(req);
+    }
+
+    if (url.pathname === '/api/admin/careers/openings') {
+      if (req.method === 'GET') {
+        return handleAdminCareerOpeningsList(req);
+      }
+
+      if (req.method === 'POST') {
+        return handleAdminCareerOpeningCreate(req);
+      }
+    }
+
+    if (url.pathname === '/api/admin/careers/applications') {
+      if (req.method === 'GET') {
+        return handleAdminCareerApplicationsList(req);
+      }
+    }
+
+    if (url.pathname.startsWith('/api/admin/careers/applications/')) {
+      const applicationId = decodeURIComponent(
+        url.pathname.replace('/api/admin/careers/applications/', '')
+      );
+
+      if (req.method === 'PATCH' || req.method === 'PUT') {
+        return handleAdminCareerApplicationUpdate(req, applicationId);
+      }
+    }
+
+    if (url.pathname === '/api/admin/careers/settings') {
+      if (req.method === 'GET') {
+        return handleAdminCareersSettingsGet(req);
+      }
+
+      if (req.method === 'PUT' || req.method === 'PATCH') {
+        return handleAdminCareersSettingsUpdate(req);
+      }
+    }
+
+    if (url.pathname.startsWith('/api/admin/careers/openings/')) {
+      const openingId = decodeURIComponent(
+        url.pathname.replace('/api/admin/careers/openings/', '')
+      );
+
+      if (req.method === 'PATCH' || req.method === 'PUT') {
+        return handleAdminCareerOpeningUpdate(req, openingId);
+      }
+
+      if (req.method === 'DELETE') {
+        return handleAdminCareerOpeningDelete(req, openingId);
+      }
     }
 
     if (req.method === 'POST' && url.pathname === '/api/newsletter/subscribe') {
@@ -176,6 +351,7 @@ async function handleCareerApplication(req) {
   }
 
   try {
+    await persistCareerApplicationRecord(validation.data);
     await sendCareerApplicationEmail(validation.data);
     return json(
       200,
@@ -193,6 +369,113 @@ async function handleCareerApplication(req) {
       { error: getContactEmailErrorMessage(error) },
       req
     );
+  }
+}
+
+async function handleAdminCareerApplicationsList(req) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const applications = await readCareerApplications();
+    return json(200, { ok: true, applications }, req);
+  } catch (error) {
+    console.error('Failed to load career applications:', error);
+    return json(500, { error: 'Unable to load applications right now.' }, req);
+  }
+}
+
+async function handleAdminCareerApplicationUpdate(req, applicationId) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateCareerApplicationStatusPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const applications = await readCareerApplications();
+    const currentApplication = applications.find((item) => item.id === applicationId);
+
+    if (!currentApplication) {
+      return json(404, { error: 'Application not found.' }, req);
+    }
+
+    const nextApplication = {
+      ...currentApplication,
+      status: validation.data.status,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const nextApplications = applications.map((item) =>
+      item.id === applicationId ? nextApplication : item
+    );
+
+    await writeCareerApplications(nextApplications);
+
+    return json(200, { ok: true, application: nextApplication }, req);
+  } catch (error) {
+    console.error('Failed to update career application:', error);
+    return json(500, { error: 'Unable to update this application right now.' }, req);
+  }
+}
+
+async function handleAdminCareersSettingsGet(req) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const settings = await readCareersSettings();
+    return json(200, { ok: true, settings }, req);
+  } catch (error) {
+    console.error('Failed to load careers settings:', error);
+    return json(500, { error: 'Unable to load settings right now.' }, req);
+  }
+}
+
+async function handleAdminCareersSettingsUpdate(req) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateCareersSettingsPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const settings = validation.data;
+    await writeCareersSettings(settings);
+    return json(200, { ok: true, settings }, req);
+  } catch (error) {
+    console.error('Failed to update careers settings:', error);
+    return json(500, { error: 'Unable to update settings right now.' }, req);
   }
 }
 
@@ -266,6 +549,158 @@ async function handleNewsletterSubscribe(req) {
   );
 }
 
+async function handleCareerOpeningsRequest(req) {
+  try {
+    const openings = await readCareerOpenings();
+    return json(
+      200,
+      {
+        ok: true,
+        openings: openings.filter((opening) => opening.status === 'active'),
+      },
+      req
+    );
+  } catch (error) {
+    console.error('Failed to load career openings:', error);
+    return json(500, { error: 'Unable to load career openings right now.' }, req);
+  }
+}
+
+async function handleAdminCareerOpeningsList(req) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const openings = await readCareerOpenings();
+    return json(200, { ok: true, openings }, req);
+  } catch (error) {
+    console.error('Failed to load admin career openings:', error);
+    return json(500, { error: 'Unable to load careers CMS data.' }, req);
+  }
+}
+
+async function handleAdminCareerOpeningCreate(req) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateCareerOpeningPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const openings = await readCareerOpenings();
+
+    if (openings.some((opening) => opening.slug === validation.data.slug)) {
+      return json(409, { error: 'Another job already uses this slug.' }, req);
+    }
+
+    const now = new Date().toISOString();
+    const opening = {
+      id: randomUUID(),
+      ...validation.data,
+      postedAt: now,
+      updatedAt: now,
+    };
+
+    const nextOpenings = [opening, ...openings];
+    await writeCareerOpenings(nextOpenings);
+
+    return json(201, { ok: true, opening }, req);
+  } catch (error) {
+    console.error('Failed to create career opening:', error);
+    return json(500, { error: 'Unable to create this job opening right now.' }, req);
+  }
+}
+
+async function handleAdminCareerOpeningUpdate(req, openingId) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateCareerOpeningPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const openings = await readCareerOpenings();
+    const currentOpening = openings.find((opening) => opening.id === openingId);
+
+    if (!currentOpening) {
+      return json(404, { error: 'Job opening not found.' }, req);
+    }
+
+    if (
+      openings.some(
+        (opening) => opening.slug === validation.data.slug && opening.id !== openingId
+      )
+    ) {
+      return json(409, { error: 'Another job already uses this slug.' }, req);
+    }
+
+    const opening = {
+      ...currentOpening,
+      ...validation.data,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const nextOpenings = openings.map((item) => (item.id === openingId ? opening : item));
+    await writeCareerOpenings(nextOpenings);
+
+    return json(200, { ok: true, opening }, req);
+  } catch (error) {
+    console.error('Failed to update career opening:', error);
+    return json(500, { error: 'Unable to update this job opening right now.' }, req);
+  }
+}
+
+async function handleAdminCareerOpeningDelete(req, openingId) {
+  const authError = validateAdminRequest(req);
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const openings = await readCareerOpenings();
+    const nextOpenings = openings.filter((opening) => opening.id !== openingId);
+
+    if (nextOpenings.length === openings.length) {
+      return json(404, { error: 'Job opening not found.' }, req);
+    }
+
+    await writeCareerOpenings(nextOpenings);
+
+    return json(200, { ok: true }, req);
+  } catch (error) {
+    console.error('Failed to delete career opening:', error);
+    return json(500, { error: 'Unable to delete this job opening right now.' }, req);
+  }
+}
+
 async function sendContactEmail(contact) {
   const submittedAt = new Date().toLocaleString('en-IN', {
     dateStyle: 'medium',
@@ -310,6 +745,8 @@ async function sendContactEmail(contact) {
 }
 
 async function sendCareerApplicationEmail(application) {
+  const careersSettings = await readCareersSettings();
+  const notificationEmail = careersSettings.notificationEmail || HR_TO_EMAIL;
   const submittedAt = new Date().toLocaleString('en-IN', {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -325,7 +762,7 @@ async function sendCareerApplicationEmail(application) {
     html: buildCareerApplicationEmailHtml(application, submittedAt),
     to: [
       {
-        address: HR_TO_EMAIL,
+        address: notificationEmail,
       },
     ],
     replyTo: [
@@ -336,14 +773,14 @@ async function sendCareerApplicationEmail(application) {
     ],
     attachments: application.resume ? [application.resume] : [],
   });
-  console.log(`Career application notification sent to ${HR_TO_EMAIL}.`);
+  console.log(`Career application notification sent to ${notificationEmail}.`);
 
   await sendGraphEmail({
     subject: isGeneralApplication
       ? 'Thank you for sharing your resume with AtiSunya'
       : `Thank you for applying for ${sanitizeEmailHeaderValue(application.roleTitle)}`,
     html: buildCareerThankYouEmailHtml(application),
-    fromEmail: HR_TO_EMAIL,
+    fromEmail: notificationEmail,
     to: [
       {
         name: sanitizeEmailHeaderValue(application.fullName),
@@ -353,7 +790,7 @@ async function sendCareerApplicationEmail(application) {
     replyTo: [
       {
         name: 'AtiSunya HR',
-        address: HR_TO_EMAIL,
+        address: notificationEmail,
       },
     ],
   });
@@ -838,6 +1275,142 @@ function validateNewsletterPayload(data) {
   };
 }
 
+function validateCareerOpeningPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Request body is required.' };
+  }
+
+  const title = getObjectString(data, 'title');
+  const slug = sanitizeSlug(getObjectString(data, 'slug') || title);
+  const type = getObjectString(data, 'type');
+  const location = getObjectString(data, 'location');
+  const department = getObjectString(data, 'department');
+  const experience = getObjectString(data, 'experience');
+  const description = getObjectString(data, 'description');
+  const fullDescription = getObjectString(data, 'fullDescription');
+  const responsibilities = normalizeStringArray(data.responsibilities);
+  const requirements = normalizeStringArray(data.requirements);
+  const status = getObjectString(data, 'status') === 'draft' ? 'draft' : 'active';
+  const featured = Boolean(data.featured);
+
+  if (!title) {
+    return { ok: false, error: 'Job title is required.' };
+  }
+
+  if (!slug) {
+    return { ok: false, error: 'Slug is required.' };
+  }
+
+  if (!type) {
+    return { ok: false, error: 'Job type is required.' };
+  }
+
+  if (!location) {
+    return { ok: false, error: 'Location is required.' };
+  }
+
+  if (!department) {
+    return { ok: false, error: 'Department is required.' };
+  }
+
+  if (!experience) {
+    return { ok: false, error: 'Experience is required.' };
+  }
+
+  if (!description) {
+    return { ok: false, error: 'Short description is required.' };
+  }
+
+  if (!fullDescription) {
+    return { ok: false, error: 'Full description is required.' };
+  }
+
+  if (!responsibilities.length) {
+    return { ok: false, error: 'Add at least one responsibility.' };
+  }
+
+  if (!requirements.length) {
+    return { ok: false, error: 'Add at least one requirement.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      slug,
+      title,
+      type,
+      location,
+      department,
+      experience,
+      description,
+      fullDescription,
+      responsibilities,
+      requirements,
+      status,
+      featured,
+    },
+  };
+}
+
+function validateCareerApplicationStatusPayload(data) {
+  const status = getObjectString(data, 'status');
+  const allowedStatuses = new Set(['new', 'reviewed', 'contacted', 'archived']);
+
+  if (!allowedStatuses.has(status)) {
+    return { ok: false, error: 'A valid application status is required.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      status,
+    },
+  };
+}
+
+function validateCareersSettingsPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Settings payload is required.' };
+  }
+
+  const careersPageTitle = getObjectString(data, 'careersPageTitle');
+  const careersPageSubtitle = getObjectString(data, 'careersPageSubtitle');
+  const generalCtaTitle = getObjectString(data, 'generalCtaTitle');
+  const generalCtaDescription = getObjectString(data, 'generalCtaDescription');
+  const notificationEmail = getObjectString(data, 'notificationEmail');
+
+  if (!careersPageTitle) {
+    return { ok: false, error: 'Careers page title is required.' };
+  }
+
+  if (!careersPageSubtitle) {
+    return { ok: false, error: 'Careers page subtitle is required.' };
+  }
+
+  if (!generalCtaTitle) {
+    return { ok: false, error: 'CTA title is required.' };
+  }
+
+  if (!generalCtaDescription) {
+    return { ok: false, error: 'CTA description is required.' };
+  }
+
+  if (!notificationEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)) {
+    return { ok: false, error: 'A valid notification email is required.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      careersPageTitle,
+      careersPageSubtitle,
+      generalCtaTitle,
+      generalCtaDescription,
+      notificationEmail,
+    },
+  };
+}
+
 async function validateCareerApplicationPayload(data) {
   const fullName = getFormString(data, 'fullName');
   const email = getFormString(data, 'email');
@@ -899,6 +1472,28 @@ async function validateCareerApplicationPayload(data) {
   };
 }
 
+function getObjectString(data, key) {
+  const value = data?.[key];
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeStringArray(value) {
+  return Array.isArray(value)
+    ? value
+        .map((item) => (typeof item === 'string' ? item.trim() : ''))
+        .filter(Boolean)
+    : [];
+}
+
+function sanitizeSlug(value) {
+  return String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100);
+}
+
 function getFormString(formData, key) {
   const value = formData.get(key);
   return typeof value === 'string' ? value.trim() : '';
@@ -942,6 +1537,135 @@ function getExistingNewsletterSubscription(email) {
   return null;
 }
 
+function validateAdminRequest(req) {
+  const authorization = req.headers.get('authorization') || '';
+  const tokenFromHeader = req.headers.get('x-admin-token') || '';
+  const bearerToken = authorization.startsWith('Bearer ')
+    ? authorization.slice('Bearer '.length).trim()
+    : '';
+  const token = bearerToken || tokenFromHeader.trim();
+
+  if (!token || token !== CAREERS_ADMIN_TOKEN) {
+    return json(401, { error: 'Unauthorized careers CMS request.' }, req);
+  }
+
+  return null;
+}
+
+async function readCareerOpenings() {
+  if (!existsSync(CAREERS_STORE_FILE)) {
+    await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+    return DEFAULT_CAREER_OPENINGS;
+  }
+
+  try {
+    const raw = readFileSync(CAREERS_STORE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error('Career openings store is invalid.');
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error('Career openings store invalid, restoring defaults:', error);
+    await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+    return DEFAULT_CAREER_OPENINGS;
+  }
+}
+
+async function writeCareerOpenings(openings) {
+  await mkdir(dirname(CAREERS_STORE_FILE), { recursive: true });
+  await writeFile(CAREERS_STORE_FILE, `${JSON.stringify(openings, null, 2)}\n`, 'utf8');
+}
+
+async function readCareerApplications() {
+  if (!existsSync(CAREER_APPLICATIONS_STORE_FILE)) {
+    await writeCareerApplications([]);
+    return [];
+  }
+
+  try {
+    const raw = readFileSync(CAREER_APPLICATIONS_STORE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error('Career applications store is invalid.');
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error('Career applications store invalid, restoring empty list:', error);
+    await writeCareerApplications([]);
+    return [];
+  }
+}
+
+async function writeCareerApplications(applications) {
+  await mkdir(dirname(CAREER_APPLICATIONS_STORE_FILE), { recursive: true });
+  await writeFile(
+    CAREER_APPLICATIONS_STORE_FILE,
+    `${JSON.stringify(applications, null, 2)}\n`,
+    'utf8'
+  );
+}
+
+async function persistCareerApplicationRecord(application) {
+  const applications = await readCareerApplications();
+  const now = new Date().toISOString();
+  const nextRecord = {
+    id: randomUUID(),
+    fullName: application.fullName,
+    email: application.email,
+    phone: application.phone,
+    roleTitle: application.roleTitle,
+    roleSlug: application.roleSlug,
+    appliedPosition: application.appliedPosition,
+    message: application.message,
+    resumeFileName: application.resume.name,
+    resumeContentType: application.resume.contentType,
+    status: 'new',
+    submittedAt: now,
+    updatedAt: now,
+  };
+
+  await writeCareerApplications([nextRecord, ...applications]);
+}
+
+async function readCareersSettings() {
+  if (!existsSync(CAREERS_SETTINGS_STORE_FILE)) {
+    await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+    return DEFAULT_CAREERS_SETTINGS;
+  }
+
+  try {
+    const raw = readFileSync(CAREERS_SETTINGS_STORE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('Careers settings store is invalid.');
+    }
+
+    return {
+      ...DEFAULT_CAREERS_SETTINGS,
+      ...parsed,
+    };
+  } catch (error) {
+    console.error('Careers settings store invalid, restoring defaults:', error);
+    await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+    return DEFAULT_CAREERS_SETTINGS;
+  }
+}
+
+async function writeCareersSettings(settings) {
+  await mkdir(dirname(CAREERS_SETTINGS_STORE_FILE), { recursive: true });
+  await writeFile(
+    CAREERS_SETTINGS_STORE_FILE,
+    `${JSON.stringify(settings, null, 2)}\n`,
+    'utf8'
+  );
+}
+
 async function persistNewsletterSubscription(subscription) {
   await mkdir(dirname(NEWSLETTER_STORE_FILE), { recursive: true });
   await appendFile(NEWSLETTER_STORE_FILE, `${JSON.stringify(subscription)}\n`, 'utf8');
@@ -976,6 +1700,7 @@ function json(status, data, req = null) {
 function withCors(req, response) {
   const nextHeaders = new Headers(response.headers);
   const requestOrigin = req?.headers.get('origin');
+  const requestHeaders = req?.headers.get('access-control-request-headers');
   const isAllowedLocalhostOrigin =
     typeof requestOrigin === 'string' &&
     /^http:\/\/localhost:\d+$/.test(requestOrigin);
@@ -986,14 +1711,37 @@ function withCors(req, response) {
       : ALLOWED_ORIGINS[0] || 'http://localhost:5173';
 
   nextHeaders.set('Access-Control-Allow-Origin', allowOrigin);
-  nextHeaders.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  nextHeaders.set('Access-Control-Allow-Headers', 'Content-Type');
+  nextHeaders.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  nextHeaders.set('Access-Control-Allow-Headers', buildAllowedCorsHeaders(requestHeaders));
   nextHeaders.set('Vary', 'Origin');
 
   return new Response(response.body, {
     status: response.status,
     headers: nextHeaders,
   });
+}
+
+function buildAllowedCorsHeaders(requestHeaders) {
+  const defaults = ['Content-Type', 'Authorization', 'X-Admin-Token'];
+  const normalizedHeaders = new Map(
+    defaults.map((header) => [header.toLowerCase(), header])
+  );
+
+  if (requestHeaders) {
+    requestHeaders
+      .split(',')
+      .map((header) => header.trim())
+      .filter(Boolean)
+      .forEach((header) => {
+        const normalizedHeader = header.toLowerCase();
+
+        if (!normalizedHeaders.has(normalizedHeader)) {
+          normalizedHeaders.set(normalizedHeader, header);
+        }
+      });
+  }
+
+  return Array.from(normalizedHeaders.values()).join(', ');
 }
 
 function escapeHtml(value) {

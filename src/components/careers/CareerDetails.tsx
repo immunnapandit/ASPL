@@ -1,18 +1,34 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, BriefcaseBusiness, MapPin, Upload } from 'lucide-react';
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  LoaderCircle,
+  MapPin,
+  Upload,
+} from 'lucide-react';
 import Breadcrumb from '../../common/Breadcrumb';
 import { CAREER_API_URL } from '../../config/api';
+import {
+  generalApplication,
+  getFallbackCareerOpeningBySlug,
+  type JobOpening,
+} from '../../data/career-openings';
+import { fetchCareerOpeningBySlug } from '../../lib/careers';
 import FooterOne from '../../layouts/footers/FooterOne';
 import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
-import {
-  getCareerOpeningBySlug,
-} from '../../data/career-openings';
+
+type DisplayJob = JobOpening | typeof generalApplication;
 
 export default function CareerDetails() {
   const { slug } = useParams();
-  const job = getCareerOpeningBySlug(slug);
+  const [job, setJob] = useState<DisplayJob | undefined>(
+    slug === generalApplication.slug
+      ? generalApplication
+      : getFallbackCareerOpeningBySlug(slug)
+  );
+  const [isLoading, setIsLoading] = useState(slug !== generalApplication.slug);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -20,6 +36,26 @@ export default function CareerDetails() {
 
   const careerApiUrl = CAREER_API_URL;
   const isGeneralApplication = job?.slug === 'general-application';
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchCareerOpeningBySlug(slug)
+      .then((opening) => {
+        if (isMounted) {
+          setJob(opening);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
 
   const handleApplicationSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,6 +102,26 @@ export default function CareerDetails() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Wrapper>
+        <HeaderOne />
+        <main>
+          <Breadcrumb title="Career Details" subtitle="Careers" />
+          <section className="tv-career-detail-area pt-130 pb-130">
+            <div className="container">
+              <div className="tv-careers-loading tv-careers-loading--page" role="status">
+                <LoaderCircle size={24} className="tv-spin" />
+                Loading job details...
+              </div>
+            </div>
+          </section>
+        </main>
+        <FooterOne />
+      </Wrapper>
+    );
+  }
 
   if (!job) {
     return (
@@ -123,6 +179,8 @@ export default function CareerDetails() {
                     <MapPin size={14} />
                     {job.location}
                   </span>
+                  {'department' in job ? <span>{job.department}</span> : null}
+                  {'experience' in job ? <span>{job.experience}</span> : null}
                 </div>
 
                 <h2>{job.title}</h2>
@@ -151,10 +209,7 @@ export default function CareerDetails() {
                 <h5>
                   {isGeneralApplication ? 'Send your resume' : 'Apply for this role'}
                 </h5>
-                <form
-                  onSubmit={handleApplicationSubmit}
-                  className="tv-application-form"
-                >
+                <form onSubmit={handleApplicationSubmit} className="tv-application-form">
                   <div className="tv-form-group">
                     <label htmlFor="fullName">Full Name *</label>
                     <input type="text" id="fullName" name="fullName" required />
@@ -216,9 +271,7 @@ export default function CareerDetails() {
 
                   {statusMessage ? (
                     <p
-                      className={`tv-form-status ${
-                        isSuccess ? 'is-success' : 'is-error'
-                      }`}
+                      className={`tv-form-status ${isSuccess ? 'is-success' : 'is-error'}`}
                       role="status"
                     >
                       {statusMessage}
