@@ -809,11 +809,7 @@ export default function BlogAdmin() {
             <div className="tv-blog-cms-studio">
               <aside className="tv-blog-cms-sidebar">
                 <div className="tv-blog-cms-sidebar__brand">
-                  <span>ASPL</span>
-                  <div>
-                    <strong>Blog Studio</strong>
-                    <small>CMS Workspace</small>
-                  </div>
+                  <img src="/assets/img/logo/AtiSunyaLogo.png" alt="AtiSunya" />
                 </div>
                 <nav className="tv-blog-cms-sidebar__nav" aria-label="Blog CMS menu">
                   <button type="button" className={activeView === 'dashboard' ? 'is-active' : ''} onClick={() => setActiveView('dashboard')}>

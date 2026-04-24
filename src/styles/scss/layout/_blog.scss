@@ -335,29 +335,16 @@
 }
 
 .tv-blog-cms-sidebar__brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  width: 100%;
 
-  > span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    background: var(--tv-theme-1);
-    color: var(--tv-common-white);
-    font-weight: 800;
-  }
-
-  strong,
-  small {
+  > img {
     display: block;
-  }
-
-  small {
-    color: rgba(255, 255, 255, 0.62);
+    width: 150px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 }
 

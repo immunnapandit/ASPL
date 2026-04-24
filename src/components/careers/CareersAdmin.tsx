@@ -1191,11 +1191,7 @@ export default function CareersAdmin() {
             <div className="tv-blog-cms-studio tv-careers-cms-studio">
               <aside className="tv-blog-cms-sidebar">
                 <div className="tv-blog-cms-sidebar__brand">
-                  <span>ASPL</span>
-                  <div>
-                    <strong>Careers Studio</strong>
-                    <small>CMS Workspace</small>
-                  </div>
+                  <img src="/assets/img/logo/AtiSunyaLogo.png" alt="AtiSunya" />
                 </div>
 
                 <nav className="tv-blog-cms-sidebar__nav" aria-label="Careers CMS menu">
