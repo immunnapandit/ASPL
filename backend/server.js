@@ -343,6 +343,7 @@ async function sendCareerApplicationEmail(application) {
       ? 'Thank you for sharing your resume with AtiSunya'
       : `Thank you for applying for ${sanitizeEmailHeaderValue(application.roleTitle)}`,
     html: buildCareerThankYouEmailHtml(application),
+    fromEmail: HR_TO_EMAIL,
     to: [
       {
         name: sanitizeEmailHeaderValue(application.fullName),
@@ -400,10 +401,17 @@ async function sendNewsletterSubscriptionEmails(subscription) {
   console.log(`Newsletter welcome email sent to ${subscription.email}.`);
 }
 
-async function sendGraphEmail({ subject, html, to, replyTo = [], attachments = [] }) {
+async function sendGraphEmail({
+  subject,
+  html,
+  fromEmail = GRAPH_FROM_EMAIL,
+  to,
+  replyTo = [],
+  attachments = [],
+}) {
   const accessToken = await getGraphAccessToken();
   const response = await fetch(
-    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(GRAPH_FROM_EMAIL)}/sendMail`,
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(fromEmail)}/sendMail`,
     {
       method: 'POST',
       headers: {
