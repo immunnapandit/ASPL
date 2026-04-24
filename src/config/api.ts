@@ -30,6 +30,20 @@ export const ADMIN_CAREERS_SETTINGS_API_URL =
   import.meta.env.VITE_ADMIN_CAREERS_SETTINGS_API_URL ||
   buildApiUrl('/api/admin/careers/settings');
 
+export const BLOG_POSTS_API_URL =
+  import.meta.env.VITE_BLOG_POSTS_API_URL || buildApiUrl('/api/blog/posts');
+
+export const BLOG_COMMENTS_API_BASE_URL =
+  import.meta.env.VITE_BLOG_COMMENTS_API_BASE_URL || buildApiUrl('/api/blog/posts');
+
+export const ADMIN_BLOG_POSTS_API_URL =
+  import.meta.env.VITE_ADMIN_BLOG_POSTS_API_URL ||
+  buildApiUrl('/api/admin/blog/posts');
+
+export const ADMIN_BLOG_IMAGE_UPLOAD_API_URL =
+  import.meta.env.VITE_ADMIN_BLOG_IMAGE_UPLOAD_API_URL ||
+  buildApiUrl('/api/admin/blog/upload-image');
+
 export const NEWSLETTER_API_URL =
   import.meta.env.VITE_NEWSLETTER_API_URL ||
   buildApiUrl('/api/newsletter/subscribe');

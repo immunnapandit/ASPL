@@ -1,6 +1,27 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { type BlogPost } from '../../../data/blog-posts';
+import { fetchPublishedBlogPosts, formatBlogDate } from '../../../lib/blogs';
 
 export default function BlogHomeOne() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        setPosts((await fetchPublishedBlogPosts()).slice(0, 3));
+      } catch {
+        setPosts([]);
+      }
+    };
+
+    void loadPosts();
+  }, []);
+
+  if (!posts.length) {
+    return null;
+  }
+
   return (
     <div className="tv-blog-area pt-130 pb-130">
       <div className="container">
@@ -16,13 +37,8 @@ export default function BlogHomeOne() {
             </div>
           </div>
           <div className="col-xl-6 col-lg-6 text-end">
-            <div
-              className="tv-fade-anim button"
-              data-fade-from="top"
-              data-ease="bounce"
-              data-delay=".5"
-            >
-              <Link to="/blog-details" className="tv-btn-primary p-relative">
+            <div className="tv-fade-anim button" data-fade-from="top" data-ease="bounce" data-delay=".5">
+              <Link to="/blog" className="tv-btn-primary p-relative">
                 <span className="btn-wrap">
                   <span className="btn-text1">View All Posts</span>
                   <span className="btn-text2">View All Posts</span>
@@ -34,69 +50,33 @@ export default function BlogHomeOne() {
 
         <div className="tv-blog-wrap mt-60">
           <div className="row">
-            <div
-              className="col-lg-6 col-xl-6 col-md-6 wow itfadeUp"
-              data-wow-duration=".9s"
-              data-wow-delay=".3s"
-            >
-              <div className="single-blog-item first mb-30">
-                <img src="assets/img/blog/blog-thumb-1.png" alt="" />
-                <div className="blog-content mt-30">
-                  <div className="blog-meta">
-                    <span className="author">Alom Khan</span>
-                    <span className="date">27 May, 2024</span>
+            {posts.map((post, index) => (
+              <div
+                key={post.id}
+                className={`${index === 0 ? 'col-lg-6 col-xl-6' : 'col-lg-6 col-xl-3'} col-md-6 wow itfadeUp`}
+                data-wow-duration=".9s"
+                data-wow-delay={`${0.3 + index * 0.2}s`}
+              >
+                <div className={`single-blog-item ${index === 0 ? 'first' : ''} mb-30`}>
+                  <Link to={`/blog/${post.slug}`} className="blog-thumb-link">
+                    <img src={post.imageUrl} alt={post.title} />
+                  </Link>
+                  <div className="blog-content mt-30">
+                    <div className="blog-meta">
+                      <span className="author">{post.authorName}</span>
+                      <span className="date">{formatBlogDate(post.publishedAt)}</span>
+                    </div>
+                    <h2>
+                      <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                    </h2>
                   </div>
-                  <h2>
-                    <Link to="/blog-details">
-                      Boost your Startup Business With our Digital Agency
-                    </Link>
-                  </h2>
                 </div>
               </div>
-            </div>
-            <div
-              className="col-lg-6 col-xl-3 col-md-6 wow itfadeUp"
-              data-wow-duration=".9s"
-              data-wow-delay=".5s"
-            >
-              <div className="single-blog-item mb-30">
-                <img src="assets/img/blog/blog-thumb-2.png" alt="" />
-                <div className="blog-content mt-30">
-                  <div className="blog-meta">
-                    <span className="author">Alom Khan</span>
-                    <span className="date">27 May, 2024</span>
-                  </div>
-                  <h2>
-                    <Link to="/blog-details">
-                      Planning your Online Business Goals With a Specialist
-                    </Link>
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div
-              className="col-lg-6 col-xl-3 col-md-6 wow itfadeUp"
-              data-wow-duration=".9s"
-              data-wow-delay=".7s"
-            >
-              <div className="single-blog-item mb-30">
-                <img src="assets/img/blog/blog-thumb-3.png" alt="" />
-                <div className="blog-content mt-30">
-                  <div className="blog-meta">
-                    <span className="author">Alom Khan</span>
-                    <span className="date">27 May, 2024</span>
-                  </div>
-                  <h2>
-                    <Link to="/blog-details">
-                      Including Animation In Your Design System
-                    </Link>
-                  </h2>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
 }
+

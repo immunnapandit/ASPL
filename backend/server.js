@@ -1,7 +1,7 @@
 import { appendFile, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -27,6 +27,8 @@ const NEWSLETTER_STORE_FILE = join(__dirname, 'data', 'newsletter-subscribers.js
 const CAREERS_STORE_FILE = join(__dirname, 'data', 'career-openings.json');
 const CAREER_APPLICATIONS_STORE_FILE = join(__dirname, 'data', 'career-applications.json');
 const CAREERS_SETTINGS_STORE_FILE = join(__dirname, 'data', 'careers-settings.json');
+const BLOG_POSTS_STORE_FILE = join(__dirname, 'data', 'blog-posts.json');
+const BLOG_COMMENTS_STORE_FILE = join(__dirname, 'data', 'blog-comments.json');
 const GRAPH_TENANT_ID = (process.env.GRAPH_TENANT_ID || '').trim();
 const GRAPH_CLIENT_ID = (process.env.GRAPH_CLIENT_ID || '').trim();
 const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
@@ -38,6 +40,13 @@ const GRAPH_FROM_EMAIL = (
 const CAREERS_ADMIN_TOKEN = (
   process.env.CAREERS_ADMIN_TOKEN || 'change-me-careers-admin-token'
 ).trim();
+const BLOG_ADMIN_TOKEN = (
+  process.env.BLOG_ADMIN_TOKEN || 'change-me-blog-admin-token'
+).trim();
+const CLOUDINARY_CLOUD_NAME = (process.env.CLOUDINARY_CLOUD_NAME || '').trim();
+const CLOUDINARY_API_KEY = (process.env.CLOUDINARY_API_KEY || '').trim();
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
+const CLOUDINARY_FOLDER = (process.env.CLOUDINARY_FOLDER || 'aspl/blog').trim();
 
 let graphTokenCache = null;
 
@@ -188,6 +197,55 @@ const server = createHttpApp({
 
     if (req.method === 'GET' && url.pathname === '/api/careers/openings') {
       return handleCareerOpeningsRequest(req);
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/blog/posts') {
+      return handleBlogPostsRequest(req);
+    }
+
+    if (url.pathname.startsWith('/api/blog/posts/') && url.pathname.endsWith('/comments')) {
+      const slug = decodeURIComponent(
+        url.pathname.replace('/api/blog/posts/', '').replace(/\/comments$/, '')
+      );
+
+      if (req.method === 'GET') {
+        return handleBlogCommentsList(req, slug);
+      }
+
+      if (req.method === 'POST') {
+        return handleBlogCommentCreate(req, slug);
+      }
+    }
+
+    if (req.method === 'GET' && url.pathname.startsWith('/api/blog/posts/')) {
+      const slug = decodeURIComponent(url.pathname.replace('/api/blog/posts/', ''));
+      return handleBlogPostDetailsRequest(req, slug);
+    }
+
+    if (url.pathname === '/api/admin/blog/posts') {
+      if (req.method === 'GET') {
+        return handleAdminBlogPostsList(req);
+      }
+
+      if (req.method === 'POST') {
+        return handleAdminBlogPostCreate(req);
+      }
+    }
+
+    if (url.pathname === '/api/admin/blog/upload-image' && req.method === 'POST') {
+      return handleAdminBlogImageUpload(req);
+    }
+
+    if (url.pathname.startsWith('/api/admin/blog/posts/')) {
+      const postId = decodeURIComponent(url.pathname.replace('/api/admin/blog/posts/', ''));
+
+      if (req.method === 'PATCH' || req.method === 'PUT') {
+        return handleAdminBlogPostUpdate(req, postId);
+      }
+
+      if (req.method === 'DELETE') {
+        return handleAdminBlogPostDelete(req, postId);
+      }
     }
 
     if (url.pathname === '/api/admin/careers/openings') {
@@ -563,6 +621,291 @@ async function handleCareerOpeningsRequest(req) {
   } catch (error) {
     console.error('Failed to load career openings:', error);
     return json(500, { error: 'Unable to load career openings right now.' }, req);
+  }
+}
+
+async function handleBlogPostsRequest(req) {
+  try {
+    const posts = await readBlogPosts();
+    return json(
+      200,
+      {
+        ok: true,
+        posts: posts.filter((post) => post.status === 'published'),
+      },
+      req
+    );
+  } catch (error) {
+    console.error('Failed to load blog posts:', error);
+    return json(500, { error: 'Unable to load blog posts right now.' }, req);
+  }
+}
+
+async function handleBlogPostDetailsRequest(req, slug) {
+  try {
+    const posts = await readBlogPosts();
+    const post = posts.find((item) => item.slug === slug && item.status === 'published');
+
+    if (!post) {
+      return json(404, { error: 'Blog post not found.' }, req);
+    }
+
+    return json(200, { ok: true, post }, req);
+  } catch (error) {
+    console.error('Failed to load blog post:', error);
+    return json(500, { error: 'Unable to load this blog post right now.' }, req);
+  }
+}
+
+async function handleBlogCommentsList(req, slug) {
+  try {
+    const posts = await readBlogPosts();
+    const post = posts.find((item) => item.slug === slug && item.status === 'published');
+
+    if (!post) {
+      return json(404, { error: 'Blog post not found.' }, req);
+    }
+
+    const comments = await readBlogComments();
+    return json(
+      200,
+      {
+        ok: true,
+        comments: comments.filter((comment) => comment.postSlug === slug && comment.status === 'approved'),
+      },
+      req
+    );
+  } catch (error) {
+    console.error('Failed to load blog comments:', error);
+    return json(500, { error: 'Unable to load comments right now.' }, req);
+  }
+}
+
+async function handleBlogCommentCreate(req, slug) {
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateBlogCommentPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const posts = await readBlogPosts();
+    const post = posts.find((item) => item.slug === slug && item.status === 'published');
+
+    if (!post) {
+      return json(404, { error: 'Blog post not found.' }, req);
+    }
+
+    const comments = await readBlogComments();
+    const now = new Date().toISOString();
+    const comment = {
+      id: randomUUID(),
+      postSlug: slug,
+      firstName: validation.data.firstName,
+      lastName: validation.data.lastName,
+      fullName: `${validation.data.firstName} ${validation.data.lastName}`.trim(),
+      email: validation.data.email,
+      phone: validation.data.phone,
+      message: validation.data.message,
+      status: 'approved',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await writeBlogComments([comment, ...comments]);
+
+    return json(201, { ok: true, comment }, req);
+  } catch (error) {
+    console.error('Failed to create blog comment:', error);
+    return json(500, { error: 'Unable to post this comment right now.' }, req);
+  }
+}
+
+async function handleAdminBlogPostsList(req) {
+  const authError = validateAdminRequest(req, 'blog');
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const posts = await readBlogPosts();
+    return json(200, { ok: true, posts }, req);
+  } catch (error) {
+    console.error('Failed to load admin blog posts:', error);
+    return json(500, { error: 'Unable to load blog CMS data.' }, req);
+  }
+}
+
+async function handleAdminBlogPostCreate(req) {
+  const authError = validateAdminRequest(req, 'blog');
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateBlogPostPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const posts = await readBlogPosts();
+
+    if (posts.some((post) => post.slug === validation.data.slug)) {
+      return json(409, { error: 'Another blog post already uses this slug.' }, req);
+    }
+
+    const now = new Date().toISOString();
+    const post = {
+      id: randomUUID(),
+      ...validation.data,
+      publishedAt: validation.data.status === 'published' ? now : '',
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await writeBlogPosts([post, ...posts]);
+
+    return json(201, { ok: true, post }, req);
+  } catch (error) {
+    console.error('Failed to create blog post:', error);
+    return json(500, { error: 'Unable to create this blog post right now.' }, req);
+  }
+}
+
+async function handleAdminBlogPostUpdate(req, postId) {
+  const authError = validateAdminRequest(req, 'blog');
+
+  if (authError) {
+    return authError;
+  }
+
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateBlogPostPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    const posts = await readBlogPosts();
+    const currentPost = posts.find((post) => post.id === postId);
+
+    if (!currentPost) {
+      return json(404, { error: 'Blog post not found.' }, req);
+    }
+
+    if (posts.some((post) => post.slug === validation.data.slug && post.id !== postId)) {
+      return json(409, { error: 'Another blog post already uses this slug.' }, req);
+    }
+
+    const now = new Date().toISOString();
+    const post = {
+      ...currentPost,
+      ...validation.data,
+      publishedAt:
+        validation.data.status === 'published'
+          ? currentPost.publishedAt || now
+          : '',
+      updatedAt: now,
+    };
+
+    await writeBlogPosts(posts.map((item) => (item.id === postId ? post : item)));
+
+    return json(200, { ok: true, post }, req);
+  } catch (error) {
+    console.error('Failed to update blog post:', error);
+    return json(500, { error: 'Unable to update this blog post right now.' }, req);
+  }
+}
+
+async function handleAdminBlogPostDelete(req, postId) {
+  const authError = validateAdminRequest(req, 'blog');
+
+  if (authError) {
+    return authError;
+  }
+
+  try {
+    const posts = await readBlogPosts();
+    const nextPosts = posts.filter((post) => post.id !== postId);
+
+    if (nextPosts.length === posts.length) {
+      return json(404, { error: 'Blog post not found.' }, req);
+    }
+
+    await writeBlogPosts(nextPosts);
+
+    return json(200, { ok: true }, req);
+  } catch (error) {
+    console.error('Failed to delete blog post:', error);
+    return json(500, { error: 'Unable to delete this blog post right now.' }, req);
+  }
+}
+
+async function handleAdminBlogImageUpload(req) {
+  const authError = validateAdminRequest(req, 'blog');
+
+  if (authError) {
+    return authError;
+  }
+
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+    return json(
+      500,
+      {
+        error:
+          'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in backend .env.',
+      },
+      req
+    );
+  }
+
+  const body = await safeFormData(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid image upload.' }, req);
+  }
+
+  const imageFile = body.data.get('image');
+
+  if (!isUploadedFile(imageFile)) {
+    return json(400, { error: 'Blog image is required.' }, req);
+  }
+
+  if (!String(imageFile.type || '').startsWith('image/')) {
+    return json(400, { error: 'Only image files can be uploaded.' }, req);
+  }
+
+  if (imageFile.size > 5 * 1024 * 1024) {
+    return json(400, { error: 'Image must be 5 MB or smaller.' }, req);
+  }
+
+  try {
+    const uploadedImage = await uploadBlogImageToCloudinary(imageFile);
+    return json(200, { ok: true, image: uploadedImage }, req);
+  } catch (error) {
+    console.error('Cloudinary upload failed:', error);
+    return json(500, { error: 'Unable to upload image to Cloudinary right now.' }, req);
   }
 }
 
@@ -1359,6 +1702,121 @@ function validateCareerOpeningPayload(data) {
   };
 }
 
+function validateBlogPostPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Request body is required.' };
+  }
+
+  const title = getObjectString(data, 'title');
+  const slug = sanitizeSlug(getObjectString(data, 'slug') || title);
+  const excerpt = getObjectString(data, 'excerpt');
+  const content = getObjectString(data, 'content');
+  const category = getObjectString(data, 'category');
+  const authorName = getObjectString(data, 'authorName');
+  const imageUrl = getObjectString(data, 'imageUrl');
+  const imagePublicId = getObjectString(data, 'imagePublicId');
+  const seoTitle = getObjectString(data, 'seoTitle');
+  const seoDescription = getObjectString(data, 'seoDescription');
+  const status = getObjectString(data, 'status') === 'draft' ? 'draft' : 'published';
+  const featured = Boolean(data.featured);
+  const tags = normalizeStringArray(data.tags);
+
+  if (!title) {
+    return { ok: false, error: 'Post title is required.' };
+  }
+
+  if (!slug) {
+    return { ok: false, error: 'Slug is required.' };
+  }
+
+  if (!excerpt) {
+    return { ok: false, error: 'Excerpt is required.' };
+  }
+
+  if (!content) {
+    return { ok: false, error: 'Post content is required.' };
+  }
+
+  if (!category) {
+    return { ok: false, error: 'Category is required.' };
+  }
+
+  if (!authorName) {
+    return { ok: false, error: 'Author name is required.' };
+  }
+
+  if (!imageUrl) {
+    return { ok: false, error: 'Featured image is required.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      slug,
+      title,
+      excerpt,
+      content,
+      category,
+      tags,
+      authorName,
+      imageUrl,
+      imagePublicId,
+      seoTitle,
+      seoDescription,
+      status,
+      featured,
+    },
+  };
+}
+
+function validateBlogCommentPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Request body is required.' };
+  }
+
+  const firstName = getObjectString(data, 'firstName');
+  const lastName = getObjectString(data, 'lastName');
+  const email = getObjectString(data, 'email').toLowerCase();
+  const phone = getObjectString(data, 'phone');
+  const message = getObjectString(data, 'message');
+  const website = getObjectString(data, 'website');
+
+  if (website) {
+    return { ok: false, error: 'Invalid comment submission.' };
+  }
+
+  if (!firstName) {
+    return { ok: false, error: 'First name is required.' };
+  }
+
+  if (!lastName) {
+    return { ok: false, error: 'Last name is required.' };
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  if (!message) {
+    return { ok: false, error: 'Comment is required.' };
+  }
+
+  if (message.length > 2000) {
+    return { ok: false, error: 'Comment must be 2000 characters or fewer.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      firstName: firstName.slice(0, 80),
+      lastName: lastName.slice(0, 80),
+      email: email.slice(0, 254),
+      phone: phone.slice(0, 40),
+      message: message.slice(0, 2000),
+    },
+  };
+}
+
 function validateCareerApplicationStatusPayload(data) {
   const status = getObjectString(data, 'status');
   const allowedStatuses = new Set(['new', 'reviewed', 'contacted', 'archived']);
@@ -1544,16 +2002,18 @@ function getExistingNewsletterSubscription(email) {
   return null;
 }
 
-function validateAdminRequest(req) {
+function validateAdminRequest(req, scope = 'careers') {
   const authorization = req.headers.get('authorization') || '';
   const tokenFromHeader = req.headers.get('x-admin-token') || '';
   const bearerToken = authorization.startsWith('Bearer ')
     ? authorization.slice('Bearer '.length).trim()
     : '';
   const token = bearerToken || tokenFromHeader.trim();
+  const expectedToken = scope === 'blog' ? BLOG_ADMIN_TOKEN : CAREERS_ADMIN_TOKEN;
+  const label = scope === 'blog' ? 'blog' : 'careers';
 
-  if (!token || token !== CAREERS_ADMIN_TOKEN) {
-    return json(401, { error: 'Unauthorized careers CMS request.' }, req);
+  if (!token || token !== expectedToken) {
+    return json(401, { error: `Unauthorized ${label} CMS request.` }, req);
   }
 
   return null;
@@ -1584,6 +2044,64 @@ async function readCareerOpenings() {
 async function writeCareerOpenings(openings) {
   await mkdir(dirname(CAREERS_STORE_FILE), { recursive: true });
   await writeFile(CAREERS_STORE_FILE, `${JSON.stringify(openings, null, 2)}\n`, 'utf8');
+}
+
+async function readBlogPosts() {
+  if (!existsSync(BLOG_POSTS_STORE_FILE)) {
+    await writeBlogPosts([]);
+    return [];
+  }
+
+  try {
+    const raw = readFileSync(BLOG_POSTS_STORE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error('Blog posts store is invalid.');
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error('Blog posts store invalid, restoring empty list:', error);
+    await writeBlogPosts([]);
+    return [];
+  }
+}
+
+async function writeBlogPosts(posts) {
+  await mkdir(dirname(BLOG_POSTS_STORE_FILE), { recursive: true });
+  await writeFile(BLOG_POSTS_STORE_FILE, `${JSON.stringify(posts, null, 2)}\n`, 'utf8');
+}
+
+async function readBlogComments() {
+  if (!existsSync(BLOG_COMMENTS_STORE_FILE)) {
+    await writeBlogComments([]);
+    return [];
+  }
+
+  try {
+    const raw = readFileSync(BLOG_COMMENTS_STORE_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      throw new Error('Blog comments store is invalid.');
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error('Blog comments store invalid, restoring empty list:', error);
+    await writeBlogComments([]);
+    return [];
+  }
+}
+
+async function writeBlogComments(comments) {
+  await mkdir(dirname(BLOG_COMMENTS_STORE_FILE), { recursive: true });
+  await writeFile(
+    BLOG_COMMENTS_STORE_FILE,
+    `${JSON.stringify(comments, null, 2)}\n`,
+    'utf8'
+  );
 }
 
 async function readCareerApplications() {
@@ -1676,6 +2194,57 @@ async function writeCareersSettings(settings) {
 async function persistNewsletterSubscription(subscription) {
   await mkdir(dirname(NEWSLETTER_STORE_FILE), { recursive: true });
   await appendFile(NEWSLETTER_STORE_FILE, `${JSON.stringify(subscription)}\n`, 'utf8');
+}
+
+async function uploadBlogImageToCloudinary(imageFile) {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const signatureParams = {
+    folder: CLOUDINARY_FOLDER,
+    timestamp,
+  };
+  const signature = signCloudinaryParams(signatureParams);
+  const formData = new FormData();
+  const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
+  const imageBlob = new Blob([imageBuffer], {
+    type: imageFile.type || 'application/octet-stream',
+  });
+
+  formData.set('file', imageBlob, sanitizeAttachmentName(imageFile.name || 'blog-image'));
+  formData.set('api_key', CLOUDINARY_API_KEY);
+  formData.set('timestamp', String(timestamp));
+  formData.set('folder', CLOUDINARY_FOLDER);
+  formData.set('signature', signature);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+  const result = await response.json().catch(() => null);
+
+  if (!response.ok || !result?.secure_url) {
+    throw new Error(result?.error?.message || 'Cloudinary upload failed.');
+  }
+
+  return {
+    url: result.secure_url,
+    publicId: result.public_id || '',
+    width: result.width || null,
+    height: result.height || null,
+  };
+}
+
+function signCloudinaryParams(params) {
+  const payload = Object.keys(params)
+    .sort()
+    .map((key) => `${key}=${params[key]}`)
+    .join('&');
+
+  return createHash('sha1')
+    .update(`${payload}${CLOUDINARY_API_SECRET}`)
+    .digest('hex');
 }
 
 function safeJson(req) {

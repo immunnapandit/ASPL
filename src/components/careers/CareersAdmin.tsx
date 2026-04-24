@@ -1,10 +1,8 @@
 import {
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ChangeEvent,
-  type CSSProperties,
   type FormEvent,
   type ReactNode,
 } from 'react';
@@ -24,19 +22,15 @@ import {
   Save,
   Settings,
   ShieldCheck,
-  Sparkles,
   Trash2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Breadcrumb from '../../common/Breadcrumb';
 import {
   ADMIN_CAREER_APPLICATIONS_API_URL,
   ADMIN_CAREER_OPENINGS_API_URL,
   ADMIN_CAREERS_SETTINGS_API_URL,
 } from '../../config/api';
 import { type JobOpening, type JobOpeningStatus } from '../../data/career-openings';
-import FooterOne from '../../layouts/footers/FooterOne';
-import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
 
 type AdminCareerForm = {
@@ -51,7 +45,6 @@ type AdminCareerForm = {
   responsibilitiesText: string;
   requirementsText: string;
   status: JobOpeningStatus;
-  featured: boolean;
 };
 
 type CareerApplicationStatus = 'new' | 'reviewed' | 'contacted' | 'archived';
@@ -116,7 +109,6 @@ const initialForm: AdminCareerForm = {
   responsibilitiesText: '',
   requirementsText: '',
   status: 'active',
-  featured: false,
 };
 
 const initialSettings: CareersSettingsForm = {
@@ -172,7 +164,6 @@ function toFormState(job?: JobOpening): AdminCareerForm {
     responsibilitiesText: toMultilineText(job.responsibilities),
     requirementsText: toMultilineText(job.requirements),
     status: job.status,
-    featured: job.featured,
   };
 }
 
@@ -187,9 +178,6 @@ function formatApplicationDate(value: string) {
 }
 
 export default function CareersAdmin() {
-  const adminFrameRef = useRef<HTMLDivElement | null>(null);
-  const sidebarSlotRef = useRef<HTMLDivElement | null>(null);
-  const sidebarRef = useRef<HTMLElement | null>(null);
   const [token, setToken] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [jobs, setJobs] = useState<JobOpening[]>([]);
@@ -206,9 +194,6 @@ export default function CareersAdmin() {
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
-  const [sidebarState, setSidebarState] = useState<'flow' | 'fixed' | 'bottom'>('flow');
-  const [sidebarStyle, setSidebarStyle] = useState<CSSProperties>({});
-  const [sidebarSlotHeight, setSidebarSlotHeight] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -245,71 +230,6 @@ export default function CareersAdmin() {
 
     void loadSettings(token);
   }, [token, activeView]);
-
-  useEffect(() => {
-    if (!token) {
-      return;
-    }
-
-    const updateSidebarLayout = () => {
-      const frameElement = adminFrameRef.current;
-      const slotElement = sidebarSlotRef.current;
-      const sidebarElement = sidebarRef.current;
-
-      if (!frameElement || !slotElement || !sidebarElement) {
-        return;
-      }
-
-      const sidebarHeight = sidebarElement.offsetHeight;
-      setSidebarSlotHeight(sidebarHeight);
-
-      if (window.innerWidth < 992) {
-        setSidebarState('flow');
-        setSidebarStyle({});
-        return;
-      }
-
-      const topOffset = 24;
-      const frameRect = frameElement.getBoundingClientRect();
-      const slotRect = slotElement.getBoundingClientRect();
-
-      if (slotRect.top > topOffset) {
-        setSidebarState('flow');
-        setSidebarStyle({
-          width: `${slotRect.width}px`,
-        });
-        return;
-      }
-
-      if (frameRect.bottom <= sidebarHeight + topOffset) {
-        setSidebarState('bottom');
-        setSidebarStyle({
-          width: `${slotRect.width}px`,
-        });
-        return;
-      }
-
-      setSidebarState('fixed');
-      setSidebarStyle({
-        top: `${topOffset}px`,
-        left: `${slotRect.left}px`,
-        width: `${slotRect.width}px`,
-      });
-    };
-
-    updateSidebarLayout();
-
-    const onScroll = () => window.requestAnimationFrame(updateSidebarLayout);
-    const onResize = () => window.requestAnimationFrame(updateSidebarLayout);
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-    };
-  }, [token, activeView, jobs.length, applications.length, statusMessage]);
 
   const selectedJob = useMemo(
     () => jobs.find((job) => job.id === selectedJobId),
@@ -511,7 +431,6 @@ export default function CareersAdmin() {
       responsibilities: toListItems(formState.responsibilitiesText),
       requirements: toListItems(formState.requirementsText),
       status: formState.status,
-      featured: formState.featured,
     };
 
     setIsSaving(true);
@@ -851,15 +770,6 @@ export default function CareersAdmin() {
               <option value="draft">Draft</option>
             </select>
           </label>
-          <label className="tv-careers-admin-checkbox">
-            <input
-              type="checkbox"
-              name="featured"
-              checked={formState.featured}
-              onChange={handleInputChange}
-            />
-            <span>Mark as featured</span>
-          </label>
         </div>
       </div>
 
@@ -978,7 +888,6 @@ export default function CareersAdmin() {
               >
                 <div className="tv-careers-admin-job__top">
                   <span className={`tv-job-status is-${job.status}`}>{job.status}</span>
-                  {job.featured ? <span className="tv-job-featured">Featured</span> : null}
                 </div>
                 <h4>{job.title}</h4>
                 <div className="tv-careers-admin-job__meta">
@@ -1238,15 +1147,13 @@ export default function CareersAdmin() {
 
   return (
     <Wrapper>
-      <HeaderOne />
       <main>
-        <Breadcrumb title="Careers CMS" subtitle="Admin" />
-        <section className="tv-careers-admin pt-130 pb-130">
+        <section className="tv-blog-cms-page tv-careers-cms-page">
           {!token ? (
             <div className="container">
-              <div className="tv-careers-admin-auth">
-                <div className="tv-careers-admin-auth__panel">
-                  <span className="tv-careers-admin-auth__badge">
+              <div className="tv-blog-cms-auth">
+                <div className="tv-blog-cms-auth__panel">
+                  <span>
                     <ShieldCheck size={18} />
                     Secure careers admin
                   </span>
@@ -1255,9 +1162,9 @@ export default function CareersAdmin() {
                     Use the admin token from backend `.env` to open the CMS, then
                     create, edit, publish, or delete roles from one place.
                   </p>
-                  <form onSubmit={handleTokenSubmit} className="tv-careers-admin-auth__form">
+                  <form onSubmit={handleTokenSubmit} className="tv-blog-cms-auth__form">
                     <label htmlFor="admin-token">Admin token</label>
-                    <div className="tv-careers-admin-auth__field">
+                    <div className="tv-blog-cms-auth__field">
                       <LockKeyhole size={18} />
                       <input
                         id="admin-token"
@@ -1281,81 +1188,77 @@ export default function CareersAdmin() {
               </div>
             </div>
           ) : (
-            <div className="tv-careers-admin-frame" ref={adminFrameRef}>
-              {statusMessage ? (
-                <p className={`tv-admin-status is-${statusType}`}>{statusMessage}</p>
-              ) : null}
-
-              <div className="tv-careers-admin-app">
-                <div
-                  className="tv-careers-admin-sidebar-slot"
-                  ref={sidebarSlotRef}
-                  style={sidebarSlotHeight ? { height: `${sidebarSlotHeight}px` } : undefined}
-                >
-                <aside
-                  ref={sidebarRef}
-                  className={`tv-careers-admin-sidebar is-${sidebarState}`}
-                  style={sidebarStyle}
-                >
-                  <div className="tv-careers-admin-sidebar__brand">
-                    <span className="tv-careers-admin-topbar__eyebrow">
-                      <Sparkles size={16} />
-                      ASPL Careers CMS
-                    </span>
+            <div className="tv-blog-cms-studio tv-careers-cms-studio">
+              <aside className="tv-blog-cms-sidebar">
+                <div className="tv-blog-cms-sidebar__brand">
+                  <span>ASPL</span>
+                  <div>
+                    <strong>Careers Studio</strong>
+                    <small>CMS Workspace</small>
                   </div>
-
-                  <nav className="tv-careers-admin-sidebar__nav" aria-label="Careers CMS menu">
-                    {menuItems.map((item) => {
-                      const Icon = item.icon;
-
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          className={`tv-careers-admin-sidebar__item ${
-                            activeView === item.id ? 'is-active' : ''
-                          }`}
-                          onClick={() => handleMenuSelect(item.id)}
-                        >
-                          <Icon size={18} />
-                          <span>{item.label}</span>
-                        </button>
-                      );
-                    })}
-                  </nav>
-
-                  <div className="tv-careers-admin-sidebar__footer">
-                    <Link to="/careers" className="tv-careers-admin-sidebar__item">
-                      <Eye size={18} />
-                      <span>View Site</span>
-                    </Link>
-                    <button
-                      type="button"
-                      className="tv-careers-admin-sidebar__item is-logout"
-                      onClick={handleLogout}
-                    >
-                      <LogOut size={18} />
-                      <span>Logout</span>
-                    </button>
-                  </div>
-                </aside>
                 </div>
 
-                <section className="tv-careers-admin-content">
-                  <div className="tv-careers-admin-content__topbar">
-                    <div>
-                      <span className="tv-careers-admin-editor__label">Admin Panel</span>
-                      <h2>{currentPanelTitle}</h2>
-                    </div>
+                <nav className="tv-blog-cms-sidebar__nav" aria-label="Careers CMS menu">
+                  {menuItems.map((item) => {
+                    const Icon = item.icon;
+
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={activeView === item.id ? 'is-active' : ''}
+                        onClick={() => handleMenuSelect(item.id)}
+                      >
+                        <Icon size={18} />
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </nav>
+
+                <div className="tv-blog-cms-sidebar__footer">
+                  <Link to="/careers" target="_blank" rel="noreferrer">
+                    <Eye size={18} />
+                    Open Careers
+                  </Link>
+                  <button type="button" onClick={handleLogout}>
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </div>
+              </aside>
+
+              <section className="tv-blog-cms-main">
+                <div className="tv-blog-cms-topbar">
+                  <div>
+                    <span>Admin Panel</span>
+                    <h1>{currentPanelTitle}</h1>
                   </div>
-                  {content}
-                </section>
-              </div>
+                  <div className="tv-blog-cms-topbar__actions">
+                    <Link to="/careers" target="_blank" rel="noreferrer" className="tv-blog-cms-secondary-action">
+                      <Eye size={16} />
+                      Public Careers
+                    </Link>
+                    <button type="button" className="tv-blog-cms-secondary-action" onClick={() => void loadOpenings(token)}>
+                      <Save size={16} />
+                      Refresh
+                    </button>
+                    <button type="button" className="tv-blog-cms-primary-action" onClick={resetFormForCreate}>
+                      <Plus size={16} />
+                      New Job
+                    </button>
+                  </div>
+                </div>
+
+                {statusMessage ? (
+                  <p className={`tv-admin-status is-${statusType}`}>{statusMessage}</p>
+                ) : null}
+                {content}
+              </section>
             </div>
           )}
         </section>
       </main>
-      <FooterOne />
     </Wrapper>
   );
 }

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import HomeOne from './components/homes/home-1';
 import HomeTwo from './components/homes/home-2';
 import HomeThree from './components/homes/home-3';
@@ -13,7 +13,6 @@ import Project from './components/project';
 import ProjectDetails from './components/project-details';
 import Faq from './components/faq';
 import BlogGrid from './components/blog-grid';
-import BlogList from './components/blog-list';
 import BlogDetails from './components/blog-details';
 import Contact from './components/contact';
 import BecomeMCTPage from './components/become-mct';
@@ -21,6 +20,8 @@ import BecomeMctEnrollPage from './components/become-mct/enroll';
 import Careers from './components/careers';
 import CareerDetails from './components/careers/CareerDetails';
 import CareersAdmin from './components/careers/CareersAdmin';
+import BlogAdmin from './components/blog-admin/BlogAdmin';
+import BlogPreview from './components/blog-preview/BlogPreview';
 import PayNowPage from './components/pay-now';
 import D365Finance from './components/solutions/d365-finance';
 import WorkingProcess from './components/working-process';
@@ -43,13 +44,16 @@ const router = createBrowserRouter([
   { path: '/project-details', element: <ProjectDetails /> },
   { path: '/faq', element: <Faq /> },
   { path: '/blog-grid', element: <BlogGrid /> },
-  { path: '/blog-list', element: <BlogList /> },
+  { path: '/blog-list', element: <BlogGrid /> },
   { path: '/blog', element: <BlogGrid /> },
-  { path: '/blog-details', element: <BlogDetails /> },
+  { path: '/blog-details', element: <Navigate to="/blog" replace /> },
+  { path: '/blog/:slug', element: <BlogDetails /> },
+  { path: '/blog-preview/:previewKey', element: <BlogPreview /> },
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
   { path: '/careers/:slug', element: <CareerDetails /> },
   { path: '/admin/careers', element: <CareersAdmin /> },
+  { path: '/admin/blog', element: <BlogAdmin /> },
   { path: '/pay-now', element: <PayNowPage /> },
   { path: '/working-process', element: <WorkingProcess /> },
   { path: '/privacy-policy', element: <PrivacyPolicy /> },
