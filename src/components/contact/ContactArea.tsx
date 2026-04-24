@@ -16,8 +16,6 @@ const initialFormState: ContactFormState = {
   message: '',
 };
 
-const CONTACT_EMAIL = 'munna@atisunya.co';
-
 export default function ContactArea() {
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,13 +83,14 @@ export default function ContactArea() {
                       Contact Us
                     </span>
                     <h4 className="tv-section-title tv-spltv-text tv-spltv-in-right">
-                      Let’s Build an Awesome Project Together
+                      Let's talk about your next Microsoft-led transformation
                     </h4>
                     <p>
-                      Each demo built with Teba will look different. You can
-                      customize almost anything in the appearance of your
-                      website with only a few clicks. Each demo built with Teba
-                      will look different.
+                      AtiSunya helps businesses modernize operations with
+                      Microsoft Dynamics 365, Azure cloud, Power Platform, AI
+                      solutions, training, and managed support. Share your
+                      requirement and our team will connect with the right next
+                      steps.
                     </p>
                   </div>
 
@@ -142,10 +141,11 @@ export default function ContactArea() {
                       </svg>
                     </div>
                     <div className="content">
-                      <h4>350+ Projects Done</h4>
+                      <h4>Microsoft business solutions</h4>
                       <p>
-                        From banking and insurance to wealth the management and
-                        security on there
+                        From ERP and CRM implementation to cloud modernization,
+                        we design solutions around your business goals and
+                        delivery priorities.
                       </p>
                     </div>
                   </div>
@@ -208,10 +208,11 @@ export default function ContactArea() {
                       </svg>
                     </div>
                     <div className="content">
-                      <h4>500+ Happy Clients</h4>
+                      <h4>Consulting, delivery, and support</h4>
                       <p>
-                        From banking and insurance to wealth the management and
-                        security on there
+                        Engage AtiSunya for advisory, implementation,
+                        optimization, user enablement, and long-term managed
+                        services across Microsoft platforms.
                       </p>
                     </div>
                   </div>
@@ -223,14 +224,11 @@ export default function ContactArea() {
                 data-wow-delay=".2s"
               >
                 <div className="tv-contact-right-wrap">
-                  <h1 className="text-white">Make an Appointment</h1>
+                  <h1 className="text-white">Start a conversation</h1>
                   <p>
-                    Feel free to contact us at{' '}
-                    <a href={`mailto:${CONTACT_EMAIL}`} className="text-white">
-                      {CONTACT_EMAIL}
-                    </a>
-                    
-                    , we do not spam your email.
+                    Tell us what you're planning, improving, or fixing. Whether
+                    you need Dynamics 365, Azure, automation, training, or
+                    support, we'll route your enquiry to the right team.
                   </p>
 
                   <form onSubmit={handleSubmit}>
@@ -249,7 +247,7 @@ export default function ContactArea() {
                       <input
                         type="email"
                         name="email"
-                        placeholder="Email Here *"
+                        placeholder="Work Email *"
                         value={formState.email}
                         onChange={handleChange}
                         required
@@ -260,7 +258,7 @@ export default function ContactArea() {
                       <input
                         type="text"
                         name="service"
-                        placeholder="Select Service *"
+                        placeholder="Service Needed *"
                         value={formState.service}
                         onChange={handleChange}
                         required
@@ -270,7 +268,7 @@ export default function ContactArea() {
                     <div className="it-contact-textarea-box mb-24">
                       <textarea
                         name="message"
-                        placeholder="Your Message *"
+                        placeholder="Tell us about your requirement *"
                         rows={3}
                         value={formState.message}
                         onChange={handleChange}

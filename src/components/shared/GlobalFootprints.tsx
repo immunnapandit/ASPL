@@ -5,7 +5,6 @@ const globalLocations = [
     id: 'india',
     title: 'India, Noida',
     address: 'Logix Technova, A-522, Tower-A',
-    email: 'info@atisunya.co',
     phone: '(+91) 82-9915-6511',
     thumbClassName: 'is-ahmedabad',
     thumbSrc: '/assets/img/slider/India.jpg',
@@ -18,9 +17,7 @@ const globalLocations = [
   {
     id: 'Aus',
     title: 'Australia, Melbourne',
-    address:
-      'Level 40/140 William St, Melbourne VIC 300',
-    email: 'info@atisunya.co',
+    address: 'Level 40/140 William St, Melbourne VIC 300',
     phone: 'AUS: (+61) 478006757',
     thumbClassName: 'is-leeds',
     thumbSrc: '/assets/img/slider/Australia.jpg',
@@ -35,7 +32,6 @@ const globalLocations = [
     title: 'ANZ',
     address:
       'NZ: S & A Solutions, 2/2 Crescent Road, Auckland, New Zealand | AUS: Level 40/140 William St, Melbourne VIC 300',
-    email: 'info@atisunya.co',
     phone: 'NZ: (+64) 220937158',
     thumbClassName: 'is-leeds',
     thumbSrc: '/assets/img/slider/ANZ.png',
@@ -49,7 +45,6 @@ const globalLocations = [
     id: 'germany',
     title: 'Germany, Berlin',
     address: 'Heidestrasse 17 Mitte, 10557 Berlin, Germany',
-    email: 'info@atisunya.co',
     phone: '(+49) 17890 84425',
     thumbClassName: 'is-new-jersey',
     thumbSrc: '/assets/img/slider/Germany.jpg',
@@ -128,12 +123,6 @@ export default function GlobalFootprints({ className = '' }: { className?: strin
                         <span className="tv-about2-location-text tv-about2-location-text--address">
                           {location.address}
                         </span>
-                      </li>
-                      <li>
-                        <span className="tv-about2-location-icon">
-                          <i className="fa-solid fa-envelope"></i>
-                        </span>
-                        <span className="tv-about2-location-text">{location.email}</span>
                       </li>
                       <li>
                         <span className="tv-about2-location-icon">
