@@ -520,20 +520,22 @@
   align-items: start;
   gap: clamp(24px, 3vw, 46px);
 
-  @media #{$xl, $lg, $md, $sm, $xs} {
+  @media #{$md, $sm, $xs} {
     grid-template-columns: 1fr;
   }
 }
 
 .tv-blog-cms-library {
+  display: flex;
+  flex-direction: column;
   position: sticky;
   top: 24px;
   max-height: calc(100vh - 48px);
-  overflow: auto;
+  overflow: hidden;
   padding: 0 20px 0 0;
   border-right: 1px solid rgba(10, 22, 94, 0.08);
 
-  @media #{$xl, $lg, $md, $sm, $xs} {
+  @media #{$md, $sm, $xs} {
     position: static;
     max-height: none;
   }
@@ -564,9 +566,47 @@
   }
 }
 
+.tv-blog-cms-library__header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  flex: 0 0 auto;
+  background: inherit;
+}
+
 .tv-blog-cms-library__items {
   display: grid;
+  flex: 1 1 auto;
   gap: 12px;
+  min-height: 0;
+  padding-right: 4px;
+  padding-bottom: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.tv-blog-cms-library__items::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tv-blog-cms-library__items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tv-blog-cms-library__items::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.34);
+}
+
+.tv-blog-cms-library__items::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.52);
+}
+
+.tv-blog-cms-library > .tv-careers-loading,
+.tv-blog-cms-library > .tv-careers-admin-empty {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .tv-blog-cms-library-card {
@@ -894,7 +934,7 @@
     span {
       color: var(--blog-cms-primary);
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 700;
       letter-spacing: 0.08em;
     }
 
@@ -902,8 +942,8 @@
       margin-top: 7px;
       color: var(--blog-cms-ink);
       font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
-      font-size: clamp(30px, 3vw, 42px);
-      font-weight: 800;
+      font-size: clamp(28px, 2.5vw, 38px);
+      font-weight: 700;
       letter-spacing: 0;
     }
   }
@@ -923,7 +963,7 @@
     min-height: 44px;
     border-radius: 10px;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0;
     transition:
       transform 0.22s ease,
@@ -1037,22 +1077,25 @@
   .tv-blog-cms-workspace {
     grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
     gap: 24px;
+    overflow: visible;
   }
 
   .tv-blog-cms-panel,
   .tv-blog-cms-library,
   .tv-blog-cms-editor {
-    padding: 26px;
+    padding: 22px;
   }
 
   .tv-blog-cms-panel {
-    min-height: 190px;
+    min-height: 0;
+    border-radius: 12px;
+    box-shadow: none;
 
     h3,
     h4 {
       color: var(--blog-cms-ink);
       font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
-      font-weight: 800;
+      font-weight: 650;
       letter-spacing: 0;
     }
 
@@ -1064,10 +1107,36 @@
   }
 
   .tv-blog-cms-library {
+    align-self: start;
     top: 112px;
     max-height: calc(100vh - 136px);
     padding-right: 20px;
     border-right: 1px solid var(--blog-cms-line);
+  }
+
+  @media only screen and (min-width: 992px) {
+    .tv-blog-cms-workspace {
+      display: block;
+      padding-left: 384px;
+      animation: none;
+      transform: none;
+    }
+
+    .tv-blog-cms-library {
+      position: fixed !important;
+      top: 16px;
+      bottom: 16px;
+      left: calc(272px + clamp(22px, 3.6vw, 58px));
+      z-index: 30;
+      width: min(360px, calc(100vw - 650px));
+      min-width: 300px;
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .tv-blog-cms-studio.is-sidebar-hidden .tv-blog-cms-library {
+      left: calc(78px + clamp(22px, 3.6vw, 58px));
+    }
   }
 
   .tv-blog-cms-library__header,
@@ -1148,6 +1217,313 @@
     }
   }
 
+  .tv-blog-wp-manager {
+    animation: tv-blog-cms-fade-up 0.44s ease both;
+    padding-top: 8px;
+  }
+
+  .tv-blog-wp-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 26px;
+
+    button {
+      border: 0;
+      background: transparent;
+      color: var(--blog-cms-primary);
+      font-size: 14px;
+      font-weight: 700;
+
+      &:not(:last-child)::after {
+        content: '|';
+        margin-left: 8px;
+        color: #98a2b3;
+        font-weight: 500;
+      }
+
+      &.is-active {
+        color: var(--blog-cms-ink);
+      }
+
+      span {
+        color: var(--blog-cms-muted);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .tv-blog-wp-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    max-width: 100%;
+  }
+
+  .tv-blog-wp-filters,
+  .tv-blog-wp-search {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tv-blog-wp-toolbar select,
+  .tv-blog-wp-toolbar input {
+    height: 32px;
+    min-height: 32px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1d2327;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 30px;
+    box-shadow: none;
+  }
+
+  .tv-blog-wp-toolbar select {
+    width: 132px;
+    min-width: 0;
+    padding: 0 28px 0 8px;
+  }
+
+  .tv-blog-wp-toolbar input {
+    width: 190px;
+    padding: 0 8px;
+  }
+
+  .tv-blog-wp-button {
+    height: 32px;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid #2271b1;
+    border-radius: 4px;
+    background: #f6f7f7;
+    color: #2271b1;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 30px;
+
+    &:hover {
+      background: #f0f6fc;
+    }
+  }
+
+  .tv-blog-wp-table-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 8px;
+    color: #3c434a;
+    font-size: 14px;
+  }
+
+  .tv-blog-wp-pagination {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    button,
+    input {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #c3c4c7;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #1d2327;
+      text-align: center;
+    }
+
+    button {
+      color: #2271b1;
+      font-size: 17px;
+      line-height: 1;
+
+      &:disabled {
+        color: #a7aaad;
+        background: #f6f7f7;
+        cursor: not-allowed;
+      }
+    }
+
+    span {
+      padding: 0 4px;
+      color: #3c434a;
+    }
+  }
+
+  .tv-blog-wp-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #c3c4c7;
+    background: #ffffff;
+  }
+
+  .tv-blog-wp-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    color: #1d2327;
+    font-size: 14px;
+
+    th,
+    td {
+      padding: 12px 12px;
+      border-bottom: 1px solid #dcdcde;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #ffffff;
+      color: #1d2327;
+      font-weight: 600;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: #f6f7f7;
+    }
+
+    tbody tr:hover,
+    tbody tr.is-selected {
+      background: #f0f6fc;
+    }
+
+    .is-check {
+      width: 42px;
+      text-align: center;
+    }
+
+    .is-title {
+      min-width: 320px;
+
+      button {
+        display: block;
+        border: 0;
+        background: transparent;
+        color: #135e96;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.35;
+        text-align: left;
+
+        &:hover {
+          color: #0a4b78;
+          text-decoration: underline;
+        }
+      }
+
+      span {
+        display: block;
+        margin-top: 4px;
+        color: #646970;
+        font-size: 12px;
+      }
+    }
+
+    td strong {
+      display: block;
+      color: #1d2327;
+      font-weight: 500;
+    }
+
+    td > span:not(.tv-job-status) {
+      display: block;
+      margin-top: 3px;
+      color: #50575e;
+    }
+
+    .is-actions {
+      min-width: 260px;
+      white-space: nowrap;
+    }
+
+    .is-actions button,
+    .is-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0 10px 6px 0;
+      border: 0;
+      background: transparent;
+      color: #135e96;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+
+      &:hover {
+        color: #0a4b78;
+        text-decoration: underline;
+      }
+
+      &.is-danger {
+        color: #b42318;
+      }
+    }
+  }
+
+  .tv-blog-cms-editor--inline {
+    margin-top: 26px;
+  }
+
+  .tv-blog-cms-editor {
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  .tv-blog-cms-editor__header {
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+
+    span {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin-top: 4px;
+      font-size: clamp(24px, 2vw, 30px);
+      font-weight: 650;
+      line-height: 1.18;
+    }
+  }
+
+  @media only screen and (min-width: 992px) {
+    .tv-blog-wp-manager {
+      max-width: none;
+    }
+
+    .tv-blog-wp-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, auto) auto;
+    }
+  }
+
+  @media #{$md, $sm, $xs} {
+    .tv-blog-wp-toolbar {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .tv-blog-wp-filters,
+    .tv-blog-wp-search {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .tv-blog-wp-toolbar select,
+    .tv-blog-wp-toolbar input,
+    .tv-blog-wp-button {
+      width: 100%;
+    }
+  }
+
   .tv-blog-status,
   .tv-blog-featured {
     padding: 6px 10px;
@@ -1157,18 +1533,45 @@
   }
 
   .tv-blog-cms-form {
-    gap: 20px;
+    gap: 16px;
   }
 
   .tv-blog-cms-panel:not(:last-child) {
     margin-bottom: 0;
   }
 
+  .tv-blog-cms-panel {
+    padding: 20px;
+    border: 1px solid #e4e7ec;
+    border-radius: 10px;
+    background: #ffffff;
+
+    + .tv-blog-cms-panel {
+      margin-top: 2px;
+    }
+  }
+
+  .tv-blog-cms-panel__head {
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+
+    h4 {
+      font-size: 20px;
+      font-weight: 650;
+    }
+
+    span {
+      font-weight: 500;
+      text-align: right;
+    }
+  }
+
   .tv-blog-cms-form label {
     gap: 9px;
     color: #344054;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.01em;
   }
 
@@ -1177,15 +1580,16 @@
   .tv-blog-cms-form textarea,
   .tv-blog-cms-auth__field input {
     width: 100%;
-    min-height: 50px;
-    padding: 13px 14px;
+    min-height: 44px;
+    padding: 10px 12px;
     border: 1px solid #d0d5dd;
     border-radius: 10px;
     background: #ffffff;
     color: var(--blog-cms-ink);
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 400;
     letter-spacing: 0;
+    text-transform: none;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
     transition:
       border-color 0.18s ease,
@@ -1208,21 +1612,21 @@
   }
 
   .tv-blog-cms-form textarea {
-    min-height: 154px;
+    min-height: 128px;
     line-height: 1.65;
   }
 
   .tv-blog-editor-toolbar {
     top: 74px;
-    margin: 4px 0 18px;
-    padding: 12px 0;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
+    margin: 0 0 12px;
+    padding: 8px 0;
+    background: #ffffff;
+    backdrop-filter: none;
 
     button {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
       background: #ffffff;
 
       &:hover {
@@ -1234,11 +1638,41 @@
   }
 
   .tv-blog-editor-grid textarea {
-    min-height: 560px;
-    padding: 18px;
-    border-radius: 12px;
-    font-size: 17px;
+    min-height: 430px;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 400;
     line-height: 1.78;
+    text-transform: none;
+  }
+
+  .tv-blog-editor-help {
+    color: #667085;
+    font-size: 12px;
+  }
+
+  .tv-blog-featured-upload {
+    grid-template-columns: 88px minmax(0, 1fr);
+    margin-bottom: 14px;
+
+    > img,
+    .tv-blog-featured-upload__placeholder {
+      width: 88px;
+      height: 62px;
+      border-radius: 8px;
+    }
+  }
+
+  .tv-blog-cms-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 8;
+    margin: 4px -22px -22px;
+    padding: 14px 22px;
+    border-top: 1px solid #e4e7ec;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
   }
 
   .tv-admin-status {
@@ -1345,9 +1779,14 @@
     }
 
     .tv-blog-cms-library {
+      padding-right: 26px;
+    }
+  }
+
+  @media #{$md, $sm, $xs} {
+    .tv-blog-cms-library {
       position: static;
       max-height: none;
-      padding-right: 26px;
     }
   }
 
@@ -1529,7 +1968,7 @@
     gap: 8px;
     color: var(--tv-heading-primary);
     font-size: 14px;
-    font-weight: 700;
+        font-weight: 600;
     letter-spacing: 0;
   }
 

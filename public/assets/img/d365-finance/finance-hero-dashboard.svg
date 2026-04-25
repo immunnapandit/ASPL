@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="520" viewBox="0 0 720 520" fill="none">
+  <rect width="720" height="520" fill="white"/>
+  <g opacity=".65">
+    <path d="M154 86H574M154 160H574M154 234H574M154 308H574M154 382H574" stroke="#DDE6FF"/>
+    <path d="M190 56V430M264 56V430M338 56V430M412 56V430M486 56V430M560 56V430" stroke="#DDE6FF"/>
+  </g>
+  <circle cx="166" cy="146" r="14" fill="#2B4DFF"/>
+  <circle cx="574" cy="286" r="12" fill="#5AB8FF"/>
+  <circle cx="618" cy="72" r="8" fill="#2B4DFF"/>
+  <g filter="url(#shadow)">
+    <rect x="260" y="152" width="202" height="188" rx="28" fill="url(#panel)"/>
+    <path d="M292 274L397 194L462 242V310H292V274Z" fill="#5AB8FF"/>
+    <path d="M292 274L397 194L462 242V277L397 230L292 310V274Z" fill="#0A165E"/>
+    <path d="M292 310L397 230L462 277V310H292Z" fill="#2B4DFF"/>
+  </g>
+  <g filter="url(#card)">
+    <rect x="104" y="176" width="250" height="72" rx="12" fill="white" fill-opacity=".9"/>
+    <path d="M142 194H153L147 213H158L137 238L143 218H133L142 194Z" fill="#2B4DFF"/>
+    <text x="176" y="221" fill="#0A165E" font-family="Inter, Arial" font-size="19" font-weight="700">Boost Efficiency</text>
+  </g>
+  <g filter="url(#card)">
+    <rect x="430" y="116" width="246" height="72" rx="12" fill="white" fill-opacity=".9"/>
+    <circle cx="468" cy="152" r="15" fill="#EEF3FF"/>
+    <path d="M460 153C464 145 472 141 480 143L471 157H459C459 156 459 154 460 153Z" fill="#2B4DFF"/>
+    <text x="502" y="159" fill="#0A165E" font-family="Inter, Arial" font-size="19" font-weight="700">Maximize Profit</text>
+  </g>
+  <g filter="url(#card)">
+    <rect x="394" y="330" width="270" height="74" rx="12" fill="white" fill-opacity=".9"/>
+    <rect x="430" y="348" width="30" height="30" rx="8" fill="#EEF3FF"/>
+    <path d="M446 354V372M437 363H455" stroke="#2B4DFF" stroke-width="5" stroke-linecap="round"/>
+    <text x="482" y="376" fill="#0A165E" font-family="Inter, Arial" font-size="19" font-weight="700">Automate Processes</text>
+  </g>
+  <defs>
+    <linearGradient id="panel" x1="260" y1="152" x2="462" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#EAF0FF"/>
+    </linearGradient>
+    <filter id="shadow" x="214" y="112" width="294" height="280" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#2B4DFF" flood-opacity=".18"/>
+    </filter>
+    <filter id="card" x="80" y="94" width="620" height="340" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0A165E" flood-opacity=".14"/>
+    </filter>
+  </defs>
+</svg>

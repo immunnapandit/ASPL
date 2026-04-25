@@ -81,6 +81,10 @@ const initialForm: BlogForm = {
   status: 'published',
 };
 
+const adminSearchParams = new URLSearchParams(window.location.search);
+const initialAdminView = adminSearchParams.get('view');
+const initialEditWindowPostId = adminSearchParams.get('edit');
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -95,6 +99,22 @@ function textToTags(value: string) {
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function formatAdminDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Not scheduled';
+  }
+
+  return date.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function toFormState(post?: BlogPost): BlogForm {
@@ -125,14 +145,28 @@ export default function BlogAdmin() {
   const [tokenInput, setTokenInput] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'dashboard' | 'posts' | 'add-post'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'posts' | 'add-post'>(
+    initialEditWindowPostId
+      ? 'posts'
+      : initialAdminView === 'posts' || initialAdminView === 'add-post'
+        ? initialAdminView
+        : 'dashboard'
+  );
   const [formState, setFormState] = useState<BlogForm>(initialForm);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
+  const [isPostEditorOpen, setIsPostEditorOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
+  const [postSearch, setPostSearch] = useState('');
+  const [postStatusFilter, setPostStatusFilter] = useState<'all' | BlogPostStatus>('all');
+  const [postDateFilter, setPostDateFilter] = useState('all');
+  const [bulkAction, setBulkAction] = useState('');
+  const [selectedBulkPostIds, setSelectedBulkPostIds] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [editWindowPostId, setEditWindowPostId] = useState(initialEditWindowPostId);
 
   useEffect(() => {
     const storedToken = window.localStorage.getItem(STORAGE_KEY) || '';
@@ -157,12 +191,84 @@ export default function BlogAdmin() {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (editWindowPostId) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (activeView === 'dashboard') {
+      params.delete('view');
+    } else {
+      params.set('view', activeView);
+    }
+
+    const nextSearch = params.toString();
+    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+
+    window.history.replaceState(null, '', nextUrl);
+  }, [activeView, editWindowPostId]);
+
+  useEffect(() => {
+    if (!editWindowPostId || !posts.length) {
+      return;
+    }
+
+    const post = posts.find((item) => item.id === editWindowPostId);
+    if (post) {
+      setSelectedPostId(post.id);
+      setFormState(toFormState(post));
+      setIsPostEditorOpen(true);
+      setActiveView('posts');
+    }
+  }, [editWindowPostId, posts]);
+
   const selectedPost = useMemo(
     () => posts.find((post) => post.id === selectedPostId),
     [posts, selectedPostId]
   );
   const publishedCount = posts.filter((post) => post.status === 'published').length;
   const draftCount = posts.filter((post) => post.status === 'draft').length;
+  const filteredPosts = useMemo(() => {
+    const query = postSearch.trim().toLowerCase();
+
+    return posts.filter((post) => {
+      const matchesStatus = postStatusFilter === 'all' || post.status === postStatusFilter;
+      const postYear = new Date(post.updatedAt || post.publishedAt || post.createdAt).getFullYear();
+      const matchesDate = postDateFilter === 'all' || String(postYear) === postDateFilter;
+      const matchesSearch =
+        !query ||
+        post.title.toLowerCase().includes(query) ||
+        post.slug.toLowerCase().includes(query) ||
+        post.authorName.toLowerCase().includes(query) ||
+        post.category.toLowerCase().includes(query);
+
+      return matchesStatus && matchesDate && matchesSearch;
+    });
+  }, [posts, postDateFilter, postSearch, postStatusFilter]);
+  const availablePostYears = useMemo(() => {
+    return Array.from(
+      new Set(
+        posts
+          .map((post) => new Date(post.updatedAt || post.publishedAt || post.createdAt).getFullYear())
+          .filter((year) => !Number.isNaN(year))
+          .map(String)
+      )
+    ).sort((first, second) => Number(second) - Number(first));
+  }, [posts]);
+  const postsPerPage = 20;
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage));
+  const paginatedPosts = filteredPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    setSelectedBulkPostIds([]);
+  }, [postDateFilter, postSearch, postStatusFilter]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   const setStatus = (type: 'success' | 'error', message: string) => {
     setStatusType(type);
@@ -372,8 +478,10 @@ export default function BlogAdmin() {
   };
 
   const resetFormForCreate = () => {
+    setEditWindowPostId(null);
     setSelectedPostId(null);
     setFormState(initialForm);
+    setIsPostEditorOpen(false);
     setStatusMessage('');
     setActiveView('add-post');
   };
@@ -381,8 +489,94 @@ export default function BlogAdmin() {
   const selectPost = (post: BlogPost) => {
     setSelectedPostId(post.id);
     setFormState(toFormState(post));
+    setIsPostEditorOpen(true);
     setStatusMessage('');
     setActiveView('posts');
+  };
+
+  const openPostEditorWindow = (post: BlogPost) => {
+    window.open(`/admin/blog?edit=${encodeURIComponent(post.id)}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const switchAdminView = (view: 'dashboard' | 'posts') => {
+    setEditWindowPostId(null);
+    setIsPostEditorOpen(false);
+    setActiveView(view);
+  };
+
+  const toggleBulkPostSelection = (postId: string) => {
+    setSelectedBulkPostIds((current) =>
+      current.includes(postId) ? current.filter((id) => id !== postId) : [...current, postId]
+    );
+  };
+
+  const toggleCurrentPageSelection = () => {
+    const pageIds = paginatedPosts.map((post) => post.id);
+    const allSelected = pageIds.length > 0 && pageIds.every((id) => selectedBulkPostIds.includes(id));
+
+    setSelectedBulkPostIds((current) =>
+      allSelected
+        ? current.filter((id) => !pageIds.includes(id))
+        : Array.from(new Set([...current, ...pageIds]))
+    );
+  };
+
+  const handleBulkApply = async () => {
+    if (!bulkAction) {
+      setStatus('error', 'Choose a bulk action first.');
+      return;
+    }
+
+    const selectedPosts = posts.filter((post) => selectedBulkPostIds.includes(post.id));
+
+    if (!selectedPosts.length) {
+      setStatus('error', 'Select at least one post.');
+      return;
+    }
+
+    if (bulkAction === 'edit') {
+      if (selectedPosts.length > 1) {
+        setStatus('error', 'Select one post at a time for editing.');
+        return;
+      }
+
+      openPostEditorWindow(selectedPosts[0]);
+      return;
+    }
+
+    if (bulkAction === 'delete') {
+      if (!window.confirm(`Delete ${selectedPosts.length} selected blog post${selectedPosts.length > 1 ? 's' : ''}?`)) {
+        return;
+      }
+
+      setIsSaving(true);
+      setStatusMessage('');
+
+      try {
+        await Promise.all(
+          selectedPosts.map(async (post) => {
+            const response = await fetch(`${ADMIN_BLOG_POSTS_API_URL}/${post.id}`, {
+              method: 'DELETE',
+              headers: getAdminHeaders(),
+            });
+            const result = (await response.json().catch(() => null)) as BlogAdminResponse | null;
+
+            if (!response.ok) {
+              throw new Error(result?.error || `Unable to delete "${post.title}".`);
+            }
+          })
+        );
+
+        setPosts((current) => current.filter((post) => !selectedBulkPostIds.includes(post.id)));
+        setSelectedBulkPostIds([]);
+        setBulkAction('');
+        setStatus('success', 'Selected blog posts deleted.');
+      } catch (error) {
+        setStatus('error', error instanceof Error ? error.message : 'Unable to delete selected posts.');
+      } finally {
+        setIsSaving(false);
+      }
+    }
   };
 
   const handleSave = async (event: FormEvent<HTMLFormElement>) => {
@@ -441,8 +635,8 @@ export default function BlogAdmin() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!selectedPost || !window.confirm(`Delete "${selectedPost.title}" from the blog CMS?`)) {
+  const handleDelete = async (postToDelete = selectedPost) => {
+    if (!postToDelete || !window.confirm(`Delete "${postToDelete.title}" from the blog CMS?`)) {
       return;
     }
 
@@ -450,7 +644,7 @@ export default function BlogAdmin() {
     setStatusMessage('');
 
     try {
-      const response = await fetch(`${ADMIN_BLOG_POSTS_API_URL}/${selectedPost.id}`, {
+      const response = await fetch(`${ADMIN_BLOG_POSTS_API_URL}/${postToDelete.id}`, {
         method: 'DELETE',
         headers: getAdminHeaders(),
       });
@@ -460,12 +654,15 @@ export default function BlogAdmin() {
         throw new Error(result?.error || 'Unable to delete this blog post.');
       }
 
-      const remainingPosts = posts.filter((post) => post.id !== selectedPost.id);
+      const remainingPosts = posts.filter((post) => post.id !== postToDelete.id);
       setPosts(remainingPosts);
-      if (remainingPosts.length) {
+      if (postToDelete.id === selectedPostId && remainingPosts.length) {
         selectPost(remainingPosts[0]);
-      } else {
+      } else if (postToDelete.id === selectedPostId) {
         resetFormForCreate();
+      }
+      if (postToDelete.id === selectedPostId) {
+        setIsPostEditorOpen(false);
       }
       setStatus('success', 'Blog post deleted.');
     } catch (error) {
@@ -481,6 +678,7 @@ export default function BlogAdmin() {
     setPosts([]);
     setSelectedPostId(null);
     setFormState(initialForm);
+    setIsPostEditorOpen(false);
     setActiveView('dashboard');
     setStatusMessage('');
     window.localStorage.removeItem(STORAGE_KEY);
@@ -701,81 +899,216 @@ export default function BlogAdmin() {
   );
 
   const renderPosts = () => (
-    <div className="tv-blog-cms-workspace">
-      <aside className="tv-blog-cms-library">
-        <div className="tv-blog-cms-library__header">
-          <div>
-            <h3>Blog posts</h3>
-            <p>{posts.length} total posts in CMS</p>
-          </div>
-          <button type="button" className="tv-blog-cms-icon-action" onClick={resetFormForCreate} title="New post">
-            <Plus size={16} />
+    <div className="tv-blog-wp-manager">
+      <div className="tv-blog-wp-tabs">
+        <button type="button" className={postStatusFilter === 'all' ? 'is-active' : ''} onClick={() => setPostStatusFilter('all')}>
+          All <span>({posts.length})</span>
+        </button>
+        <button type="button" className={postStatusFilter === 'published' ? 'is-active' : ''} onClick={() => setPostStatusFilter('published')}>
+          Published <span>({publishedCount})</span>
+        </button>
+        <button type="button" className={postStatusFilter === 'draft' ? 'is-active' : ''} onClick={() => setPostStatusFilter('draft')}>
+          Draft <span>({draftCount})</span>
+        </button>
+      </div>
+
+      <div className="tv-blog-wp-toolbar">
+        <div className="tv-blog-wp-filters">
+          <select aria-label="Bulk actions" value={bulkAction} onChange={(event) => setBulkAction(event.currentTarget.value)}>
+            <option value="">Bulk actions</option>
+            <option value="edit">Edit</option>
+            <option value="delete">Delete</option>
+          </select>
+          <button type="button" className="tv-blog-wp-button" onClick={() => void handleBulkApply()} disabled={isSaving}>
+            Apply
+          </button>
+          <select
+            value={postStatusFilter}
+            onChange={(event) => setPostStatusFilter(event.currentTarget.value as 'all' | BlogPostStatus)}
+            aria-label="Filter by status"
+          >
+            <option value="all">All statuses</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+          <select
+            value={postDateFilter}
+            onChange={(event) => setPostDateFilter(event.currentTarget.value)}
+            aria-label="Filter by date"
+          >
+            <option value="all">All dates</option>
+            {availablePostYears.map((year) => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+          </select>
+          <button type="button" className="tv-blog-wp-button" onClick={() => setPostStatusFilter('all')}>
+            Filter
           </button>
         </div>
+        <div className="tv-blog-wp-search">
+          <input
+            value={postSearch}
+            onChange={(event) => setPostSearch(event.currentTarget.value)}
+            placeholder="Search posts"
+            aria-label="Search posts"
+          />
+          <button type="button" className="tv-blog-wp-button">
+            Search Posts
+          </button>
+        </div>
+      </div>
 
-        {isLoading ? (
-          <div className="tv-careers-loading" role="status">
-            <LoaderCircle size={22} className="tv-spin" />
-            Loading blog posts...
-          </div>
-        ) : !posts.length ? (
-          <div className="tv-careers-admin-empty">
-            <span className="tv-careers-admin-empty__icon">
-              <FileText size={22} />
-            </span>
-            <h4>No posts created yet</h4>
-          </div>
-        ) : (
-          <div className="tv-blog-cms-library__items">
-            {posts.map((post) => (
-              <button
-                key={post.id}
-                type="button"
-                className={`tv-blog-cms-library-card ${selectedPostId === post.id ? 'is-active' : ''}`}
-                onClick={() => selectPost(post)}
-              >
-                <div className="tv-blog-cms-library-card__top">
-                  <span className={`tv-job-status is-${post.status === 'draft' ? 'draft' : 'active'}`}>
-                    {post.status}
-                  </span>
-                </div>
-                <h4>{post.title}</h4>
-                <p>{post.excerpt}</p>
-              </button>
-            ))}
-          </div>
-        )}
-      </aside>
+      <div className="tv-blog-wp-table-meta">
+        <span>{filteredPosts.length} items</span>
+        <div className="tv-blog-wp-pagination">
+          <button type="button" onClick={() => setCurrentPage(1)} disabled={currentPage === 1} aria-label="First page">
+            «
+          </button>
+          <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage === 1} aria-label="Previous page">
+            ‹
+          </button>
+          <input value={currentPage} readOnly aria-label="Current page" />
+          <span>of {totalPages}</span>
+          <button type="button" onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} disabled={currentPage === totalPages} aria-label="Next page">
+            ›
+          </button>
+          <button type="button" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} aria-label="Last page">
+            »
+          </button>
+        </div>
+      </div>
 
-      <section className="tv-blog-cms-editor">
-        <div className="tv-blog-cms-editor__header">
-          <div>
-            <span>Editing post</span>
-            <h3>{selectedPost ? selectedPost.title : 'Select a post'}</h3>
-          </div>
-          <div className="tv-blog-cms-editor__tools">
-            {selectedPost ? (
+      <div className="tv-blog-wp-table-wrap">
+        <table className="tv-blog-wp-table">
+          <thead>
+            <tr>
+              <th className="is-check">
+                <input
+                  type="checkbox"
+                  aria-label="Select all posts"
+                  checked={paginatedPosts.length > 0 && paginatedPosts.every((post) => selectedBulkPostIds.includes(post.id))}
+                  onChange={toggleCurrentPageSelection}
+                />
+              </th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="tv-careers-loading" role="status">
+                    <LoaderCircle size={22} className="tv-spin" />
+                    Loading blog posts...
+                  </div>
+                </td>
+              </tr>
+            ) : !filteredPosts.length ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="tv-careers-admin-empty">
+                    <span className="tv-careers-admin-empty__icon">
+                      <FileText size={22} />
+                    </span>
+                    <h4>No posts found</h4>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              paginatedPosts.map((post) => (
+                <tr key={post.id} className={selectedPostId === post.id ? 'is-selected' : ''}>
+                  <td className="is-check">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${post.title}`}
+                      checked={selectedBulkPostIds.includes(post.id)}
+                      onChange={() => toggleBulkPostSelection(post.id)}
+                    />
+                  </td>
+                  <td className="is-title">
+                    <button type="button" onClick={() => openPostEditorWindow(post)}>
+                      {post.title}
+                    </button>
+                    <span>{post.slug}</span>
+                  </td>
+                  <td>{post.authorName}</td>
+                  <td>{post.category}</td>
+                  <td>
+                    <strong>{post.status === 'published' ? 'Published' : 'Draft'}</strong>
+                    <span>{formatAdminDate(post.updatedAt || post.publishedAt || post.createdAt)}</span>
+                  </td>
+                  <td className="is-actions">
+                    <button type="button" onClick={() => openPostEditorWindow(post)} title="Edit post">
+                      <PencilLine size={15} />
+                      Edit
+                    </button>
+                    <Link to={`/blog/${post.slug}`} target="_blank" rel="noreferrer" title="Preview post">
+                      <Eye size={15} />
+                      View
+                    </Link>
+                    <button type="button" className="is-danger" onClick={() => void handleDelete(post)} title="Delete post">
+                      <Trash2 size={15} />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {selectedPost && isPostEditorOpen && editWindowPostId ? (
+        <section className="tv-blog-cms-editor tv-blog-cms-editor--inline">
+          <div className="tv-blog-cms-editor__header">
+            <div>
+              <span>Editing post</span>
+              <h3>{selectedPost.title}</h3>
+            </div>
+            <div className="tv-blog-cms-editor__tools">
               <Link to={`/blog/${selectedPost.slug}`} target="_blank" rel="noreferrer" className="tv-blog-cms-secondary-action">
                 <Eye size={16} />
                 Preview
               </Link>
-            ) : null}
-            {selectedPost ? (
               <button type="button" className="tv-blog-cms-danger-action" onClick={() => void handleDelete()} disabled={isSaving}>
                 <Trash2 size={16} />
                 Delete
               </button>
-            ) : null}
+            </div>
           </div>
-        </div>
-        {selectedPost ? renderPostForm(true) : null}
-      </section>
+          {renderPostForm(true)}
+        </section>
+      ) : null}
     </div>
   );
 
   const currentPanelTitle =
-    activeView === 'dashboard' ? 'Blog Dashboard' : activeView === 'posts' ? 'Manage Posts' : 'Add Blog Post';
-  const content = activeView === 'dashboard' ? renderDashboard() : activeView === 'posts' ? renderPosts() : (
+    editWindowPostId ? 'Edit Post' : activeView === 'dashboard' ? 'Blog Dashboard' : activeView === 'posts' ? 'Manage Posts' : 'Add Blog Post';
+  const content = editWindowPostId && selectedPost ? (
+    <section className="tv-blog-cms-editor">
+      <div className="tv-blog-cms-editor__header">
+        <div>
+          <span>Editing post</span>
+          <h3>{selectedPost.title}</h3>
+        </div>
+        <div className="tv-blog-cms-editor__tools">
+          <Link to={`/blog/${selectedPost.slug}`} target="_blank" rel="noreferrer" className="tv-blog-cms-secondary-action">
+            <Eye size={16} />
+            Preview
+          </Link>
+          <button type="button" className="tv-blog-cms-danger-action" onClick={() => void handleDelete()} disabled={isSaving}>
+            <Trash2 size={16} />
+            Delete
+          </button>
+        </div>
+      </div>
+      {renderPostForm(true)}
+    </section>
+  ) : activeView === 'dashboard' ? renderDashboard() : activeView === 'posts' ? renderPosts() : (
     <section className="tv-blog-cms-editor">
       <div className="tv-blog-cms-editor__header">
         <div>
@@ -835,11 +1168,11 @@ export default function BlogAdmin() {
                   </button>
                 </div>
                 <nav className="tv-blog-cms-sidebar__nav" aria-label="Blog CMS menu">
-                  <button type="button" className={activeView === 'dashboard' ? 'is-active' : ''} onClick={() => setActiveView('dashboard')}>
+                  <button type="button" className={activeView === 'dashboard' && !editWindowPostId ? 'is-active' : ''} onClick={() => switchAdminView('dashboard')}>
                     <LayoutDashboard size={18} />
                     Dashboard
                   </button>
-                  <button type="button" className={activeView === 'posts' ? 'is-active' : ''} onClick={() => setActiveView('posts')}>
+                  <button type="button" className={activeView === 'posts' && !editWindowPostId ? 'is-active' : ''} onClick={() => switchAdminView('posts')}>
                     <FileText size={18} />
                     Posts
                   </button>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="330" viewBox="0 0 620 330" fill="none">
+  <rect width="620" height="330" fill="white"/>
+  <g opacity=".55">
+    <circle cx="94" cy="120" r="42" fill="#EDF3FB"/>
+    <circle cx="220" cy="120" r="70" fill="#EDF3FB"/>
+    <circle cx="486" cy="120" r="70" fill="#EDF3FB"/>
+    <circle cx="586" cy="120" r="42" fill="#EDF3FB"/>
+  </g>
+  <g filter="url(#logo)">
+    <circle cx="354" cy="120" r="112" fill="#EDF3FB"/>
+    <text x="280" y="158" fill="#0A165E" font-family="Outfit, Inter, Arial" font-size="130" font-weight="800">A.</text>
+    <rect x="414" y="144" width="42" height="42" fill="#2B4DFF"/>
+  </g>
+  <g filter="url(#check)">
+    <circle cx="458" cy="54" r="28" fill="white"/>
+    <path d="M446 53L455 62L471 43" stroke="#2B4DFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <filter id="logo" x="218" y="-16" width="272" height="272" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0A165E" flood-opacity=".14"/>
+    </filter>
+    <filter id="check" x="410" y="10" width="96" height="96" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#0A165E" flood-opacity=".16"/>
+    </filter>
+  </defs>
+</svg>

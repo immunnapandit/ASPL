@@ -23,12 +23,14 @@ const NEWSLETTER_TO_EMAIL = (
   process.env.NEWSLETTER_TO_EMAIL ||
   CONTACT_TO_EMAIL
 ).trim();
-const NEWSLETTER_STORE_FILE = join(__dirname, 'data', 'newsletter-subscribers.jsonl');
-const CAREERS_STORE_FILE = join(__dirname, 'data', 'career-openings.json');
-const CAREER_APPLICATIONS_STORE_FILE = join(__dirname, 'data', 'career-applications.json');
-const CAREERS_SETTINGS_STORE_FILE = join(__dirname, 'data', 'careers-settings.json');
-const BLOG_POSTS_STORE_FILE = join(__dirname, 'data', 'blog-posts.json');
-const BLOG_COMMENTS_STORE_FILE = join(__dirname, 'data', 'blog-comments.json');
+const BUNDLED_DATA_DIR = join(__dirname, 'data');
+const CMS_DATA_DIR = (process.env.CMS_DATA_DIR || BUNDLED_DATA_DIR).trim();
+const NEWSLETTER_STORE_FILE = join(CMS_DATA_DIR, 'newsletter-subscribers.jsonl');
+const CAREERS_STORE_FILE = join(CMS_DATA_DIR, 'career-openings.json');
+const CAREER_APPLICATIONS_STORE_FILE = join(CMS_DATA_DIR, 'career-applications.json');
+const CAREERS_SETTINGS_STORE_FILE = join(CMS_DATA_DIR, 'careers-settings.json');
+const BLOG_POSTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-posts.json');
+const BLOG_COMMENTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-comments.json');
 const GRAPH_TENANT_ID = (process.env.GRAPH_TENANT_ID || '').trim();
 const GRAPH_CLIENT_ID = (process.env.GRAPH_CLIENT_ID || '').trim();
 const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
@@ -2048,8 +2050,9 @@ async function writeCareerOpenings(openings) {
 
 async function readBlogPosts() {
   if (!existsSync(BLOG_POSTS_STORE_FILE)) {
-    await writeBlogPosts([]);
-    return [];
+    const bundledPosts = readBundledJsonStore('blog-posts.json');
+    await writeBlogPosts(Array.isArray(bundledPosts) ? bundledPosts : []);
+    return Array.isArray(bundledPosts) ? bundledPosts : [];
   }
 
   try {
@@ -2071,6 +2074,21 @@ async function readBlogPosts() {
 async function writeBlogPosts(posts) {
   await mkdir(dirname(BLOG_POSTS_STORE_FILE), { recursive: true });
   await writeFile(BLOG_POSTS_STORE_FILE, `${JSON.stringify(posts, null, 2)}\n`, 'utf8');
+}
+
+function readBundledJsonStore(fileName) {
+  const bundledFile = join(BUNDLED_DATA_DIR, fileName);
+
+  if (bundledFile === join(CMS_DATA_DIR, fileName) || !existsSync(bundledFile)) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(readFileSync(bundledFile, 'utf8'));
+  } catch (error) {
+    console.error(`Bundled ${fileName} store is invalid:`, error);
+    return null;
+  }
 }
 
 async function readBlogComments() {
