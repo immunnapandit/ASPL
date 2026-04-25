@@ -2023,7 +2023,12 @@ function validateAdminRequest(req, scope = 'careers') {
 
 async function readCareerOpenings() {
   if (!existsSync(CAREERS_STORE_FILE)) {
-    await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+    try {
+      await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+    } catch (error) {
+      console.error('Unable to initialize career openings store, using defaults:', error);
+    }
+
     return DEFAULT_CAREER_OPENINGS;
   }
 
@@ -2038,7 +2043,13 @@ async function readCareerOpenings() {
     return parsed;
   } catch (error) {
     console.error('Career openings store invalid, restoring defaults:', error);
-    await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+
+    try {
+      await writeCareerOpenings(DEFAULT_CAREER_OPENINGS);
+    } catch (writeError) {
+      console.error('Unable to restore career openings store, using defaults:', writeError);
+    }
+
     return DEFAULT_CAREER_OPENINGS;
   }
 }
@@ -2140,7 +2151,12 @@ async function writeBlogComments(comments) {
 
 async function readCareerApplications() {
   if (!existsSync(CAREER_APPLICATIONS_STORE_FILE)) {
-    await writeCareerApplications([]);
+    try {
+      await writeCareerApplications([]);
+    } catch (error) {
+      console.error('Unable to initialize career applications store, using empty list:', error);
+    }
+
     return [];
   }
 
@@ -2155,7 +2171,13 @@ async function readCareerApplications() {
     return parsed;
   } catch (error) {
     console.error('Career applications store invalid, restoring empty list:', error);
-    await writeCareerApplications([]);
+
+    try {
+      await writeCareerApplications([]);
+    } catch (writeError) {
+      console.error('Unable to restore career applications store, using empty list:', writeError);
+    }
+
     return [];
   }
 }
@@ -2193,7 +2215,12 @@ async function persistCareerApplicationRecord(application) {
 
 async function readCareersSettings() {
   if (!existsSync(CAREERS_SETTINGS_STORE_FILE)) {
-    await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+    try {
+      await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+    } catch (error) {
+      console.error('Unable to initialize careers settings store, using defaults:', error);
+    }
+
     return DEFAULT_CAREERS_SETTINGS;
   }
 
@@ -2211,7 +2238,13 @@ async function readCareersSettings() {
     };
   } catch (error) {
     console.error('Careers settings store invalid, restoring defaults:', error);
-    await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+
+    try {
+      await writeCareersSettings(DEFAULT_CAREERS_SETTINGS);
+    } catch (writeError) {
+      console.error('Unable to restore careers settings store, using defaults:', writeError);
+    }
+
     return DEFAULT_CAREERS_SETTINGS;
   }
 }
