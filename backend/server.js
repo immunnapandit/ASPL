@@ -2051,8 +2051,15 @@ async function writeCareerOpenings(openings) {
 async function readBlogPosts() {
   if (!existsSync(BLOG_POSTS_STORE_FILE)) {
     const bundledPosts = readBundledJsonStore('blog-posts.json');
-    await writeBlogPosts(Array.isArray(bundledPosts) ? bundledPosts : []);
-    return Array.isArray(bundledPosts) ? bundledPosts : [];
+    const initialPosts = Array.isArray(bundledPosts) ? bundledPosts : [];
+
+    try {
+      await writeBlogPosts(initialPosts);
+    } catch (error) {
+      console.error('Unable to initialize blog posts store, using bundled posts:', error);
+    }
+
+    return initialPosts;
   }
 
   try {
@@ -2065,9 +2072,18 @@ async function readBlogPosts() {
 
     return parsed;
   } catch (error) {
-    console.error('Blog posts store invalid, restoring empty list:', error);
-    await writeBlogPosts([]);
-    return [];
+    const bundledPosts = readBundledJsonStore('blog-posts.json');
+    const fallbackPosts = Array.isArray(bundledPosts) ? bundledPosts : [];
+
+    console.error('Blog posts store invalid, restoring fallback list:', error);
+
+    try {
+      await writeBlogPosts(fallbackPosts);
+    } catch (writeError) {
+      console.error('Unable to restore blog posts store, using fallback posts:', writeError);
+    }
+
+    return fallbackPosts;
   }
 }
 
