@@ -130,6 +130,8 @@ export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isCurrentRequest = true;
+
     const loadPost = async () => {
       if (previewPost) {
         setPost(previewPost);
@@ -140,28 +142,57 @@ export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
       }
 
       if (!slug) {
+        setPost(null);
         setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
+      setPost(null);
+      setRecentPosts([]);
+      setComments([]);
+
       try {
-        const [postResult, postsResult, commentsResult] = await Promise.all([
-          fetchPublishedBlogPost(slug),
+        const postResult = await fetchPublishedBlogPost(slug);
+
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        setPost(postResult);
+        setIsLoading(false);
+
+        const [postsResult, commentsResult] = await Promise.allSettled([
           fetchPublishedBlogPosts(),
           fetchBlogComments(slug),
         ]);
 
-        setPost(postResult);
-        setRecentPosts(postsResult.filter((item) => item.slug !== slug).slice(0, 3));
-        setComments(commentsResult);
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        if (postsResult.status === 'fulfilled') {
+          setRecentPosts(postsResult.value.filter((item) => item.slug !== slug).slice(0, 3));
+        }
+
+        if (commentsResult.status === 'fulfilled') {
+          setComments(commentsResult.value);
+        }
       } catch {
+        if (!isCurrentRequest) {
+          return;
+        }
+
         setPost(null);
-      } finally {
         setIsLoading(false);
       }
     };
 
     void loadPost();
+
+    return () => {
+      isCurrentRequest = false;
+    };
   }, [previewPost, slug]);
 
   const shareUrl = useMemo(() => {

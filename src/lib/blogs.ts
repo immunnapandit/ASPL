@@ -33,6 +33,22 @@ type BlogPostsResponse = {
   error?: string;
 };
 
+const BLOG_REQUEST_TIMEOUT_MS = 15000;
+
+async function fetchBlogApi(url: string, init?: RequestInit) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), BLOG_REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export function formatBlogDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime())
@@ -45,7 +61,7 @@ export function formatBlogDate(value: string) {
 }
 
 export async function fetchPublishedBlogPosts() {
-  const response = await fetch(BLOG_POSTS_API_URL);
+  const response = await fetchBlogApi(BLOG_POSTS_API_URL);
   const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
   if (!response.ok || !Array.isArray(result?.posts)) {
@@ -56,7 +72,7 @@ export async function fetchPublishedBlogPosts() {
 }
 
 export async function fetchPublishedBlogPost(slug: string) {
-  const response = await fetch(`${BLOG_POSTS_API_URL}/${slug}`);
+  const response = await fetchBlogApi(`${BLOG_POSTS_API_URL}/${slug}`);
   const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
   if (!response.ok || !result?.post) {
@@ -67,7 +83,7 @@ export async function fetchPublishedBlogPost(slug: string) {
 }
 
 export async function fetchBlogComments(slug: string) {
-  const response = await fetch(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`);
+  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`);
   const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
   if (!response.ok || !Array.isArray(result?.comments)) {
@@ -78,7 +94,7 @@ export async function fetchBlogComments(slug: string) {
 }
 
 export async function postBlogComment(slug: string, payload: BlogCommentPayload) {
-  const response = await fetch(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`, {
+  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

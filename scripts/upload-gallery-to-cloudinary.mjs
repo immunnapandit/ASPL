@@ -57,6 +57,7 @@ if (!cloudName || !apiKey || !apiSecret) {
 const images = [
   ['public/assets/img/slider/Businees.jpg', 'business-consulting'],
   ['public/assets/img/slider/financilabuilding.jpg', 'corporate-office-building'],
+  ['public/assets/img/slider/cloud4.png', 'future-ready-cloud-solutions'],
   ['public/assets/img/slider/Cloud1.jpg', 'cloud-consulting-workspace'],
   ['public/assets/img/slider/Cloud2.jpg', 'cloud-infrastructure-planning'],
   ['public/assets/img/service/Consulting.png', 'professional-consulting-team'],
