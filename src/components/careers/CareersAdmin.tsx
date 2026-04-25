@@ -16,6 +16,8 @@ import {
   LogOut,
   Mail,
   MapPin,
+  PanelLeftClose,
+  PanelLeftOpen,
   PencilLine,
   Phone,
   Plus,
@@ -96,6 +98,7 @@ type SettingsApiResponse = {
 type AdminView = 'dashboard' | 'jobs' | 'add-job' | 'applications' | 'settings';
 
 const STORAGE_KEY = 'aspl-careers-admin-token';
+const SIDEBAR_STORAGE_KEY = 'aspl-careers-cms-sidebar-hidden';
 
 const initialForm: AdminCareerForm = {
   title: '',
@@ -192,6 +195,7 @@ export default function CareersAdmin() {
   const [isUpdatingApplicationId, setIsUpdatingApplicationId] = useState<string | null>(null);
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [isSidebarHidden, setIsSidebarHidden] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
 
@@ -206,6 +210,23 @@ export default function CareersAdmin() {
       setTokenInput(storedToken);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const storedSidebarState = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    setIsSidebarHidden(storedSidebarState === 'true');
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isSidebarHidden));
+  }, [isSidebarHidden]);
 
   useEffect(() => {
     if (!token) {
@@ -620,7 +641,7 @@ export default function CareersAdmin() {
 
   const currentPanelTitle =
     activeView === 'dashboard'
-      ? 'Dashboard'
+      ? 'Careers Dashboard'
       : activeView === 'jobs'
         ? 'Jobs'
         : activeView === 'add-job'
@@ -1188,10 +1209,20 @@ export default function CareersAdmin() {
               </div>
             </div>
           ) : (
-            <div className="tv-blog-cms-studio tv-careers-cms-studio">
+            <div className={`tv-blog-cms-studio tv-careers-cms-studio ${isSidebarHidden ? 'is-sidebar-hidden' : ''}`}>
               <aside className="tv-blog-cms-sidebar">
                 <div className="tv-blog-cms-sidebar__brand">
                   <img src="/assets/img/logo/AtiSunyaLogo.png" alt="AtiSunya" />
+                  <button
+                    type="button"
+                    className="tv-blog-cms-sidebar__toggle"
+                    onClick={() => setIsSidebarHidden((current) => !current)}
+                    aria-pressed={isSidebarHidden}
+                    aria-label={isSidebarHidden ? 'Expand sidebar' : 'Collapse sidebar'}
+                    title={isSidebarHidden ? 'Expand sidebar' : 'Collapse sidebar'}
+                  >
+                    {isSidebarHidden ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                  </button>
                 </div>
 
                 <nav className="tv-blog-cms-sidebar__nav" aria-label="Careers CMS menu">

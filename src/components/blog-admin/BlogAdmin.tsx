@@ -11,6 +11,8 @@ import {
   LoaderCircle,
   LockKeyhole,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
   PencilLine,
   Plus,
   Save,
@@ -62,6 +64,7 @@ type BlogAdminResponse = {
 };
 
 const STORAGE_KEY = 'aspl-blog-admin-token';
+const SIDEBAR_STORAGE_KEY = 'aspl-blog-cms-sidebar-hidden';
 
 const initialForm: BlogForm = {
   title: '',
@@ -127,6 +130,7 @@ export default function BlogAdmin() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSidebarHidden, setIsSidebarHidden] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
 
@@ -137,6 +141,15 @@ export default function BlogAdmin() {
       setTokenInput(storedToken);
     }
   }, []);
+
+  useEffect(() => {
+    const storedSidebarState = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    setIsSidebarHidden(storedSidebarState === 'true');
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(isSidebarHidden));
+  }, [isSidebarHidden]);
 
   useEffect(() => {
     if (token) {
@@ -806,10 +819,20 @@ export default function BlogAdmin() {
               </div>
             </div>
           ) : (
-            <div className="tv-blog-cms-studio">
+            <div className={`tv-blog-cms-studio ${isSidebarHidden ? 'is-sidebar-hidden' : ''}`}>
               <aside className="tv-blog-cms-sidebar">
                 <div className="tv-blog-cms-sidebar__brand">
                   <img src="/assets/img/logo/AtiSunyaLogo.png" alt="AtiSunya" />
+                  <button
+                    type="button"
+                    className="tv-blog-cms-sidebar__toggle"
+                    onClick={() => setIsSidebarHidden((current) => !current)}
+                    aria-pressed={isSidebarHidden}
+                    aria-label={isSidebarHidden ? 'Expand sidebar' : 'Collapse sidebar'}
+                    title={isSidebarHidden ? 'Expand sidebar' : 'Collapse sidebar'}
+                  >
+                    {isSidebarHidden ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                  </button>
                 </div>
                 <nav className="tv-blog-cms-sidebar__nav" aria-label="Blog CMS menu">
                   <button type="button" className={activeView === 'dashboard' ? 'is-active' : ''} onClick={() => setActiveView('dashboard')}>

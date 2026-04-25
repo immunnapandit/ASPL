@@ -1838,3 +1838,812 @@
     animation: none;
   }
 }
+
+@keyframes tv-careers-cms-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tv-careers-cms-sidebar-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.tv-careers-cms-page {
+  --careers-cms-ink: #111827;
+  --careers-cms-muted: #667085;
+  --careers-cms-soft: #f6f8fb;
+  --careers-cms-line: rgba(17, 24, 39, 0.09);
+  --careers-cms-primary: #2554d9;
+  --careers-cms-primary-dark: #163ea9;
+  --careers-cms-success: #087443;
+  --careers-cms-danger: #b42318;
+
+  min-height: 100vh;
+  padding-bottom: 0;
+  background:
+    linear-gradient(180deg, rgba(246, 248, 251, 0.92), rgba(255, 255, 255, 0.98)),
+    #f7f9fc;
+  color: var(--careers-cms-ink);
+  font-family: var(--tv-ff-body), system-ui, sans-serif;
+
+  .tv-blog-cms-studio {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 84% 0%, rgba(37, 84, 217, 0.08), transparent 32%),
+      linear-gradient(180deg, #f8fafc 0%, #ffffff 45%);
+  }
+
+  .tv-blog-cms-sidebar {
+    width: 272px;
+    gap: 24px;
+    padding: 26px 18px;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(14, 23, 42, 0.98), rgba(17, 24, 39, 0.96)),
+      #111827;
+    box-shadow: 22px 0 60px rgba(15, 23, 42, 0.18);
+    animation: tv-careers-cms-sidebar-in 0.45s ease both;
+    transition:
+      width 0.28s ease,
+      padding 0.28s ease,
+      opacity 0.28s ease,
+      transform 0.28s ease,
+      visibility 0.28s ease;
+  }
+
+  .tv-blog-cms-sidebar__brand {
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    img {
+      width: 162px;
+      min-width: 0;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.16));
+      transition:
+        opacity 0.2s ease,
+        width 0.28s ease;
+    }
+  }
+
+  .tv-blog-cms-sidebar__toggle {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    min-height: 38px;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+
+    svg {
+      color: #dbeafe;
+    }
+  }
+
+  .tv-blog-cms-sidebar button,
+  .tv-blog-cms-sidebar a {
+    min-height: 46px;
+    padding: 0 13px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: rgba(241, 245, 249, 0.72);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    transition:
+      color 0.22s ease,
+      background 0.22s ease,
+      border-color 0.22s ease,
+      transform 0.22s ease;
+
+    svg {
+      color: rgba(191, 219, 254, 0.92);
+    }
+
+    &:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(3px);
+    }
+
+    &.is-active {
+      color: #ffffff;
+      border-color: rgba(147, 197, 253, 0.28);
+      background: linear-gradient(135deg, rgba(37, 84, 217, 0.95), rgba(59, 130, 246, 0.88));
+      box-shadow: 0 14px 30px rgba(37, 84, 217, 0.26);
+    }
+  }
+
+  .tv-blog-cms-main {
+    margin-left: 272px;
+    padding: 28px clamp(22px, 3.6vw, 58px) 54px;
+    transition: margin-left 0.28s ease;
+  }
+
+  .tv-blog-cms-studio.is-sidebar-hidden {
+    .tv-blog-cms-sidebar {
+      width: 78px;
+      padding: 24px 12px;
+    }
+
+    .tv-blog-cms-main {
+      margin-left: 78px;
+    }
+
+    .tv-blog-cms-sidebar__brand {
+      justify-content: center;
+      padding-right: 0;
+      padding-left: 0;
+
+      img {
+        width: 0;
+        opacity: 0;
+      }
+    }
+
+    .tv-blog-cms-sidebar button:not(.tv-blog-cms-sidebar__toggle),
+    .tv-blog-cms-sidebar a {
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      font-size: 0;
+
+      svg {
+        width: 19px;
+        height: 19px;
+      }
+    }
+  }
+
+  .tv-blog-cms-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: -28px clamp(-58px, -3.6vw, -22px) 28px;
+    padding: 24px clamp(22px, 3.6vw, 58px);
+    border-bottom: 1px solid var(--careers-cms-line);
+    background: rgba(248, 250, 252, 0.9);
+    backdrop-filter: blur(18px);
+
+    span {
+      color: var(--careers-cms-primary);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin-top: 7px;
+      color: var(--careers-cms-ink);
+      font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+      font-size: clamp(30px, 3vw, 42px);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+  }
+
+  .tv-blog-cms-topbar__actions {
+    align-items: center;
+  }
+
+  .tv-blog-cms-primary-action,
+  .tv-blog-cms-secondary-action,
+  .tv-careers-admin-add,
+  .tv-careers-admin-ghost,
+  .tv-careers-admin-link {
+    min-height: 44px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0;
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease,
+      border-color 0.22s ease,
+      background 0.22s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .tv-blog-cms-primary-action,
+  .tv-careers-admin-add {
+    border: 1px solid rgba(37, 84, 217, 0.12);
+    background: linear-gradient(135deg, var(--careers-cms-primary), #3674f4);
+    box-shadow: 0 14px 28px rgba(37, 84, 217, 0.22);
+    color: #ffffff;
+  }
+
+  .tv-blog-cms-secondary-action,
+  .tv-careers-admin-ghost,
+  .tv-careers-admin-link {
+    border: 1px solid var(--careers-cms-line);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--careers-cms-ink);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    &:hover {
+      border-color: rgba(37, 84, 217, 0.2);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+    }
+  }
+
+  .tv-careers-admin-danger {
+    color: var(--careers-cms-danger);
+
+    &:hover {
+      border-color: rgba(180, 35, 24, 0.18);
+      background: rgba(254, 243, 242, 0.95);
+    }
+  }
+
+  .tv-admin-status {
+    margin-bottom: 22px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    animation: tv-careers-cms-fade-up 0.28s ease both;
+  }
+
+  .tv-admin-status.is-success {
+    border-color: rgba(8, 116, 67, 0.12);
+    background: #ecfdf3;
+    color: var(--careers-cms-success);
+  }
+
+  .tv-admin-status.is-error {
+    border-color: rgba(180, 35, 24, 0.12);
+    background: #fef3f2;
+    color: var(--careers-cms-danger);
+  }
+
+  .tv-careers-admin-dashboard,
+  .tv-careers-admin-workspace,
+  .tv-careers-admin-editor,
+  .tv-careers-admin-panel {
+    animation: tv-careers-cms-fade-up 0.44s ease both;
+  }
+
+  .tv-careers-admin-metrics {
+    gap: 18px;
+  }
+
+  .tv-careers-admin-metric,
+  .tv-careers-admin-panel,
+  .tv-careers-admin-list,
+  .tv-careers-admin-editor,
+  .tv-careers-admin-form__section,
+  .tv-careers-admin-application {
+    border: 1px solid var(--careers-cms-line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow:
+      0 18px 42px rgba(15, 23, 42, 0.06),
+      0 1px 0 rgba(255, 255, 255, 0.78) inset;
+  }
+
+  .tv-careers-admin-metric {
+    position: relative;
+    overflow: hidden;
+    padding: 22px 24px;
+    border-bottom: 0;
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -42px;
+      top: -42px;
+      width: 112px;
+      height: 112px;
+      border-radius: 999px;
+      background: rgba(37, 84, 217, 0.08);
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 52px rgba(15, 23, 42, 0.09);
+    }
+
+    span {
+      color: var(--careers-cms-muted);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+    }
+
+    strong {
+      margin-top: 12px;
+      color: var(--careers-cms-ink);
+      font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+    }
+  }
+
+  .tv-careers-admin-dashboard__panels {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  .tv-careers-admin-workspace {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .tv-careers-admin-panel,
+  .tv-careers-admin-list,
+  .tv-careers-admin-editor {
+    padding: 26px;
+  }
+
+  .tv-careers-admin-panel {
+    display: flex;
+    min-height: 190px;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h3 {
+      margin-bottom: 10px;
+      color: var(--careers-cms-ink);
+      font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    p {
+      color: var(--careers-cms-muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+  }
+
+  .tv-careers-admin-list {
+    position: sticky;
+    top: 112px;
+    max-height: calc(100vh - 136px);
+    overflow: auto;
+    padding-right: 20px;
+  }
+
+  .tv-careers-admin-list__header,
+  .tv-careers-admin-editor__header {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--careers-cms-line);
+
+    h3 {
+      color: var(--careers-cms-ink);
+      font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+  }
+
+  .tv-careers-admin-editor__label {
+    margin-bottom: 7px;
+    color: var(--careers-cms-primary);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .tv-careers-admin-list__items {
+    gap: 12px;
+    max-height: none;
+    padding-right: 2px;
+  }
+
+  .tv-careers-admin-job {
+    position: relative;
+    overflow: hidden;
+    padding: 18px;
+    border: 1px solid var(--careers-cms-line);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease,
+      border-color 0.22s ease,
+      background 0.22s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--careers-cms-primary);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    h4 {
+      margin: 12px 0 9px;
+      color: var(--careers-cms-ink);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin-top: 12px;
+      color: var(--careers-cms-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    &:hover,
+    &.is-active {
+      border-color: rgba(37, 84, 217, 0.22);
+      background: #fbfdff;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+      transform: translateY(-2px);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  .tv-careers-admin-job__meta span,
+  .tv-careers-admin-application__meta span {
+    color: #475467;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .tv-job-status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .tv-job-status.is-active {
+    background: #ecfdf3;
+    color: var(--careers-cms-success);
+  }
+
+  .tv-job-status.is-draft {
+    background: #fff7ed;
+    color: #b54708;
+  }
+
+  .tv-careers-admin-form {
+    gap: 20px;
+  }
+
+  .tv-careers-admin-form__section {
+    padding: 24px;
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+
+    &:focus-within {
+      border-color: rgba(37, 84, 217, 0.18);
+      box-shadow:
+        0 22px 48px rgba(15, 23, 42, 0.08),
+        0 0 0 4px rgba(37, 84, 217, 0.04);
+    }
+  }
+
+  .tv-careers-admin-form__section-head h4 {
+    color: var(--careers-cms-ink);
+    font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .tv-careers-admin-grid {
+    gap: 18px;
+  }
+
+  .tv-careers-admin-form label {
+    gap: 9px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+
+  .tv-careers-admin-form input,
+  .tv-careers-admin-form textarea,
+  .tv-careers-admin-form select,
+  .tv-careers-admin-application__actions select,
+  .tv-blog-cms-auth__field input {
+    width: 100%;
+    min-height: 50px;
+    padding: 13px 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--careers-cms-ink);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      background 0.18s ease;
+
+    &::placeholder {
+      color: #98a2b3;
+      font-weight: 500;
+    }
+
+    &:focus {
+      border-color: rgba(37, 84, 217, 0.72);
+      background: #ffffff;
+      box-shadow:
+        0 0 0 4px rgba(37, 84, 217, 0.1),
+        0 1px 2px rgba(16, 24, 40, 0.05);
+      outline: none;
+    }
+  }
+
+  .tv-careers-admin-form textarea {
+    min-height: 154px;
+    line-height: 1.65;
+  }
+
+  .tv-careers-admin-form__actions {
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .tv-careers-admin-applications {
+    gap: 14px;
+  }
+
+  .tv-careers-admin-application {
+    padding: 22px;
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease,
+      border-color 0.22s ease;
+
+    &:hover {
+      border-color: rgba(37, 84, 217, 0.16);
+      box-shadow: 0 20px 42px rgba(15, 23, 42, 0.08);
+      transform: translateY(-2px);
+    }
+  }
+
+  .tv-careers-admin-application__top h4 {
+    color: var(--careers-cms-ink);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .tv-careers-admin-application__top p,
+  .tv-careers-admin-application__body p {
+    color: var(--careers-cms-muted);
+    font-size: 14px;
+  }
+
+  .tv-careers-admin-empty {
+    border-color: #d0d5dd;
+    border-radius: 14px;
+    background: #f9fafb;
+
+    h4 {
+      color: var(--careers-cms-ink);
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+  }
+
+  .tv-careers-loading {
+    border: 1px solid var(--careers-cms-line);
+    border-radius: 12px;
+    background: #ffffff;
+    color: #475467;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+  }
+
+  .tv-blog-cms-auth {
+    min-height: 78vh;
+    padding: 60px 0;
+  }
+
+  .tv-blog-cms-auth__panel {
+    width: min(100%, 620px);
+    border: 1px solid var(--careers-cms-line);
+    border-radius: 20px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
+      #ffffff;
+    box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
+    animation: tv-careers-cms-fade-up 0.48s ease both;
+
+    > span {
+      color: var(--careers-cms-primary);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      color: var(--careers-cms-ink);
+      font-family: var(--tv-ff-heading), var(--tv-ff-body), sans-serif;
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    p {
+      color: var(--careers-cms-muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+  }
+
+  .tv-blog-cms-auth__form label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .tv-blog-cms-auth__field {
+    display: block;
+
+    svg {
+      color: var(--careers-cms-primary);
+    }
+  }
+
+  @media #{$xl, $lg, $md, $sm, $xs} {
+    .tv-blog-cms-sidebar {
+      position: static;
+      width: auto;
+      min-height: auto;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tv-blog-cms-sidebar__nav,
+    .tv-blog-cms-sidebar__footer {
+      grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+    }
+
+    .tv-blog-cms-main {
+      margin-left: 0;
+    }
+
+    .tv-blog-cms-studio.is-sidebar-hidden {
+      .tv-blog-cms-sidebar {
+        display: flex;
+        width: auto;
+        padding: 18px;
+      }
+
+      .tv-blog-cms-sidebar__brand img {
+        width: 162px;
+        opacity: 1;
+      }
+
+      .tv-blog-cms-sidebar button:not(.tv-blog-cms-sidebar__toggle),
+      .tv-blog-cms-sidebar a {
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 0 13px;
+        font-size: 14px;
+      }
+    }
+
+    .tv-careers-admin-list {
+      position: static;
+      max-height: none;
+      padding-right: 26px;
+    }
+  }
+
+  @media #{$md, $sm, $xs} {
+    .tv-blog-cms-topbar {
+      position: static;
+      margin-top: 0;
+    }
+
+    .tv-careers-admin-dashboard__panels,
+    .tv-careers-admin-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .tv-careers-admin-metrics {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media #{$sm, $xs} {
+    .tv-blog-cms-main {
+      padding: 18px 14px 38px;
+    }
+
+    .tv-blog-cms-topbar {
+      margin-right: -14px;
+      margin-left: -14px;
+      padding: 20px 14px;
+    }
+
+    .tv-blog-cms-topbar__actions,
+    .tv-blog-cms-secondary-action,
+    .tv-blog-cms-primary-action {
+      width: 100%;
+    }
+
+    .tv-careers-admin-panel,
+    .tv-careers-admin-list,
+    .tv-careers-admin-editor,
+    .tv-careers-admin-form__section,
+    .tv-careers-admin-application {
+      padding: 20px;
+      border-radius: 14px;
+    }
+
+    .tv-careers-admin-list {
+      padding-right: 20px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-careers-cms-page {
+    .tv-blog-cms-sidebar,
+    .tv-careers-admin-dashboard,
+    .tv-careers-admin-workspace,
+    .tv-careers-admin-editor,
+    .tv-careers-admin-panel,
+    .tv-admin-status,
+    .tv-blog-cms-auth__panel {
+      animation: none;
+    }
+
+    .tv-blog-cms-sidebar button,
+    .tv-blog-cms-sidebar a,
+    .tv-blog-cms-sidebar,
+    .tv-blog-cms-main,
+    .tv-blog-cms-primary-action,
+    .tv-blog-cms-secondary-action,
+    .tv-careers-admin-add,
+    .tv-careers-admin-ghost,
+    .tv-careers-admin-link,
+    .tv-careers-admin-metric,
+    .tv-careers-admin-job,
+    .tv-careers-admin-form__section,
+    .tv-careers-admin-application {
+      transition: none;
+    }
+  }
+}
