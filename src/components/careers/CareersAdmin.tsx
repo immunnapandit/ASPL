@@ -380,7 +380,7 @@ export default function CareersAdmin() {
     event.preventDefault();
 
     if (!tokenInput.trim()) {
-      setStatus('error', 'Enter the admin token to open the careers CMS.');
+      setStatus('error', 'Enter the admin password to open the careers CMS.');
       return;
     }
 
@@ -1178,21 +1178,27 @@ export default function CareersAdmin() {
                     <ShieldCheck size={18} />
                     Secure careers admin
                   </span>
-                  <h2>Manage career openings without touching code</h2>
+                  <h2>ASPL Careers Content Management</h2>
                   <p>
-                    Use the admin token from backend `.env` to open the CMS, then
-                    create, edit, publish, or delete roles from one place.
+                    Keep ASPL hiring information accurate from one secure workspace.
+                    Update job openings, review candidate submissions, and control
+                    careers page messaging with a clean publishing flow.
                   </p>
+                  <ul className="tv-blog-cms-auth__list">
+                    <li>Create and publish roles with department, location, and requirements.</li>
+                    <li>Review applicant details and keep follow-up status organized.</li>
+                    <li>Maintain careers page copy and notification email settings.</li>
+                  </ul>
                   <form onSubmit={handleTokenSubmit} className="tv-blog-cms-auth__form">
-                    <label htmlFor="admin-token">Admin token</label>
+                    <label htmlFor="admin-password">Admin password</label>
                     <div className="tv-blog-cms-auth__field">
                       <LockKeyhole size={18} />
                       <input
-                        id="admin-token"
+                        id="admin-password"
                         type="password"
                         value={tokenInput}
                         onChange={(event) => setTokenInput(event.currentTarget.value)}
-                        placeholder="Enter careers admin token"
+                        placeholder="Enter careers admin password"
                       />
                     </div>
                     {statusMessage ? (

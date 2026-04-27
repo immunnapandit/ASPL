@@ -320,7 +320,7 @@ export default function BlogAdmin() {
     event.preventDefault();
 
     if (!tokenInput.trim()) {
-      setStatus('error', 'Enter the admin token to open the blog CMS.');
+      setStatus('error', 'Enter the admin password to open the blog CMS.');
       return;
     }
 
@@ -1132,13 +1132,22 @@ export default function BlogAdmin() {
                     <ShieldCheck size={18} />
                     Secure blog admin
                   </span>
-                  <h2>Publish blog posts without touching code</h2>
-                  <p>Use the blog admin token, upload the image to Cloudinary, then publish posts to the website blog grid.</p>
+                  <h2>ASPL Blog Content Management</h2>
+                  <p>
+                    Manage ASPL insights from a focused editorial workspace. Draft,
+                    optimize, upload media, and publish articles to the public blog
+                    with consistent structure and SEO-ready details.
+                  </p>
+                  <ul className="tv-blog-cms-auth__list">
+                    <li>Create professional posts with excerpts, categories, tags, and author details.</li>
+                    <li>Upload featured or inline images directly to Cloudinary.</li>
+                    <li>Maintain SEO titles and descriptions before publishing.</li>
+                  </ul>
                   <form onSubmit={handleTokenSubmit} className="tv-blog-cms-auth__form">
-                    <label htmlFor="admin-token">Admin token</label>
+                    <label htmlFor="admin-password">Admin password</label>
                     <div className="tv-blog-cms-auth__field">
                       <LockKeyhole size={18} />
-                      <input id="admin-token" type="password" value={tokenInput} onChange={(event) => setTokenInput(event.currentTarget.value)} placeholder="Enter admin token" />
+                      <input id="admin-password" type="password" value={tokenInput} onChange={(event) => setTokenInput(event.currentTarget.value)} placeholder="Enter admin password" />
                     </div>
                     {statusMessage ? <p className={`tv-admin-status is-${statusType}`}>{statusMessage}</p> : null}
                     <button type="submit" className="tv-btn-primary">

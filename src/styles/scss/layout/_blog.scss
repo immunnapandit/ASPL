@@ -731,6 +731,34 @@
   gap: 12px;
 }
 
+.tv-blog-cms-auth__list {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 24px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    padding-left: 24px;
+    color: rgba(20, 34, 67, 0.72);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tv-theme-1);
+    }
+  }
+}
+
 .tv-blog-cms-auth__field {
   position: relative;
 
@@ -738,12 +766,14 @@
     position: absolute;
     left: 16px;
     top: 50%;
+    z-index: 1;
     transform: translateY(-50%);
     color: var(--tv-theme-1);
+    pointer-events: none;
   }
 
   input {
-    padding-left: 48px;
+    padding-left: 50px;
   }
 }
 
@@ -1609,6 +1639,10 @@
         0 1px 2px rgba(16, 24, 40, 0.05);
       outline: none;
     }
+  }
+
+  .tv-blog-cms-auth__field input {
+    padding-left: 50px;
   }
 
   .tv-blog-cms-form textarea {
