@@ -5,6 +5,10 @@ import {
   BriefcaseBusiness,
   Lightbulb,
 } from "lucide-react";
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from "../../../lib/cloudinary";
 import "../../../styles/scss/layout/_why-choose-us.scss";
 
 type WhyChooseUsItem = {
@@ -174,7 +178,10 @@ export default function WhyChooseUsSection() {
                 variants={imageInnerVariants}
               >
                 <img
-                  src="/assets/img/service/why.jpg"
+                  src={getCloudinaryAssetUrl(
+                    "/assets/img/service/why.jpg",
+                    CLOUDINARY_TRANSFORMS.largeVisual,
+                  )}
                   alt="Business consultant evaluating a technology decision"
                   loading="lazy"
                 />

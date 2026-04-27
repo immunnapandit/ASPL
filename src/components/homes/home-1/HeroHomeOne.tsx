@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { getCloudinaryImageUrl } from '../../../lib/cloudinary';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 // swiper css
 import 'swiper/css';
@@ -10,33 +13,30 @@ import 'swiper/css/pagination';
 
 const heroSlides = [
   {
-    backgroundImage: getCloudinaryImageUrl({
-      fallback: '/assets/img/slider/financilabuilding.jpg',
-      publicId: 'aspl/gallery/corporate-office-building',
-      transformations: 'f_auto,q_auto,c_fill,w_1920,h_900',
-    }),
+    backgroundImage: getCloudinaryAssetUrl(
+      '/assets/img/slider/financilabuilding.jpg',
+      CLOUDINARY_TRANSFORMS.hero,
+    ),
     subtitle: 'Microsoft Technology Experts',
     title: 'Transform Your Business with Intelligent Digital Solutions',
     description:
       'AtiSunya helps organizations modernize operations with Microsoft Dynamics 365, Azure Cloud, and innovative technology solutions designed for scalability and growth.',
   },
   {
-    backgroundImage: getCloudinaryImageUrl({
-      fallback: '/assets/img/slider/Businees.jpg',
-      publicId: 'aspl/gallery/business-consulting',
-      transformations: 'f_auto,q_auto,c_fill,w_1920,h_900',
-    }),
+    backgroundImage: getCloudinaryAssetUrl(
+      '/assets/img/slider/Businees.jpg',
+      CLOUDINARY_TRANSFORMS.hero,
+    ),
     subtitle: 'Microsoft Technology Experts',
     title: 'Empowering Businesses with Microsoft Dynamics 365',
     description:
       'Streamline operations, automate processes, and gain real-time insights with powerful ERP and CRM solutions built on Microsoft Dynamics 365 and Power Platform.',
   },
   {
-    backgroundImage: getCloudinaryImageUrl({
-      fallback: '/assets/img/slider/cloud4.png',
-      publicId: 'aspl/gallery/future-ready-cloud-solutions',
-      transformations: 'f_auto,q_auto,c_fill,w_1920,h_900',
-    }),
+    backgroundImage: getCloudinaryAssetUrl(
+      '/assets/img/slider/cloud4.png',
+      CLOUDINARY_TRANSFORMS.hero,
+    ),
     subtitle: 'Microsoft Technology Experts',
     title: 'Build Powerful Solutions for the Future',
     description:

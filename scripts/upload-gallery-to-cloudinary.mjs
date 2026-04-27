@@ -1,9 +1,11 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { basename, extname, resolve } from 'node:path';
+import { basename, extname, relative, resolve, sep } from 'node:path';
 
 const envPath = process.argv[2] || 'backend/.env';
-const galleryFolder = process.argv[3] || 'aspl/gallery';
+const cloudinaryFolder = process.argv[3] || 'aspl/assets/img';
+const sourceFolder = process.argv[4] || 'public/assets/img';
+const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.svg']);
 
 function readEnv(path) {
   return Object.fromEntries(
@@ -45,6 +47,28 @@ function getMimeType(path) {
   }
 }
 
+function walkImageFiles(folder) {
+  return readdirSync(folder)
+    .flatMap((entry) => {
+      const path = resolve(folder, entry);
+      const stats = statSync(path);
+
+      if (stats.isDirectory()) {
+        return walkImageFiles(path);
+      }
+
+      return allowedExtensions.has(extname(path).toLowerCase()) ? [path] : [];
+    })
+    .sort((a, b) => a.localeCompare(b));
+}
+
+function getPublicId(path, rootFolder) {
+  return relative(rootFolder, path)
+    .split(sep)
+    .join('/')
+    .replace(/\.([^/.]+)$/, '_$1');
+}
+
 const env = readEnv(envPath);
 const cloudName = env.CLOUDINARY_CLOUD_NAME;
 const apiKey = env.CLOUDINARY_API_KEY;
@@ -54,29 +78,18 @@ if (!cloudName || !apiKey || !apiSecret) {
   throw new Error(`Cloudinary settings are missing in ${envPath}.`);
 }
 
-const images = [
-  ['public/assets/img/slider/Businees.jpg', 'business-consulting'],
-  ['public/assets/img/slider/financilabuilding.jpg', 'corporate-office-building'],
-  ['public/assets/img/slider/cloud4.png', 'future-ready-cloud-solutions'],
-  ['public/assets/img/slider/Cloud1.jpg', 'cloud-consulting-workspace'],
-  ['public/assets/img/slider/Cloud2.jpg', 'cloud-infrastructure-planning'],
-  ['public/assets/img/service/Consulting.png', 'professional-consulting-team'],
-  ['public/assets/img/service/App-development.png', 'application-development-workspace'],
-  ['public/assets/img/service/analytics.png', 'business-analytics-dashboard'],
-  ['public/assets/img/service/Support-management.png', 'support-managed-services'],
-  ['public/assets/img/service/MicrosoftD365.jpg', 'microsoft-dynamics-365-workspace'],
-  ['public/assets/img/service/Training.png', 'professional-training-program'],
-  ['public/assets/img/slider/slider-1-1.jpg', 'business-transformation-session'],
-  ['public/assets/img/slider/slider-1-2.jpg', 'technology-consulting-discussion'],
-  ['public/assets/img/project/project-4-1.png', 'project-showcase'],
-  ['public/assets/img/project/project-4-2.png', 'project-delivery-showcase'],
-  ['public/assets/img/project/project-4-3.png', 'digital-project-showcase'],
-];
+const resolvedSourceFolder = resolve(sourceFolder);
+const images = walkImageFiles(resolvedSourceFolder);
 
-for (const [path, publicId] of images) {
+console.log(
+  `Uploading ${images.length} image assets from ${sourceFolder} to ${cloudinaryFolder}...`
+);
+
+for (const path of images) {
+  const publicId = getPublicId(path, resolvedSourceFolder);
   const timestamp = Math.floor(Date.now() / 1000);
   const signatureParams = {
-    folder: galleryFolder,
+    folder: cloudinaryFolder,
     overwrite: 'true',
     public_id: publicId,
     timestamp,
@@ -89,7 +102,7 @@ for (const [path, publicId] of images) {
   formData.set('file', fileBlob, basename(path));
   formData.set('api_key', apiKey);
   formData.set('timestamp', String(timestamp));
-  formData.set('folder', galleryFolder);
+  formData.set('folder', cloudinaryFolder);
   formData.set('public_id', publicId);
   formData.set('overwrite', 'true');
   formData.set('signature', signature);

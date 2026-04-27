@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom';
 import VideoPopup from '../../../modal/VideoPopup';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 export default function AboutHomeTwo() {
   return (
@@ -147,11 +151,17 @@ export default function AboutHomeTwo() {
             <div className="tv-about2-right">
               <img
                 className="thumb"
-                src="assets/img/about/about-2-1.png"
+                src={getCloudinaryAssetUrl(
+                  'assets/img/about/about-2-1.png',
+                  CLOUDINARY_TRANSFORMS.largeVisual,
+                )}
                 alt=""
               />
               <img
-                src="assets/img/about/about-2-2.png"
+                src={getCloudinaryAssetUrl(
+                  'assets/img/about/about-2-2.png',
+                  CLOUDINARY_TRANSFORMS.largeVisual,
+                )}
                 alt=""
                 className="abs"
               />
@@ -176,10 +186,19 @@ export default function AboutHomeTwo() {
                     </a>
                   </VideoPopup>
                 </div>
-                <img src="assets/img/about/about-2-3.png" alt="" />
+                <img
+                  src={getCloudinaryAssetUrl(
+                    'assets/img/about/about-2-3.png',
+                    CLOUDINARY_TRANSFORMS.largeVisual,
+                  )}
+                  alt=""
+                />
               </div>
               <img
-                src="assets/img/about/shap-2-1.png"
+                src={getCloudinaryAssetUrl(
+                  'assets/img/about/shap-2-1.png',
+                  CLOUDINARY_TRANSFORMS.decorative,
+                )}
                 alt=""
                 className="shap tvfadetranslateY"
               />

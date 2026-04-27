@@ -1,5 +1,9 @@
 import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 import 'swiper/css';
 
@@ -223,7 +227,10 @@ export default function OurClient() {
                 <SwiperSlide className="swiper-slide" key={client.id}>
                   <div className="tv-brand-single-item our-client-item">
                     <img
-                      src={client.logo}
+                      src={getCloudinaryAssetUrl(
+                        client.logo,
+                        CLOUDINARY_TRANSFORMS.logo,
+                      )}
                       alt={client.name}
                       className={client.logoClassName}
                     />

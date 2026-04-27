@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { type BlogPost } from '../../../data/blog-posts';
 import { fetchPublishedBlogPosts, formatBlogDate } from '../../../lib/blogs';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 export default function BlogHomeTwo() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -47,7 +51,13 @@ export default function BlogHomeTwo() {
             >
               <div className="single-blog-item style-2">
                 <Link to={`/blog/${post.slug}`} className="blog-thumb-link">
-                  <img src={post.imageUrl} alt={post.title} />
+                  <img
+                    src={getCloudinaryAssetUrl(
+                      post.imageUrl,
+                      CLOUDINARY_TRANSFORMS.blogCard,
+                    )}
+                    alt={post.title}
+                  />
                 </Link>
                 <div className="blog-content">
                   <div className="blog-meta">
@@ -69,4 +79,3 @@ export default function BlogHomeTwo() {
     </div>
   );
 }
-

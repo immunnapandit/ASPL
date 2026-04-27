@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 const solutions = [
   {
@@ -113,7 +117,10 @@ export default function SolutionsSection() {
   useEffect(() => {
     solutions.forEach((item) => {
       const image = new Image();
-      image.src = item.image;
+      image.src = getCloudinaryAssetUrl(
+        item.image,
+        CLOUDINARY_TRANSFORMS.largeVisual,
+      );
     });
   }, []);
 
@@ -290,7 +297,10 @@ export default function SolutionsSection() {
                   transition={{ duration: 0.35 }}
                 >
                   <img
-                    src={active.image}
+                    src={getCloudinaryAssetUrl(
+                      active.image,
+                      CLOUDINARY_TRANSFORMS.largeVisual,
+                    )}
                     alt={active.key}
                     className="visual-image"
                     loading="eager"

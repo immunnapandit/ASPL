@@ -1,5 +1,10 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+  getCloudinaryBackgroundImage,
+} from '../../../lib/cloudinary';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -44,7 +49,10 @@ export default function TestimonialHomeOne() {
     <div
       className="tv-testimonial-area pt-130 pb-130"
       style={{
-        backgroundImage: 'url(/assets/img/testimonial/testi-bg-1-1.png)',
+        backgroundImage: getCloudinaryBackgroundImage(
+          '/assets/img/testimonial/testi-bg-1-1.png',
+          CLOUDINARY_TRANSFORMS.decorative,
+        ),
       }}
     >
       <div className="container">
@@ -100,7 +108,10 @@ export default function TestimonialHomeOne() {
                       <p>"{item.quote}"</p>
                       <div className="author-info d-flex align-items-center">
                         <img
-                          src={item.avatarUrl}
+                          src={getCloudinaryAssetUrl(
+                            item.avatarUrl,
+                            CLOUDINARY_TRANSFORMS.avatar,
+                          )}
                           alt={item.name}
                           style={{
                             width: '64px',
@@ -116,7 +127,7 @@ export default function TestimonialHomeOne() {
                         </h5>
                       </div>
                       <img
-                        src="assets/img/testimonial/testi-shap-1.png"
+                        src={getCloudinaryAssetUrl('assets/img/testimonial/testi-shap-1.png')}
                         alt=""
                         className="shap-icon"
                       />
