@@ -78,6 +78,7 @@ const PAYMENT_BANK_SWIFT_CODE = (process.env.PAYMENT_BANK_SWIFT_CODE || '').trim
 const CONTACT_TO_EMAIL = (process.env.CONTACT_TO_EMAIL || 'info@atisunya.co').trim();
 const CONTACT_FROM_EMAIL = (
   process.env.CONTACT_FROM_EMAIL ||
+  process.env.GRAPH_FROM_EMAIL ||
   process.env.SMTP_USER ||
   CONTACT_TO_EMAIL
 ).trim();
@@ -99,6 +100,10 @@ const SMTP_PORT = Number.parseInt(process.env.SMTP_PORT || '', 10) || 587;
 const SMTP_SECURE = parseBoolean(process.env.SMTP_SECURE, SMTP_PORT === 465);
 const SMTP_USER = (process.env.SMTP_USER || '').trim();
 const SMTP_PASS = process.env.SMTP_PASS || '';
+const GRAPH_FROM_EMAIL = (process.env.GRAPH_FROM_EMAIL || CONTACT_FROM_EMAIL).trim();
+const GRAPH_TENANT_ID = (process.env.GRAPH_TENANT_ID || '').trim();
+const GRAPH_CLIENT_ID = (process.env.GRAPH_CLIENT_ID || '').trim();
+const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
 
 const DEFAULT_SUPPORTED_CURRENCIES = [
   'INR',
@@ -461,16 +466,18 @@ function BunLikeServe({ port, fetch }) {
           console.log(`ASPL backend listening on http://localhost:${port}`);
 
           try {
-            if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
+            if (isGraphEmailConfigured()) {
+              console.log('Microsoft Graph mail provider is configured.');
+            } else if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
               const transporter = getContactTransporter();
               await verifyContactTransporter(transporter);
             } else {
               console.warn(
-                'SMTP is not fully configured yet. Contact form email sending will not work until SMTP settings are added.'
+                'Email sending is not configured yet. Add Microsoft Graph or SMTP settings.'
               );
             }
           } catch (error) {
-            console.error('SMTP startup verification failed:', error);
+            console.error('Email startup verification failed:', error);
           }
         });
       });
@@ -963,12 +970,9 @@ async function fetchExchangeRates({ base, quotes }) {
 }
 
 async function sendContactEmail(contact) {
-  const transporter = getContactTransporter();
-  await verifyContactTransporter(transporter);
-
   const submittedAt = new Date().toISOString();
 
-  await transporter.sendMail({
+  await sendNotificationEmail({
     from: {
       name: 'AtiSunya Website',
       address: CONTACT_FROM_EMAIL,
@@ -982,6 +986,161 @@ async function sendContactEmail(contact) {
     text: buildContactEmailText(contact, submittedAt),
     html: buildContactEmailHtml(contact, submittedAt),
   });
+}
+
+async function sendNotificationEmail(message) {
+  if (isGraphEmailConfigured()) {
+    await sendGraphEmail(message);
+    return;
+  }
+
+  const transporter = getContactTransporter();
+  await verifyContactTransporter(transporter);
+  await transporter.sendMail({
+    ...message,
+    attachments: message.attachments?.map((attachment) => ({
+      filename: attachment.filename,
+      content: attachment.content || Buffer.from(attachment.contentBytes || '', 'base64'),
+      contentType: attachment.contentType,
+    })),
+  });
+}
+
+function isEmailSendingConfigured() {
+  return isGraphEmailConfigured() || Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+}
+
+function isGraphEmailConfigured() {
+  return Boolean(GRAPH_FROM_EMAIL && GRAPH_TENANT_ID && GRAPH_CLIENT_ID && GRAPH_CLIENT_SECRET);
+}
+
+async function sendGraphEmail(message) {
+  validateGraphEmailConfig();
+
+  const accessToken = await getGraphAccessToken();
+  const response = await fetch(
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(GRAPH_FROM_EMAIL)}/sendMail`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: toGraphMessage(message),
+        saveToSentItems: false,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Microsoft Graph sendMail failed: ${await response.text()}`);
+  }
+}
+
+async function getGraphAccessToken() {
+  const response = await fetch(
+    `https://login.microsoftonline.com/${encodeURIComponent(
+      GRAPH_TENANT_ID
+    )}/oauth2/v2.0/token`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: GRAPH_CLIENT_ID,
+        client_secret: GRAPH_CLIENT_SECRET,
+        grant_type: 'client_credentials',
+        scope: 'https://graph.microsoft.com/.default',
+      }),
+    }
+  );
+
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok || !payload?.access_token) {
+    throw new Error(
+      `Microsoft Graph token request failed: ${JSON.stringify(payload || { status: response.status })}`
+    );
+  }
+
+  return payload.access_token;
+}
+
+function toGraphMessage(message) {
+  const graphMessage = {
+    subject: message.subject,
+    body: {
+      contentType: 'HTML',
+      content: message.html || escapeHtml(message.text || ''),
+    },
+    toRecipients: toGraphRecipients(message.to),
+    replyTo: message.replyTo ? toGraphRecipients(message.replyTo) : undefined,
+    attachments: message.attachments?.map(toGraphAttachment),
+  };
+
+  if (!graphMessage.attachments?.length) {
+    delete graphMessage.attachments;
+  }
+
+  if (!graphMessage.replyTo?.length) {
+    delete graphMessage.replyTo;
+  }
+
+  return graphMessage;
+}
+
+function toGraphRecipients(value) {
+  const recipients = Array.isArray(value) ? value : [value];
+
+  return recipients
+    .map((recipient) => {
+      if (typeof recipient === 'string') {
+        return {
+          emailAddress: {
+            address: recipient,
+          },
+        };
+      }
+
+      return {
+        emailAddress: {
+          name: recipient.name,
+          address: recipient.address,
+        },
+      };
+    })
+    .filter((recipient) => recipient.emailAddress.address);
+}
+
+function toGraphAttachment(attachment) {
+  return {
+    '@odata.type': '#microsoft.graph.fileAttachment',
+    name: attachment.filename,
+    contentType: attachment.contentType || 'application/octet-stream',
+    contentBytes:
+      attachment.contentBytes ||
+      Buffer.from(attachment.content || '').toString('base64'),
+  };
+}
+
+function validateGraphEmailConfig() {
+  if (!GRAPH_FROM_EMAIL) {
+    throw createContactEmailConfigError('Missing GRAPH_FROM_EMAIL.');
+  }
+
+  if (!GRAPH_TENANT_ID) {
+    throw createContactEmailConfigError('Missing GRAPH_TENANT_ID.');
+  }
+
+  if (!GRAPH_CLIENT_ID) {
+    throw createContactEmailConfigError('Missing GRAPH_CLIENT_ID.');
+  }
+
+  if (!GRAPH_CLIENT_SECRET) {
+    throw createContactEmailConfigError('Missing GRAPH_CLIENT_SECRET.');
+  }
 }
 
 function getContactTransporter() {
@@ -2030,9 +2189,6 @@ async function handleNewsletterSubscribe(req) {
 }
 
 async function sendCareerApplicationEmail(application, record) {
-  const transporter = getContactTransporter();
-  await verifyContactTransporter(transporter);
-
   const settings = readCareersSettings();
   const submittedAt = new Date(record.submittedAt).toLocaleString('en-IN', {
     dateStyle: 'medium',
@@ -2040,7 +2196,7 @@ async function sendCareerApplicationEmail(application, record) {
   });
   const targetEmail = settings.notificationEmail || HR_TO_EMAIL;
 
-  await transporter.sendMail({
+  await sendNotificationEmail({
     from: {
       name: 'AtiSunya Careers',
       address: CONTACT_FROM_EMAIL,
@@ -2058,7 +2214,7 @@ async function sendCareerApplicationEmail(application, record) {
     attachments: [
       {
         filename: application.resume.name,
-        content: Buffer.from(application.resume.contentBytes, 'base64'),
+        contentBytes: application.resume.contentBytes,
         contentType: application.resume.contentType,
       },
     ],
@@ -2066,19 +2222,16 @@ async function sendCareerApplicationEmail(application, record) {
 }
 
 async function sendNewsletterSubscriptionEmail(subscription) {
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !NEWSLETTER_TO_EMAIL || !CONTACT_FROM_EMAIL) {
+  if (!isEmailSendingConfigured() || !NEWSLETTER_TO_EMAIL || !CONTACT_FROM_EMAIL) {
     return;
   }
-
-  const transporter = getContactTransporter();
-  await verifyContactTransporter(transporter);
 
   const subscribedAt = new Date(subscription.subscribedAt).toLocaleString('en-IN', {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
 
-  await transporter.sendMail({
+  await sendNotificationEmail({
     from: {
       name: 'AtiSunya Website',
       address: CONTACT_FROM_EMAIL,
