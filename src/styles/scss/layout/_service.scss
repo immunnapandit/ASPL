@@ -2,46 +2,23 @@
 
 .service-premium-section {
   position: relative;
-  padding: 48px 0 90px;
+  padding: 16px 0 90px;
   background: var(--tv-common-white);
   overflow: hidden;
 
-  .service-bg-blur {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(60px);
-    opacity: 0.45;
-    pointer-events: none;
-  }
-
-  .service-bg-blur-1 {
-    width: 260px;
-    height: 260px;
-    background: rgba(43, 77, 255, 0.16);
-    top: -80px;
-    left: -80px;
-  }
-
-  .service-bg-blur-2 {
-    width: 320px;
-    height: 320px;
-    background: rgba(20, 184, 166, 0.14);
-    bottom: -100px;
-    right: -100px;
-  }
-
   .section-header {
-    max-width: 860px;
+    max-width: 980px;
     margin: 0 auto 40px;
     position: relative;
     z-index: 2;
 
     p {
-      max-width: 720px;
-      margin: 16px auto 0;
+      max-width: 760px;
+      margin: 0 auto;
       font-size: 18px;
       line-height: 30px;
       color: var(--tv-text-body);
+      text-align: center;
     }
   }
 
@@ -58,8 +35,19 @@
     z-index: 2;
   }
 
+  .service-subtitle-row {
+    margin-top: 16px;
+    display: block;
+
+    .section-subtitle {
+      margin: 0 auto;
+      max-width: 760px;
+      text-align: center;
+    }
+  }
+
   .premium-service-swiper {
-    padding: 8px 4px 34px;
+    padding: 28px 4px 34px;
   }
 
   .service-slide {
@@ -281,7 +269,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 6px;
   }
 
   .service-pagination .swiper-pagination-bullet {
@@ -323,7 +311,7 @@
 
 @media (max-width: 1199px) {
   .service-premium-section {
-    padding: 40px 0 70px;
+    padding: 12px 0 70px;
 
     .service-image-wrap {
       height: 230px;
@@ -333,7 +321,7 @@
 
 @media (max-width: 991px) {
   .service-premium-section {
-    padding: 36px 0 70px;
+    padding: 8px 0 70px;
 
     .service-image-wrap {
       height: 240px;
@@ -346,12 +334,22 @@
     .service-card-desc {
       min-height: 84px;
     }
+
+    .service-subtitle-row {
+      .section-subtitle {
+        text-align: center;
+      }
+    }
+
+    .premium-service-swiper {
+      padding-top: 12px;
+    }
   }
 }
 
 @media (max-width: 575px) {
   .service-premium-section {
-    padding: 28px 0 60px;
+    padding: 0 0 60px;
 
     .section-header {
       margin-bottom: 32px;
@@ -359,6 +357,7 @@
       p {
         font-size: 16px;
         line-height: 28px;
+        max-width: 100%;
       }
     }
 
@@ -384,6 +383,10 @@
 
     .service-image-wrap {
       height: 225px;
+    }
+
+    .service-pagination {
+      gap: 12px;
     }
   }
 }

@@ -1,0 +1,373 @@
+@use '../utils' as *;
+
+.home-one-page {
+  --home-section-space: 88px;
+  --home-section-bridge-space: 48px;
+  --home-section-tight-bridge-space: 36px;
+  --home-section-title-size: 48px;
+  --home-section-copy-size: 18px;
+  --home-section-copy-line: 1.65;
+  --home-card-title-size: 22px;
+  --home-card-copy-size: 16px;
+  --home-card-copy-line: 1.65;
+
+  overflow: hidden;
+
+  > section,
+  > div {
+    scroll-margin-top: 112px;
+  }
+
+  .tv-about2-area.about-home-two-compact {
+    padding-top: calc(var(--home-section-space) + 8px);
+    padding-bottom: var(--home-section-space);
+  }
+
+  .service-premium-section,
+  .industries-section,
+  .why-choose-us-section,
+  .training-area,
+  .tv-testimonial-area,
+  .our-client-area,
+  .tv-blog2-area,
+  .solutions-section {
+    padding-top: var(--home-section-space);
+    padding-bottom: var(--home-section-space);
+  }
+
+  .tv-about2-area.about-home-two-compact:has(+ .service-premium-section),
+  .service-premium-section:has(+ .solutions-section),
+  .solutions-section:has(+ .industries-section),
+  .industries-section:has(+ .why-choose-us-section) {
+    padding-bottom: var(--home-section-bridge-space);
+  }
+
+  .tv-about2-area.about-home-two-compact + .service-premium-section,
+  .service-premium-section + .solutions-section,
+  .solutions-section + .industries-section,
+  .industries-section + .why-choose-us-section {
+    padding-top: var(--home-section-bridge-space);
+  }
+
+  .our-client-area:has(+ .tv-blog2-area) {
+    padding-bottom: var(--home-section-tight-bridge-space);
+  }
+
+  .our-client-area + .tv-blog2-area {
+    padding-top: var(--home-section-tight-bridge-space);
+  }
+
+  .tv-section-title,
+  .section-title,
+  .solutions-title,
+  .industries-title,
+  .training-title,
+  .why-choose-us-title {
+    font-size: var(--home-section-title-size);
+    line-height: 1.14;
+    letter-spacing: 0;
+  }
+
+  .solutions-title {
+    max-width: 580px;
+    font-size: clamp(40px, 3.2vw, var(--home-section-title-size));
+  }
+
+  .tv-section-subtitle,
+  .section-kicker,
+  .industries-subtitle,
+  .training-subtitle {
+    margin-bottom: 12px;
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .tv-section-title-box p,
+  .section-subtitle,
+  .industries-description,
+  .training-text,
+  .why-choose-us-copy,
+  .solutions-desc {
+    font-size: var(--home-section-copy-size);
+    line-height: var(--home-section-copy-line);
+    letter-spacing: 0;
+  }
+
+  .section-header,
+  .industries-header,
+  .training-heading {
+    margin-bottom: 42px;
+  }
+
+  .service-premium-section {
+    .section-header {
+      max-width: 900px;
+    }
+
+    .premium-service-swiper {
+      padding-top: 18px;
+      padding-bottom: 30px;
+    }
+
+    .service-card-premium {
+      border-radius: 14px;
+    }
+
+    .service-image-wrap {
+      height: 200px;
+    }
+
+    .image-frame {
+      border-radius: 10px;
+    }
+
+    .service-content {
+      padding: 22px 22px 24px;
+    }
+
+    .service-card-title {
+      min-height: 56px;
+      font-size: var(--home-card-title-size);
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    .service-card-desc {
+      min-height: 82px;
+      font-size: var(--home-card-copy-size);
+      line-height: var(--home-card-copy-line);
+      letter-spacing: 0;
+    }
+  }
+
+  .solutions-section {
+    .solutions-tabs-wrap {
+      margin-bottom: 34px;
+    }
+
+    .solutions-content-area {
+      min-height: 430px;
+    }
+
+    .solutions-panel {
+      gap: 40px;
+    }
+
+    .solutions-desc {
+      max-width: 620px;
+      margin-bottom: 22px;
+    }
+  }
+
+  .industry-card,
+  .training-card,
+  .single-blog-item.style-2 {
+    border-radius: 12px;
+  }
+
+  .industry-card-content,
+  .training-card-content {
+    h3,
+    .training-name {
+      font-size: var(--home-card-title-size);
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    p,
+    .training-desc {
+      font-size: var(--home-card-copy-size);
+      line-height: var(--home-card-copy-line);
+      letter-spacing: 0;
+    }
+  }
+
+  .why-choose-us-card-title {
+    font-size: var(--home-card-title-size);
+    line-height: 1.24;
+    letter-spacing: 0;
+  }
+
+  .why-choose-us-card p {
+    font-size: var(--home-card-copy-size);
+    line-height: var(--home-card-copy-line);
+  }
+
+  .single-testi-slider-item p {
+    font-size: 22px;
+    line-height: 1.65;
+  }
+
+  .blog-content h2 {
+    font-size: var(--home-card-title-size);
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  .tv-blog2-area {
+    .tv-section-title-box {
+      margin-bottom: 36px !important;
+    }
+  }
+
+  .our-client-area {
+    .tv-brand-content {
+      padding-top: 0;
+      padding-bottom: 32px;
+      border-top: 0;
+    }
+  }
+
+  .our-client-slider {
+    padding-top: 30px;
+  }
+
+  @media #{$lg} {
+    --home-section-space: 76px;
+    --home-section-bridge-space: 40px;
+    --home-section-tight-bridge-space: 32px;
+    --home-section-title-size: 40px;
+    --home-section-copy-size: 17px;
+    --home-card-title-size: 21px;
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: var(--home-section-space);
+    }
+
+    .solutions-section {
+      .solutions-content-area {
+        min-height: 600px;
+      }
+    }
+  }
+
+  @media #{$md} {
+    --home-section-space: 68px;
+    --home-section-bridge-space: 36px;
+    --home-section-tight-bridge-space: 30px;
+    --home-section-title-size: 38px;
+    --home-section-copy-size: 17px;
+    --home-card-title-size: 21px;
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: var(--home-section-space);
+    }
+
+    .solutions-section {
+      .solutions-content-area {
+        min-height: 580px;
+      }
+    }
+  }
+
+  @media #{$sm, $xs} {
+    --home-section-space: 58px;
+    --home-section-bridge-space: 28px;
+    --home-section-tight-bridge-space: 24px;
+    --home-section-title-size: 30px;
+    --home-section-copy-size: 16px;
+    --home-section-copy-line: 1.7;
+    --home-card-title-size: 21px;
+    --home-card-copy-size: 15px;
+    --home-card-copy-line: 1.7;
+
+    > section,
+    > div {
+      scroll-margin-top: 88px;
+    }
+
+    .tv-about2-area.about-home-two-compact {
+      padding-top: var(--home-section-space);
+    }
+
+    .section-header,
+    .industries-header,
+    .training-heading {
+      margin-bottom: 30px;
+    }
+
+    .tv-section-subtitle,
+    .section-kicker,
+    .industries-subtitle,
+    .training-subtitle {
+      font-size: 15px;
+    }
+
+    .service-premium-section {
+      .section-title {
+        line-height: 1.12;
+      }
+
+      .premium-service-swiper {
+        padding-top: 10px;
+        padding-bottom: 28px;
+      }
+
+      .service-image-wrap {
+        height: 210px;
+      }
+
+      .service-card-title,
+      .service-card-desc {
+        min-height: auto;
+      }
+    }
+
+    .our-client-area {
+      .tv-brand-content {
+        padding-bottom: 26px;
+      }
+    }
+
+    .our-client-slider {
+      padding-top: 24px;
+    }
+
+    .solutions-section {
+      .solutions-tabs-wrap {
+        margin-bottom: 26px;
+      }
+
+      .solutions-content-area {
+        min-height: 520px;
+      }
+
+      .solutions-panel {
+        gap: 22px;
+      }
+
+      .solutions-title {
+        font-size: var(--home-section-title-size);
+      }
+
+      .solutions-desc {
+        margin-bottom: 18px;
+      }
+    }
+
+    .industry-card-content,
+    .training-card-content {
+      h3,
+      .training-name {
+        font-size: 20px;
+      }
+    }
+
+    .single-testi-slider-item p {
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .blog-content h2 {
+      font-size: 22px;
+      line-height: 1.35;
+    }
+
+    .tv-blog2-area {
+      .tv-section-title-box {
+        margin-bottom: 28px !important;
+      }
+    }
+  }
+}

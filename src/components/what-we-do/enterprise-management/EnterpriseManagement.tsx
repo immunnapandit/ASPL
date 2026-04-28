@@ -8,7 +8,7 @@ const pageConfig: ServicePageConfig = {
   focus: 'governance, process control, and business management visibility',
   summary:
     'Support enterprise-scale operations with better governance, connected processes, and management visibility across functions.',
-  image: '/assets/img/service/Enterprises-managements.jpg',
+  image: '/assets/img/service/Enterprises-managements.png',
   highlights: [
     'Governance and operating model design',
     'Process standardization support',

@@ -23,15 +23,19 @@ const settings = {
 const testimonials = [
   {
     quote:
-      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate. The entire process was smooth, well‑coordinated, and hassle‑free. Their responsiveness and attention to detail made the certification journey straightforward and stress‑free. I would confidently recommend AtiSunya to professionals pursuing Microsoft certifications.',
+      'I had an excellent experience with AtiSunya, With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate.',
     name: 'Nishit Parikh, Australia',
     role: 'MCT Certified Trainer',
+    linkedinUrl: 'https://www.linkedin.com/in/nishitpparikh/',
+    avatarUrl: '/assets/img/testimonial/test-avatar-2-2.png',
   },
   {
     quote:
       'AtiSunya training program played a key role in my journey to becoming a Microsoft Certified Trainer. The mentorship and practical approach truly made a difference.',
     name: 'Rizwan Ul Haq, Dubai',
     role: 'MCT Certified Trainer',
+    linkedinUrl: 'https://www.linkedin.com/in/rizulhaq/',
+    avatarUrl: '/assets/img/testimonial/Rizuan.png',
   },
 ] as const;
 
@@ -96,8 +100,15 @@ export default function TestimonialHomeOne() {
                       <p>"{item.quote}"</p>
                       <div className="author-info d-flex align-items-center">
                         <img
-                          src="assets/img/testimonial/testi-avatar-1.png"
+                          src={item.avatarUrl}
                           alt={item.name}
+                          style={{
+                            width: '64px',
+                            height: '64px',
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            flexShrink: 0,
+                          }}
                         />
                         <h5>
                           {item.name}

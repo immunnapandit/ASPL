@@ -21,9 +21,10 @@ const testimonials = [
     linkedinUrl: 'https://www.linkedin.com/in/nishitpparikh/',
     avatarUrl: '/assets/img/testimonial/test-avatar-2-2.png',
     quote:
-      'I had an excellent experience with AtiSunya With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate. The entire process was smooth, well‑coordinated, and hassle‑free. Their responsiveness and attention to detail made the certification journey straightforward and stress‑free. I would confidently recommend AtiSuny to professionals pursuing Microsoft certifications.',
+      'I had an excellent experience with AtiSunya. With their clear guidance and professional support, I successfully received my Microsoft Certified Trainer (MCT) certificate. The entire process was smooth, well-coordinated, and hassle-free. Their responsiveness and attention to detail made the certification journey straightforward and stress-free. I would confidently recommend AtiSunya to professionals pursuing Microsoft certifications.',
   },
 ];
+
 export default function TestimonialHomeTwo() {
   return (
     <div className="tv-testimonial-area2 pt-130 pb-130">
@@ -125,7 +126,7 @@ export default function TestimonialHomeTwo() {
                       </div>
                     </div>
                     <div className="testimonial-quote-mark" aria-hidden="true">
-                      ❞
+                      "
                     </div>
                   </div>
                 </SwiperSlide>

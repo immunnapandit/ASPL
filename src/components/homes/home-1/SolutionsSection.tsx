@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -20,22 +20,6 @@ const solutions = [
     image: '/assets/img/service/Business Central.avif',
   },
   {
-    key: 'Salesforce',
-    title: 'Grow Faster with Salesforce',
-    desc: 'Unify your teams, automate workflows, and deliver personalized customer experiences with Salesforce, helping you build stronger relationships and drive consistent business growth.',
-    button: 'Know More',
-    href: '/solutions/salesforce',
-    image: '/assets/img/service/Salesforce.png',
-  },
-  {
-    key: 'AWS',
-    title: 'Scale Smarter with AWS',
-    desc: 'Build, scale, and secure your applications with AWS, enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
-    button: 'Know More',
-    href: '/solutions/aws',
-    image: '/assets/img/service/saas-concept-collage.jpg',
-  },
-  {
     key: 'Azure',
     title: 'Innovate Faster with Microsoft Azure',
     desc: 'Unlock the full potential of Microsoft Azure to build, scale, and manage applications with speed and security, empowering your business with intelligent cloud capabilities, seamless integration, and continuous innovation.',
@@ -43,59 +27,88 @@ const solutions = [
     href: '/solutions/microsoft-azure',
     image: '/assets/img/service/Azure.png',
   },
+  {
+    key: 'Office 365',
+    title: 'Collaborate Better with Office 365',
+    desc: 'Empower your teams with Office 365 through connected productivity apps, secure collaboration, and cloud-based tools that keep work moving from anywhere.',
+    button: 'Know More',
+    href: '/solutions/office-365',
+    image: '/assets/img/service/Office365.png',
+  },
+  {
+    key: 'AWS',
+    title: 'Scale Smarter with AWS',
+    desc: 'Build, scale, and secure your applications with AWS, enabling faster innovation, reliable performance, and a flexible cloud infrastructure that grows with your business.',
+    button: 'Know More',
+    href: '/solutions/aws',
+    image: '/assets/img/service/aws.png',
+  },
 ] as const;
 
 const panelVariants = {
-  initial: {
+  initial: (direction: number) => ({
     opacity: 0,
-    x: 60,
-  },
+    x: direction > 0 ? 14 : -14,
+    y: 4,
+  }),
   animate: {
     opacity: 1,
     x: 0,
+    y: 0,
   },
-  exit: {
+  exit: (direction: number) => ({
     opacity: 0,
-    x: -60,
-  },
+    x: direction > 0 ? -14 : 14,
+    y: -4,
+  }),
 };
 
 const textVariants = {
-  initial: {
+  initial: (direction: number) => ({
     opacity: 0,
-    x: 40,
-  },
+    x: direction > 0 ? 10 : -10,
+    y: 4,
+  }),
   animate: {
     opacity: 1,
     x: 0,
+    y: 0,
   },
-  exit: {
+  exit: (direction: number) => ({
     opacity: 0,
-    x: -40,
-  },
+    x: direction > 0 ? -10 : 10,
+    y: -4,
+  }),
 };
 
 const imageVariants = {
-  initial: {
+  initial: (direction: number) => ({
     opacity: 0,
-    x: 28,
-    scale: 0.995,
-  },
+    x: direction > 0 ? 12 : -12,
+    y: 6,
+    scale: 0.992,
+  }),
   animate: {
     opacity: 1,
     x: 0,
+    y: 0,
     scale: 1,
   },
-  exit: {
+  exit: (direction: number) => ({
     opacity: 0,
-    x: -28,
-    scale: 0.995,
-  },
+    x: direction > 0 ? -12 : 12,
+    y: -6,
+    scale: 0.992,
+  }),
 };
 
 export default function SolutionsSection() {
   const [activeTab, setActiveTab] = useState(0);
+  const previousTabRef = useRef(0);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const splitCleanupRef = useRef<(() => void) | null>(null);
   const active = solutions[activeTab];
+  const direction = activeTab >= previousTabRef.current ? 1 : -1;
 
   useEffect(() => {
     solutions.forEach((item) => {
@@ -103,6 +116,71 @@ export default function SolutionsSection() {
       image.src = item.image;
     });
   }, []);
+
+  useEffect(() => {
+    previousTabRef.current = activeTab;
+  }, [activeTab]);
+
+  useEffect(() => {
+    const titleElement = titleRef.current;
+
+    if (!titleElement || typeof window === 'undefined') {
+      return;
+    }
+
+    splitCleanupRef.current?.();
+    splitCleanupRef.current = null;
+
+    let isDisposed = false;
+
+    const animateTitle = async () => {
+      const gsapModule = await import('gsap');
+      const SplitTextModule = await import('gsap/SplitText');
+
+      if (isDisposed || !titleRef.current) {
+        return;
+      }
+
+      const gsap = gsapModule.default;
+      const SplitText = SplitTextModule.default;
+
+      gsap.registerPlugin(SplitText);
+
+      const split = new SplitText(titleRef.current, {
+        type: 'lines,words,chars',
+        linesClass: 'tv-spltv-line',
+      });
+
+      gsap.set(titleRef.current, { perspective: 400 });
+      gsap.set(split.chars, { opacity: 0, x: 50 });
+
+      const tween = gsap.to(split.chars, {
+        x: 0,
+        opacity: 1,
+        duration: 0.4,
+        stagger: 0.02,
+        ease: 'power2.out',
+      });
+
+      splitCleanupRef.current = () => {
+        tween.kill();
+        split.revert();
+      };
+    };
+
+    animateTitle();
+
+    return () => {
+      isDisposed = true;
+    };
+  }, [activeTab]);
+
+  useEffect(
+    () => () => {
+      splitCleanupRef.current?.();
+    },
+    [],
+  );
 
   return (
     <section id="solutions" className="solutions-section">
@@ -125,7 +203,18 @@ export default function SolutionsSection() {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                {item.key}
+                {activeTab === index ? (
+                  <motion.span
+                    className="solution-tab-indicator"
+                    layoutId="solution-tab-indicator"
+                    transition={{
+                      type: 'spring',
+                      stiffness: 360,
+                      damping: 32,
+                    }}
+                  />
+                ) : null}
+                <span className="solution-tab-label">{item.key}</span>
               </motion.button>
             ))}
           </div>
@@ -133,40 +222,64 @@ export default function SolutionsSection() {
         </div>
 
         <div className="solutions-content-area">
-          <AnimatePresence initial={false} mode="sync">
+          <AnimatePresence initial={false} mode="sync" custom={direction}>
             <motion.div
               key={active.key}
               className="solutions-panel"
               variants={panelVariants}
+              custom={direction}
               initial="initial"
               animate="animate"
               exit="exit"
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-            >
+              transition={{ duration: 0.16, ease: 'easeOut' }}
+              >
               <motion.div
-                className="solutions-text"
+                className="solutions-text tv-section-title-box"
                 variants={textVariants}
+                custom={direction}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.14, ease: 'easeOut' }}
               >
-                <h2 className="solutions-title">{active.title}</h2>
-                <p className="solutions-desc">{active.desc}</p>
+                <h2
+                  key={`solution-title-${active.key}`}
+                  ref={titleRef}
+                  className="solutions-title tv-section-title tv-spltv-text tv-spltv-in-right"
+                >
+                  {active.title}
+                </h2>
+                <motion.p
+                  className="solutions-desc"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.14, delay: 0.01, ease: 'easeOut' }}
+                >
+                  {active.desc}
+                </motion.p>
 
-                <Link to={active.href} className="solutions-btn">
-                  {active.button}
-                  <span>&rsaquo;</span>
-                </Link>
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.12, delay: 0.02, ease: 'easeOut' }}
+                >
+                  <Link to={active.href} className="solutions-btn">
+                    {active.button}
+                    <span>&rsaquo;</span>
+                  </Link>
+                </motion.div>
               </motion.div>
 
               <motion.div
                 className="solutions-visual"
                 variants={imageVariants}
+                custom={direction}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
               >
                 <div className="visual-circle" />
                 <div className="visual-glow" />

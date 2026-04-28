@@ -15,10 +15,13 @@ const initialFormState: ContactFormState = {
   message: '',
 };
 
+const CONTACT_EMAIL = 'munna@atisunya.co';
+
 export default function ContactArea() {
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const contactApiUrl =
     import.meta.env.VITE_CONTACT_API_URL || 'http://localhost:5001/api/contact';
@@ -33,7 +36,7 @@ export default function ContactArea() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatusMessage('');
-
+    setIsSuccess(false);
     setIsSubmitting(true);
 
     try {
@@ -42,7 +45,12 @@ export default function ContactArea() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          fullName: formState.fullName.trim(),
+          email: formState.email.trim(),
+          service: formState.service.trim(),
+          message: formState.message.trim(),
+        }),
       });
 
       const result = await response.json().catch(() => null);
@@ -51,9 +59,11 @@ export default function ContactArea() {
         throw new Error(result?.error || 'Unable to send your message right now.');
       }
 
-      setStatusMessage('Message sent successfully.');
+      setIsSuccess(true);
+      setStatusMessage(result?.message || 'Message sent successfully.');
       setFormState(initialFormState);
     } catch (error) {
+      setIsSuccess(false);
       setStatusMessage(
         error instanceof Error ? error.message : 'Unable to send your message right now.'
       );
@@ -84,6 +94,7 @@ export default function ContactArea() {
                       will look different.
                     </p>
                   </div>
+
                   <div
                     className="tv-card-box mb-40 wow itfadeUp"
                     data-wow-delay=".2s"
@@ -138,6 +149,7 @@ export default function ContactArea() {
                       </p>
                     </div>
                   </div>
+
                   <div
                     className="tv-card-box mb-40 wow itfadeUp"
                     data-wow-delay=".3s"
@@ -196,7 +208,7 @@ export default function ContactArea() {
                       </svg>
                     </div>
                     <div className="content">
-                      <h4>500+ Happy Clients e</h4>
+                      <h4>500+ Happy Clients</h4>
                       <p>
                         From banking and insurance to wealth the management and
                         security on there
@@ -205,13 +217,21 @@ export default function ContactArea() {
                   </div>
                 </div>
               </div>
+
               <div
                 className="col-xxl-6 col-xl-6 col-lg-6 wow itfadeUp"
                 data-wow-delay=".2s"
               >
                 <div className="tv-contact-right-wrap">
                   <h1 className="text-white">Make an Appointment</h1>
-                  <p>Feel free to contact with us, we don’t spam your email</p>
+                  <p>
+                    Feel free to contact us at{' '}
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="text-white">
+                      {CONTACT_EMAIL}
+                    </a>
+                    , we do not spam your email.
+                  </p>
+
                   <form onSubmit={handleSubmit}>
                     <div className="tv-contact-input-box mb-24">
                       <input
@@ -223,6 +243,7 @@ export default function ContactArea() {
                         required
                       />
                     </div>
+
                     <div className="tv-contact-input-box mb-24">
                       <input
                         type="email"
@@ -233,6 +254,7 @@ export default function ContactArea() {
                         required
                       />
                     </div>
+
                     <div className="tv-contact-input-box mb-24">
                       <input
                         type="text"
@@ -243,6 +265,7 @@ export default function ContactArea() {
                         required
                       />
                     </div>
+
                     <div className="it-contact-textarea-box mb-24">
                       <textarea
                         name="message"
@@ -251,13 +274,19 @@ export default function ContactArea() {
                         value={formState.message}
                         onChange={handleChange}
                         required
-                      ></textarea>
+                      />
                     </div>
+
                     {statusMessage ? (
-                      <p className="mb-24 text-white" role="status">
+                      <p
+                        className="mb-24 text-white"
+                        role="status"
+                        style={{ color: isSuccess ? '#7dffb3' : '#ffb3b3' }}
+                      >
                         {statusMessage}
                       </p>
                     ) : null}
+
                     <button className="tv-btn-primary" type="submit" disabled={isSubmitting}>
                       <span className="btn-wrap">
                         <span className="btn-text1">
@@ -275,6 +304,7 @@ export default function ContactArea() {
           </div>
         </div>
       </div>
+
       <div className="container pb-130">
         <GlobalFootprints />
       </div>
