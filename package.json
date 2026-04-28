@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "backend": "node Server_payment/server.js",
-    "backend:dev": "node --watch Server_payment/server.js",
+    "backend": "node backend/server.js",
+    "backend:dev": "node --watch backend/server.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
