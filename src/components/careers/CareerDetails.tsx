@@ -23,12 +23,14 @@ type DisplayJob = JobOpening | typeof generalApplication;
 
 export default function CareerDetails() {
   const { slug } = useParams();
-  const [job, setJob] = useState<DisplayJob | undefined>(
+  const fallbackJob =
     slug === generalApplication.slug
       ? generalApplication
-      : getFallbackCareerOpeningBySlug(slug)
+      : getFallbackCareerOpeningBySlug(slug);
+  const [job, setJob] = useState<DisplayJob | undefined>(
+    fallbackJob
   );
-  const [isLoading, setIsLoading] = useState(slug !== generalApplication.slug);
+  const [isLoading, setIsLoading] = useState(!fallbackJob && slug !== generalApplication.slug);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -39,6 +41,13 @@ export default function CareerDetails() {
 
   useEffect(() => {
     let isMounted = true;
+    const localJob =
+      slug === generalApplication.slug
+        ? generalApplication
+        : getFallbackCareerOpeningBySlug(slug);
+
+    setJob(localJob);
+    setIsLoading(!localJob && slug !== generalApplication.slug);
 
     fetchCareerOpeningBySlug(slug)
       .then((opening) => {

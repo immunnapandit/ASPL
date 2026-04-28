@@ -10,9 +10,22 @@ type CareerOpeningsResponse = {
   openings?: JobOpening[];
 };
 
+const CAREERS_FETCH_TIMEOUT_MS = 8000;
+
+async function fetchWithTimeout(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), CAREERS_FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 export async function fetchCareerOpenings(): Promise<JobOpening[]> {
   try {
-    const response = await fetch(CAREER_OPENINGS_API_URL);
+    const response = await fetchWithTimeout(CAREER_OPENINGS_API_URL);
     const payload = (await response.json().catch(() => null)) as CareerOpeningsResponse | null;
 
     if (!response.ok || !Array.isArray(payload?.openings)) {

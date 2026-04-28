@@ -24,13 +24,14 @@ const NEWSLETTER_TO_EMAIL = (
   CONTACT_TO_EMAIL
 ).trim();
 const BUNDLED_DATA_DIR = join(__dirname, 'data');
-const CMS_DATA_DIR = (process.env.CMS_DATA_DIR || BUNDLED_DATA_DIR).trim();
-const NEWSLETTER_STORE_FILE = join(CMS_DATA_DIR, 'newsletter-subscribers.jsonl');
-const CAREERS_STORE_FILE = join(CMS_DATA_DIR, 'career-openings.json');
-const CAREER_APPLICATIONS_STORE_FILE = join(CMS_DATA_DIR, 'career-applications.json');
-const CAREERS_SETTINGS_STORE_FILE = join(CMS_DATA_DIR, 'careers-settings.json');
-const BLOG_POSTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-posts.json');
-const BLOG_COMMENTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-comments.json');
+const REQUESTED_CMS_DATA_DIR = (process.env.CMS_DATA_DIR || BUNDLED_DATA_DIR).trim();
+let CMS_DATA_DIR = REQUESTED_CMS_DATA_DIR;
+let NEWSLETTER_STORE_FILE = '';
+let CAREERS_STORE_FILE = '';
+let CAREER_APPLICATIONS_STORE_FILE = '';
+let CAREERS_SETTINGS_STORE_FILE = '';
+let BLOG_POSTS_STORE_FILE = '';
+let BLOG_COMMENTS_STORE_FILE = '';
 const GRAPH_TENANT_ID = (process.env.GRAPH_TENANT_ID || '').trim();
 const GRAPH_CLIENT_ID = (process.env.GRAPH_CLIENT_ID || '').trim();
 const GRAPH_CLIENT_SECRET = process.env.GRAPH_CLIENT_SECRET || '';
@@ -51,6 +52,8 @@ const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
 const CLOUDINARY_FOLDER = (process.env.CLOUDINARY_FOLDER || 'aspl/blog').trim();
 
 let graphTokenCache = null;
+
+setCmsDataDir(CMS_DATA_DIR);
 
 const DEFAULT_CAREER_OPENINGS = [
   {
@@ -2055,7 +2058,7 @@ async function readCareerOpenings() {
 }
 
 async function writeCareerOpenings(openings) {
-  await mkdir(dirname(CAREERS_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await writeFile(CAREERS_STORE_FILE, `${JSON.stringify(openings, null, 2)}\n`, 'utf8');
 }
 
@@ -2099,8 +2102,35 @@ async function readBlogPosts() {
 }
 
 async function writeBlogPosts(posts) {
-  await mkdir(dirname(BLOG_POSTS_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await writeFile(BLOG_POSTS_STORE_FILE, `${JSON.stringify(posts, null, 2)}\n`, 'utf8');
+}
+
+function setCmsDataDir(dataDir) {
+  CMS_DATA_DIR = dataDir;
+  NEWSLETTER_STORE_FILE = join(CMS_DATA_DIR, 'newsletter-subscribers.jsonl');
+  CAREERS_STORE_FILE = join(CMS_DATA_DIR, 'career-openings.json');
+  CAREER_APPLICATIONS_STORE_FILE = join(CMS_DATA_DIR, 'career-applications.json');
+  CAREERS_SETTINGS_STORE_FILE = join(CMS_DATA_DIR, 'careers-settings.json');
+  BLOG_POSTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-posts.json');
+  BLOG_COMMENTS_STORE_FILE = join(CMS_DATA_DIR, 'blog-comments.json');
+}
+
+async function ensureCmsDataDir() {
+  try {
+    await mkdir(CMS_DATA_DIR, { recursive: true });
+  } catch (error) {
+    if (CMS_DATA_DIR === BUNDLED_DATA_DIR) {
+      throw error;
+    }
+
+    console.error(
+      `Unable to use CMS_DATA_DIR "${CMS_DATA_DIR}", falling back to bundled data directory:`,
+      error
+    );
+    setCmsDataDir(BUNDLED_DATA_DIR);
+    await mkdir(CMS_DATA_DIR, { recursive: true });
+  }
 }
 
 function readBundledJsonStore(fileName) {
@@ -2141,7 +2171,7 @@ async function readBlogComments() {
 }
 
 async function writeBlogComments(comments) {
-  await mkdir(dirname(BLOG_COMMENTS_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await writeFile(
     BLOG_COMMENTS_STORE_FILE,
     `${JSON.stringify(comments, null, 2)}\n`,
@@ -2183,7 +2213,7 @@ async function readCareerApplications() {
 }
 
 async function writeCareerApplications(applications) {
-  await mkdir(dirname(CAREER_APPLICATIONS_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await writeFile(
     CAREER_APPLICATIONS_STORE_FILE,
     `${JSON.stringify(applications, null, 2)}\n`,
@@ -2250,7 +2280,7 @@ async function readCareersSettings() {
 }
 
 async function writeCareersSettings(settings) {
-  await mkdir(dirname(CAREERS_SETTINGS_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await writeFile(
     CAREERS_SETTINGS_STORE_FILE,
     `${JSON.stringify(settings, null, 2)}\n`,
@@ -2259,7 +2289,7 @@ async function writeCareersSettings(settings) {
 }
 
 async function persistNewsletterSubscription(subscription) {
-  await mkdir(dirname(NEWSLETTER_STORE_FILE), { recursive: true });
+  await ensureCmsDataDir();
   await appendFile(NEWSLETTER_STORE_FILE, `${JSON.stringify(subscription)}\n`, 'utf8');
 }
 

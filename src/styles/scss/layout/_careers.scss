@@ -462,6 +462,11 @@
 @media #{$md, $sm, $xs} {
   .tv-careers-cta__wrap {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .tv-careers-cta__action {
+    max-width: 420px;
   }
 }
 
@@ -485,10 +490,31 @@
 
   .tv-careers-cta__action {
     padding: 24px;
+    max-width: none;
   }
 
   .tv-careers-cta__points {
     gap: 10px;
+  }
+}
+
+@media #{$xs} {
+  .tv-careers-cta__wrap {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .tv-careers-cta__wrap h3 {
+    font-size: 26px;
+  }
+
+  .tv-careers-cta__action {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .tv-careers-cta__points span {
+    width: 100%;
   }
 }
 
@@ -958,8 +984,10 @@
 }
 
 @media #{$md, $sm, $xs} {
-  .tv-career-detail-layout {
+  .tv-career-detail-layout,
+  .tv-career-detail-layout.is-general-application {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 
@@ -972,6 +1000,42 @@
 
   .tv-career-detail-main h2 {
     font-size: 30px;
+  }
+
+  .tv-job-apply-panel {
+    height: auto;
+  }
+}
+
+@media #{$xs} {
+  .tv-career-detail-area {
+    overflow-x: hidden;
+  }
+
+  .tv-career-detail-main,
+  .tv-career-detail-form,
+  .tv-career-not-found {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .tv-career-detail-main h2 {
+    font-size: 28px;
+  }
+
+  .tv-career-detail-lead {
+    font-size: 16px;
+  }
+
+  .tv-job-details-meta span {
+    max-width: 100%;
+  }
+
+  .tv-application-form .tv-form-group input,
+  .tv-application-form .tv-form-group textarea,
+  .tv-application-form .tv-form-group .tv-file-upload {
+    padding-right: 12px;
+    padding-left: 12px;
   }
 }
 
