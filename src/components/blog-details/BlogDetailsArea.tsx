@@ -1,4 +1,282 @@
-export default function BlogDetailsArea() {
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { type BlogPost } from '../../data/blog-posts';
+import {
+  fetchBlogComments,
+  fetchPublishedBlogPost,
+  fetchPublishedBlogPosts,
+  formatBlogDate,
+  postBlogComment,
+  type BlogComment,
+} from '../../lib/blogs';
+
+type CommentFormState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message: string;
+  website: string;
+};
+
+const initialCommentForm: CommentFormState = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  message: '',
+  website: '',
+};
+
+function renderInlineMarkdown(text: string) {
+  const parts = text.split(/(!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g);
+
+  return parts.map((part, index) => {
+    const imageMatch = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+
+    if (imageMatch) {
+      return (
+        <img
+          key={`${part}-${index}`}
+          className="tv-blog-inline-image"
+          src={imageMatch[2]}
+          alt={imageMatch[1] || 'Blog content'}
+        />
+      );
+    }
+
+    if (linkMatch) {
+      return (
+        <a key={`${part}-${index}`} href={linkMatch[2]} target="_blank" rel="noreferrer">
+          {linkMatch[1]}
+        </a>
+      );
+    }
+
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={`${part}-${index}`}>{part.slice(2, -2)}</strong>;
+    }
+
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={`${part}-${index}`}>{part.slice(1, -1)}</em>;
+    }
+
+    return part;
+  });
+}
+
+function renderRichBlogContent(content: string) {
+  const blocks = content.split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
+
+  return blocks.map((block, blockIndex) => {
+    const imageMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+
+    if (imageMatch) {
+      return (
+        <figure key={blockIndex} className="tv-blog-content-image">
+          <img src={imageMatch[2]} alt={imageMatch[1] || 'Blog content'} />
+          {imageMatch[1] ? <figcaption>{imageMatch[1]}</figcaption> : null}
+        </figure>
+      );
+    }
+
+    if (block.startsWith('## ')) {
+      return <h2 key={blockIndex}>{renderInlineMarkdown(block.slice(3))}</h2>;
+    }
+
+    if (block.startsWith('# ')) {
+      return <h2 key={blockIndex}>{renderInlineMarkdown(block.slice(2))}</h2>;
+    }
+
+    if (block.startsWith('> ')) {
+      return (
+        <div key={blockIndex} className="blockquote">
+          <p>{renderInlineMarkdown(block.replace(/^>\s?/gm, ''))}</p>
+        </div>
+      );
+    }
+
+    const lines = block.split(/\r?\n/);
+    const isList = lines.every((line) => /^[-*]\s+/.test(line.trim()));
+
+    if (isList) {
+      return (
+        <ul key={blockIndex} className="tv-blog-rich-list">
+          {lines.map((line) => (
+            <li key={line}>{renderInlineMarkdown(line.replace(/^[-*]\s+/, ''))}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    return <p key={blockIndex}>{renderInlineMarkdown(block)}</p>;
+  });
+}
+
+type BlogDetailsAreaProps = {
+  previewPost?: BlogPost;
+};
+
+export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
+  const { slug } = useParams();
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
+  const [comments, setComments] = useState<BlogComment[]>([]);
+  const [commentForm, setCommentForm] = useState<CommentFormState>(initialCommentForm);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [commentStatus, setCommentStatus] = useState('');
+  const [commentStatusType, setCommentStatusType] = useState<'success' | 'error'>('success');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isCurrentRequest = true;
+
+    const loadPost = async () => {
+      if (previewPost) {
+        setPost(previewPost);
+        setRecentPosts([]);
+        setComments([]);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!slug) {
+        setPost(null);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setPost(null);
+      setRecentPosts([]);
+      setComments([]);
+
+      try {
+        const postResult = await fetchPublishedBlogPost(slug);
+
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        setPost(postResult);
+        setIsLoading(false);
+
+        const [postsResult, commentsResult] = await Promise.allSettled([
+          fetchPublishedBlogPosts(),
+          fetchBlogComments(slug),
+        ]);
+
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        if (postsResult.status === 'fulfilled') {
+          setRecentPosts(postsResult.value.filter((item) => item.slug !== slug).slice(0, 3));
+        }
+
+        if (commentsResult.status === 'fulfilled') {
+          setComments(commentsResult.value);
+        }
+      } catch {
+        if (!isCurrentRequest) {
+          return;
+        }
+
+        setPost(null);
+        setIsLoading(false);
+      }
+    };
+
+    void loadPost();
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [previewPost, slug]);
+
+  const shareUrl = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return '';
+    }
+
+    return window.location.href;
+  }, [slug]);
+
+  const shareLinks = useMemo(() => {
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedTitle = encodeURIComponent(post?.title || 'ASPL Blog');
+
+    return {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
+    };
+  }, [post?.title, shareUrl]);
+
+  const handleCommentSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!slug) {
+      return;
+    }
+
+    setIsSubmittingComment(true);
+    setCommentStatus('');
+
+    try {
+      const nextComment = await postBlogComment(slug, commentForm);
+      setComments((current) => [nextComment, ...current]);
+      setCommentForm(initialCommentForm);
+      setCommentStatusType('success');
+      setCommentStatus('Your comment has been posted.');
+    } catch (error) {
+      setCommentStatusType('error');
+      setCommentStatus(error instanceof Error ? error.message : 'Unable to post comment.');
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
+
+  const handleShareClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer,width=720,height=560');
+  };
+
+  const updateCommentField = (field: keyof CommentFormState, value: string) => {
+    setCommentForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="tv-blog-area pt-130 pb-130">
+        <div className="container">
+          <div className="tv-blog-empty">
+            <p>Loading blog post...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="tv-blog-area pt-130 pb-130">
+        <div className="container">
+          <div className="tv-blog-empty">
+            <h3>Blog post not found</h3>
+            <Link className="read-more-btn" to="/blog">
+              Back to Blog<i className="fa-solid fa-arrow-right"></i>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="tv-blog-area pt-130 pb-130">
       <div className="container">
@@ -7,178 +285,67 @@ export default function BlogDetailsArea() {
             <div className="tv-blog-list-wrap">
               <div className="tv-blog-details">
                 <div className="tv-blog-details-thumb mb-40">
-                  <img src="assets/img/blog/blog-details-thumb-1.png" alt="" />
+                  <img src={post.imageUrl} alt={post.title} />
                 </div>
                 <div className="tv-blog-details-meta mb-40">
                   <span>
-                    <i className="fa-solid fa-calendar"></i>26 June 2024
+                    <i className="fa-solid fa-calendar"></i>
+                    {formatBlogDate(post.publishedAt)}
                   </span>
                   <span>
-                    <i className="fa-solid fa-bookmark"></i>Technology{' '}
+                    <i className="fa-solid fa-user"></i>
+                    {post.authorName}
                   </span>
                   <span>
-                    <i className="fa-solid fa-message-middle"></i>3 Comments
+                    <i className="fa-solid fa-bookmark"></i>
+                    {post.category}
+                  </span>
+                  <span>
+                    <i className="fa-solid fa-message-middle"></i>
+                    {comments.length} Comments
                   </span>
                 </div>
                 <div className="tv-blog-details-content">
-                  <p>
-                    Consectetur adipisicing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore of magna aliqua. Ut enim ad
-                    minim veniam, made of owl the quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea dolor commodo
-                    consequat. Duis aute irure and dolor in reprehenderit.
-                  </p>
-                  <p>
-                    Use both direct conversations and indirect observations to
-                    get visibility into employees challenges and concerns. Use
-                    every opportunity to make clear to employees that you
-                    support and care them. To facilitate regular conversations
-                    between managers and employees, provide.{' '}
-                  </p>
-                  <div className="tv-blog-details-thumb-img d-flex justify-content-between">
-                    <div>
-                      {' '}
-                      <img
-                        src="assets/img/blog/blog-details-thumb-1-2.png"
-                        alt=""
-                      />
-                    </div>
-                    <div>
-                      {' '}
-                      <img
-                        src="assets/img/blog/blog-details-thumb-1-3.png"
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                  <p>
-                    The third Monday of January is supposed to be the most
-                    depressing day of the year. Whether you believe that or not,
-                    the long nights, cold weather, and trying to keep to new
-                    year resolutions are all probably getting to you a little by
-                    now. To make matters worse many will still be recovering
-                    from their Christmas spending. So how can you make today
-                  </p>
-                  <div className="blockquote">
-                    <svg
-                      width="62"
-                      height="44"
-                      viewBox="0 0 62 44"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M14.5312 0.414062C6.51702 0.414062 0 6.9329 0 14.9453C0 22.2606 5.43154 28.3306 12.4771 29.3311C11.9131 33.4287 10.3486 37.3275 7.90415 40.7085C7.42874 41.3683 7.44654 42.2624 7.9538 42.9009C8.4515 43.5292 9.31635 43.7674 10.0754 43.4473C21.6088 38.6332 29.0625 27.4438 29.0625 14.9453C29.0625 6.9329 22.5455 0.414062 14.5312 0.414062ZM47.4688 0.414062C39.4545 0.414062 32.9375 6.9329 32.9375 14.9453C32.9375 22.2606 38.369 28.3306 45.4146 29.3311C44.8506 33.4287 43.2861 37.3275 40.8417 40.7085C40.3662 41.3683 40.384 42.2624 40.8913 42.9009C41.389 43.5292 42.2538 43.7674 43.0129 43.4473C54.5463 38.6332 62 27.4438 62 14.9453C62 6.9329 55.483 0.414062 47.4688 0.414062Z"
-                        fill="#2B4DFF"
-                      />
-                    </svg>
-                    <p>
-                      We appreciate the consistent high-quality service provided
-                      by their team goes above and beyond concerns promptly
-                    </p>
-                  </div>
-                  <p>
-                    Vast numbers of employees now work remotely, and it’s too
-                    late to develop a set of remote-work policies if you didn’t
-                    already have one. But there are ways to make the remote-work
-                    experience productive and engaging for employees
-                  </p>
-                  <p>
-                    Use both direct conversations and indirect observations to
-                    get visibility into employees’ challenges and concerns. Use
-                    every opportunity to make clear to employees that you
-                    support and care them. To facilitate regular conversations
-                    between managers and employees.
-                  </p>
+                  <h1 className="blog-details-title">{post.title}</h1>
+                  <p className="blog-details-excerpt">{post.excerpt}</p>
+                  {renderRichBlogContent(post.content)}
 
                   <div className="tv-blog-details-btm d-flex align-items-center justify-content-between">
                     <div className="tags">
                       <h6>Tags: </h6>
-                      <a href="#">
-                        <span>Security</span>
-                      </a>
-                      <a href="#">
-                        <span>UI/UX Desing</span>
-                      </a>
-                      <a href="#">
-                        <span>Digital</span>
-                      </a>
+                      {post.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
                     </div>
                     <div className="social-share">
                       <h6>Share: </h6>
-                      <a href="#">
+                      <button type="button" onClick={() => handleShareClick(shareLinks.facebook)} aria-label="Share on Facebook">
                         <i className="fa-brands fa-facebook-f"></i>
-                      </a>
-                      <a href="#">
+                      </button>
+                      <button type="button" onClick={() => handleShareClick(shareLinks.twitter)} aria-label="Share on Twitter">
                         <i className="fa-brands fa-twitter"></i>
-                      </a>
-                      <a href="#">
+                      </button>
+                      <button type="button" onClick={() => handleShareClick(shareLinks.linkedin)} aria-label="Share on LinkedIn">
                         <i className="fa-brands fa-linkedin-in"></i>
-                      </a>
-                      <a href="#">
-                        <i className="fa-brands fa-youtube"></i>
-                      </a>
+                      </button>
+                      <button type="button" onClick={() => handleShareClick(shareLinks.whatsapp)} aria-label="Share on WhatsApp">
+                        <i className="fa-brands fa-whatsapp"></i>
+                      </button>
                     </div>
                   </div>
 
                   <div className="tv-blog-details-post-comment">
-                    <h2>2 Comments </h2>
-                    <ul>
-                      <li>
-                        <div className="single-comment-wrap d-flex ">
-                          <div className="comment-author-img">
-                            <img
-                              src="assets/img/blog/comment-thumb-1.png"
-                              alt=""
-                            />
-                          </div>
-                          <div className="comment-content">
-                            <p>
-                              Neque porro est qui dolorem ipsum quia quaed
-                              inventor veritatis et quasi architecto var sed
-                              efficitur turpis gilla sed sit amet finibus eros.
-                              Lorem Ipsum is simply dummy
-                            </p>
-                            <h5 className="author-name">Ralph Edwards</h5>
-                            <span className="comment-date">Jan 28, 2024</span>
-                            <a href="" className="comment-reply-link">
-                              <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9.16927 16.6693L0.835938 10.0026L9.16927 3.33594V7.5026C13.7716 7.5026 17.5026 11.2336 17.5026 15.8359C17.5026 16.0634 17.4935 16.2887 17.4756 16.5115C16.2197 14.1278 13.7176 12.5026 10.8359 12.5026H9.16927V16.6693Z"
-                                  fill="#2B4DFF"
-                                />
-                              </svg>
-                              Reply
-                            </a>
-                          </div>
-                        </div>
-                        <ul className="children">
-                          <li>
-                            <div className="single-comment-wrap d-flex">
-                              <div className="comment-author-img">
-                                <img
-                                  src="assets/img/blog/comment-thumb-2.png"
-                                  alt=""
-                                />
-                              </div>
+                    <h2>{comments.length} Comments</h2>
+                    {comments.length ? (
+                      <ul>
+                        {comments.map((comment) => (
+                          <li key={comment.id}>
+                            <div className="single-comment-wrap d-flex tv-blog-comment-no-avatar">
                               <div className="comment-content">
-                                <p>
-                                  Neque porro est qui dolorem ipsum quia quaed
-                                  inventor veritatis et quasi architecto var sed
-                                  efficitur turpis gilla sed sit amet finibus
-                                  eros. Lorem Ipsum is simply dummy
-                                </p>
-                                <h5 className="author-name">Ralph Edwards</h5>
-                                <span className="comment-date">
-                                  Jan 28, 2024
-                                </span>
-                                <a href="" className="comment-reply-link">
+                                <p>{comment.message}</p>
+                                <h5 className="author-name">{comment.fullName}</h5>
+                                <span className="comment-date">{formatBlogDate(comment.createdAt)}</span>
+                                <a href="#comment-form" className="comment-reply-link">
                                   <svg
                                     width="20"
                                     height="20"
@@ -196,53 +363,110 @@ export default function BlogDetailsArea() {
                               </div>
                             </div>
                           </li>
-                        </ul>
-                      </li>
-                    </ul>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No comments yet. Be the first to comment.</p>
+                    )}
                   </div>
 
-                  <div className="tv-postbox-comment-form">
+                  <div className="tv-postbox-comment-form" id="comment-form">
                     <h4>Leave A Comment</h4>
-                    <p>
-                      Your email address will not be published. Required fields
-                      are marked *
-                    </p>
-                    <form action="#">
+                    <p>Your email address will not be published. Required fields are marked *</p>
+                    <form onSubmit={handleCommentSubmit}>
                       <div className="row gx-20">
                         <div className="col-sm-6 mb-25">
                           <div className="postbox-review-input">
-                            <input type="text" placeholder="first name" />
+                            <input
+                              type="text"
+                              placeholder="first name"
+                              value={commentForm.firstName}
+                              onChange={(event) =>
+                                updateCommentField('firstName', event.currentTarget.value)
+                              }
+                              required
+                            />
                           </div>
                         </div>
                         <div className="col-sm-6 mb-25">
                           <div className="postbox-review-input">
-                            <input type="text" placeholder="last name" />
+                            <input
+                              type="text"
+                              placeholder="last name"
+                              value={commentForm.lastName}
+                              onChange={(event) =>
+                                updateCommentField('lastName', event.currentTarget.value)
+                              }
+                              required
+                            />
                           </div>
                         </div>
                         <div className="col-sm-6 mb-25">
                           <div className="postbox-review-input">
-                            <input type="email" placeholder="email address" />
+                            <input
+                              type="email"
+                              placeholder="email address"
+                              value={commentForm.email}
+                              onChange={(event) =>
+                                updateCommentField('email', event.currentTarget.value)
+                              }
+                              required
+                            />
                           </div>
                         </div>
                         <div className="col-sm-6 mb-25">
                           <div className="postbox-review-input">
-                            <input type="text" placeholder="Your Number" />
+                            <input
+                              type="text"
+                              placeholder="Your Number"
+                              value={commentForm.phone}
+                              onChange={(event) =>
+                                updateCommentField('phone', event.currentTarget.value)
+                              }
+                            />
                           </div>
+                        </div>
+                        <div className="d-none">
+                          <input
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={commentForm.website}
+                            onChange={(event) =>
+                              updateCommentField('website', event.currentTarget.value)
+                            }
+                          />
                         </div>
                         <div className="col-12 mb-30">
                           <div className="postbox-review-textarea">
-                            <textarea placeholder="write here"></textarea>
+                            <textarea
+                              placeholder="write here"
+                              value={commentForm.message}
+                              onChange={(event) =>
+                                updateCommentField('message', event.currentTarget.value)
+                              }
+                              required
+                            ></textarea>
                           </div>
                         </div>
                       </div>
+                      {commentStatus ? (
+                        <p className={`tv-blog-comment-status is-${commentStatusType}`}>
+                          {commentStatus}
+                        </p>
+                      ) : null}
                       <div className="postbox-review-button">
                         <button
                           type="submit"
                           className="tv-btn-primary d-none d-md-block"
+                          disabled={isSubmittingComment}
                         >
                           <span className="btn-wrap">
-                            <span className="btn-text1">Post Comment</span>
-                            <span className="btn-text2">Post Comment</span>
+                            <span className="btn-text1">
+                              {isSubmittingComment ? 'Posting...' : 'Post Comment'}
+                            </span>
+                            <span className="btn-text2">
+                              {isSubmittingComment ? 'Posting...' : 'Post Comment'}
+                            </span>
                           </span>
                         </button>
                       </div>
@@ -254,11 +478,7 @@ export default function BlogDetailsArea() {
           </div>
           <div className="col-xl-4 col-lg-4 col-12">
             <div className="tv-sidebar-area">
-              <div
-                className="tv-widget widget mb-30 wow itfadeUp"
-                data-wow-duratoin=".9s"
-                data-wow-delay=".3s"
-              >
+              <div className="tv-widget widget mb-30">
                 <h4>Search Here</h4>
                 <div className="widget-search-form">
                   <input type="search" placeholder="search" />
@@ -267,98 +487,45 @@ export default function BlogDetailsArea() {
                   </button>
                 </div>
               </div>
-              <div
-                className="tv-widget widget mb-30  wow-itfadeUp"
-                data-wow-duratoin=".9s"
-                data-wow-delay=".3s"
-              >
+              <div className="tv-widget widget mb-30">
+                <h4>Recent Post</h4>
+                {recentPosts.length ? (
+                  recentPosts.map((item) => (
+                    <div key={item.id} className="widget-latest-post d-flex">
+                      <div className="widget-thumb">
+                        <img src={item.imageUrl} alt={item.title} />
+                      </div>
+                      <div className="widget-content">
+                        <h6>
+                          <Link to={`/blog/${item.slug}`}>{item.title}</Link>
+                        </h6>
+                        <p>{formatBlogDate(item.publishedAt)}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No other posts published yet.</p>
+                )}
+              </div>
+              <div className="tv-widget widget mb-30">
                 <h4>Categories</h4>
                 <ul>
                   <li className="cat-item">
-                    <a href="">Technology</a>
-                    (03)
-                  </li>
-                  <li className="cat-item">
-                    <a href="">Apps Development </a>
+                    <span>{post.category}</span>
                     (01)
-                  </li>
-                  <li className="cat-item">
-                    <a href="">Business</a>
-                    (05)
-                  </li>
-                  <li className="cat-item">
-                    <a href="">Social Marketing</a>
-                    (02)
-                  </li>
-                  <li className="cat-item">
-                    <a href="">Business Intelligence</a>
-                    (04)
                   </li>
                 </ul>
               </div>
-              <div
-                className="tv-widget widget mb-30  wow itfadeUp"
-                data-wow-duratoin=".9s"
-                data-wow-delay=".3s"
-              >
-                <h4>Recent Post</h4>
-                <div className="widget-latest-post d-flex">
-                  <div className="widget-thumb">
-                    <img src="assets/img/blog/blog-grid-1-1.png" alt="" />
-                  </div>
-                  <div className="widget-content">
-                    <h6>
-                      <a href="blog-details.html">
-                        Boost your startup business with our digital agency
-                      </a>
-                    </h6>
-                    <p>26 June 2024</p>
+              {post.tags.length ? (
+                <div className="tv-widget widget mb-30">
+                  <h4>Tag Cloud</h4>
+                  <div className="tagcloud">
+                    {post.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
                   </div>
                 </div>
-                <div className="widget-latest-post d-flex">
-                  <div className="widget-thumb">
-                    <img src="assets/img/blog/blog-grid-1-2.png" alt="" />
-                  </div>
-                  <div className="widget-content">
-                    <h6>
-                      <a href="blog-details.html">
-                        Boost your startup business with our digital agency
-                      </a>
-                    </h6>
-                    <p>26 June 2024</p>
-                  </div>
-                </div>
-                <div className="widget-latest-post d-flex">
-                  <div className="widget-thumb">
-                    <img src="assets/img/blog/blog-grid-1-3.png" alt="" />
-                  </div>
-                  <div className="widget-content">
-                    <h6>
-                      <a href="blog-details.html">
-                        Boost your startup business with our digital agency
-                      </a>
-                    </h6>
-                    <p>26 June 2024</p>
-                  </div>
-                </div>
-              </div>
-              <div
-                className="tv-widget widget mb-30  wow itfadeUp"
-                data-wow-duratoin=".9s"
-                data-wow-delay=".3s"
-              >
-                <h4>Tag Cloud</h4>
-                <div className="tagcloud">
-                  <a href="#">Brand</a>
-                  <a href="#">Business</a>
-                  <a href="#"> Development</a>
-                  <a href="#"> Marketing</a>
-                  <a href="#">SaaS</a>
-                  <a href="#">Technology</a>
-                  <a href="#">Startup</a>
-                  <a href="#">Services</a>
-                </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>

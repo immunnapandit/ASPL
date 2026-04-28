@@ -1,11 +1,9 @@
 {
-  "name": "aspl-razorpay-backend",
+  "name": "aspl-contact-backend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "dependencies": {
-    "nodemailer": "^8.0.5"
-  },
+  "dependencies": {},
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"

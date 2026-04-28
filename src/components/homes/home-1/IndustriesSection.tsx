@@ -7,6 +7,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
 import { industryPages } from "../../../data/industry-pages";
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from "../../../lib/cloudinary";
 import "swiper/css";
 import "swiper/css/navigation";
 import "../../../styles/scss/layout/_industry.scss";
@@ -94,7 +98,13 @@ export default function IndustriesSection() {
                     className="industry-card-image"
                     aria-label={`Open ${item.title} industry page`}
                   >
-                    <img src={item.image} alt={item.title} />
+                    <img
+                      src={getCloudinaryAssetUrl(
+                        item.image,
+                        CLOUDINARY_TRANSFORMS.card,
+                      )}
+                      alt={item.title}
+                    />
                   </Link>
 
                   <div className="industry-card-content">
