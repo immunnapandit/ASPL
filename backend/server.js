@@ -29,10 +29,20 @@ let newsletterStoreFile;
 setDataStorePaths(dataDir);
 
 const PORT = Number(process.env.PORT || 5001);
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-const ALLOWED_ORIGINS = FRONTEND_URL.split(',')
+const DEFAULT_ALLOWED_ORIGINS = [
+  'https://www.atisunya.co',
+  'https://atisunya.co',
+  'https://aspl.vercel.app',
+  'http://localhost:5173',
+];
+const FRONTEND_URL = process.env.FRONTEND_URL || '';
+const ALLOWED_ORIGINS = [
+  ...FRONTEND_URL.split(','),
+  ...DEFAULT_ALLOWED_ORIGINS,
+]
   .map((origin) => origin.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .filter((origin, index, origins) => origins.indexOf(origin) === index);
 
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
