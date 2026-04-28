@@ -386,7 +386,7 @@ export default function BecomeMct() {
                   </div>
                   <div>
                     <span>Website</span>
-                    <strong>atisunya.com</strong>
+                    <strong>atisunya.co</strong>
                   </div>
                 </div>
               </motion.div>
