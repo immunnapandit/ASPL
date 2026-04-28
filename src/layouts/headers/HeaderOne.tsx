@@ -116,6 +116,15 @@ export default function HeaderOne() {
                 <div className="col-xxl-3 col-xl-3 col-6">
                   <div className="tv-header-right-action d-flex justify-content-end align-items-center">
                     <Link
+                      to="/pay-now"
+                      className="tv-btn-primary d-none d-md-block"
+                    >
+                      <span className="btn-wrap">
+                        <span className="btn-text1">Pay Now</span>
+                        <span className="btn-text2">Pay Now</span>
+                      </span>
+                    </Link>
+                    <Link
                       to="/contact"
                       className="tv-btn-primary d-none d-md-block"
                     >

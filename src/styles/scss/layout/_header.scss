@@ -200,6 +200,17 @@
     }
   }
   &-right-action {
+    gap: 16px;
+
+    .tv-btn-primary {
+      flex: 0 0 auto;
+      white-space: nowrap;
+
+      .btn-wrap {
+        min-width: max-content;
+      }
+    }
+
     & .tv-btn-orange {
       @media #{$xl} {
         font-size: 15px;
@@ -212,6 +223,14 @@
 .tv-header-one {
   .tv-header-top-ptb {
     padding: 8px 0;
+  }
+
+  .tv-header-menu > nav > ul {
+    margin-left: 24px;
+
+    > li {
+      margin: 0 14px;
+    }
   }
 
   .tv-header-area.header-style-1 {
