@@ -234,13 +234,13 @@ function buildApiUrl(explicitUrl: string | undefined, path: string) {
       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     if (isLocalhost) {
-      return `http://localhost:5002${normalizedPath}`;
+      return `http://localhost:5001${normalizedPath}`;
     }
 
     return `${window.location.origin}${normalizedPath}`;
   }
 
-  return `http://localhost:5002${normalizedPath}`;
+  return `http://localhost:5001${normalizedPath}`;
 }
 
 function loadRazorpayScript() {

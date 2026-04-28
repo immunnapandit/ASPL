@@ -14,6 +14,9 @@ const envPaths = [
   join(__dirname, '..', '.env.local'),
   join(__dirname, '..', '.env'),
 ];
+
+loadEnvFiles(envPaths);
+
 const dataDir = normalizeDataDir(process.env.CMS_DATA_DIR);
 const paymentsFile = join(dataDir, 'payments.json');
 const careerOpeningsFile = join(dataDir, 'career-openings.json');
@@ -22,9 +25,6 @@ const careersSettingsFile = join(dataDir, 'careers-settings.json');
 const blogPostsFile = join(dataDir, 'blog-posts.json');
 const blogCommentsFile = join(dataDir, 'blog-comments.json');
 const newsletterStoreFile = join(dataDir, 'newsletter-subscribers.jsonl');
-
-loadEnvFiles(envPaths);
-ensureDataStore();
 
 const PORT = Number(process.env.PORT || 5001);
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -239,6 +239,8 @@ const DEFAULT_CAREERS_SETTINGS = {
 let contactTransporter = null;
 let contactTransporterVerified = false;
 const exchangeRateCache = new Map();
+
+ensureDataStore();
 
 const server = BunLikeServe({
   port: PORT,
