@@ -6,6 +6,10 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from "../../../lib/cloudinary";
 import "../../../styles/scss/layout/_trainings.scss";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -130,7 +134,14 @@ export default function TrainingsSection() {
                     className="training-card-image"
                     aria-label={`Open ${item.title} training page`}
                   >
-                    <img src={item.logo} alt={item.title} className="training-logo" />
+                    <img
+                      src={getCloudinaryAssetUrl(
+                        item.logo,
+                        CLOUDINARY_TRANSFORMS.logo,
+                      )}
+                      alt={item.title}
+                      className="training-logo"
+                    />
                   </Link>
 
                   <div className="training-card-content">

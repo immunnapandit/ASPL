@@ -9,7 +9,7 @@ export default function BlogGrid() {
     <Wrapper>
       <HeaderOne />
       <main>
-        <Breadcrumb title="Blog Grid" subtitle="Blog Grid" />
+        <Breadcrumb title="Blog" subtitle="Blog" />
         <BlogGridArea />
       </main>
       <FooterOne />

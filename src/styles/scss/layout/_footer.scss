@@ -505,6 +505,11 @@
   transform: translateY(-50%);
   padding: 6px 20px;
   border-radius: 10px 0 10px 0;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
 }
 
 .tv-footer-top-form input {
@@ -524,6 +529,31 @@
 
 .tv-footer-top-form .tv-btn-orange::after {
   border-radius: 10px 0 10px 0;
+}
+
+.tv-newsletter-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tv-newsletter-form-message {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  color: var(--tv-common-white);
+
+  &.is-error {
+    color: #ffe0e0;
+  }
+
+  &.is-success {
+    color: #f4fff0;
+  }
 }
 
 .tv-footer-widget-social {

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="520" viewBox="0 0 620 520" fill="none">
+  <rect width="620" height="520" fill="white"/>
+  <g opacity=".45">
+    <path d="M110 168H250M370 168H510M110 260H250M370 260H510M110 352H250M370 352H510" stroke="#CFE0FF" stroke-width="3"/>
+    <path d="M250 104V416M310 104V416M370 104V416" stroke="#CFE0FF" stroke-width="3"/>
+    <circle cx="110" cy="168" r="5" fill="#2B4DFF"/>
+    <circle cx="510" cy="260" r="5" fill="#2B4DFF"/>
+    <circle cx="250" cy="416" r="5" fill="#2B4DFF"/>
+  </g>
+  <g filter="url(#card)">
+    <rect x="56" y="176" width="276" height="66" rx="12" fill="white"/>
+    <text x="78" y="216" fill="#0A165E" font-family="Inter, Arial" font-size="19" font-weight="700">Real-Time Analytics</text>
+  </g>
+  <g filter="url(#card)">
+    <rect x="322" y="342" width="252" height="66" rx="12" fill="white"/>
+    <text x="352" y="382" fill="#0A165E" font-family="Inter, Arial" font-size="19" font-weight="700">Smart Data Insight</text>
+  </g>
+  <g filter="url(#glow)">
+    <rect x="250" y="230" width="120" height="120" rx="34" fill="url(#ai)"/>
+    <circle cx="292" cy="282" r="8" fill="white"/>
+    <circle cx="328" cy="282" r="8" fill="white"/>
+    <path d="M282 316C300 328 320 328 338 316" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <text x="280" y="382" fill="#0A165E" font-family="Inter, Arial" font-size="20" font-weight="800">Copilot</text>
+  <defs>
+    <linearGradient id="ai" x1="250" y1="230" x2="370" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A165E"/>
+      <stop offset=".55" stop-color="#2B4DFF"/>
+      <stop offset="1" stop-color="#5AB8FF"/>
+    </linearGradient>
+    <filter id="card" x="30" y="150" width="570" height="286" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0A165E" flood-opacity=".12"/>
+    </filter>
+    <filter id="glow" x="214" y="194" width="192" height="192" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#2B4DFF" flood-opacity=".28"/>
+    </filter>
+  </defs>
+</svg>

@@ -6,16 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "backend": "node Server_payment/server.js",
-    "backend:dev": "node --watch Server_payment/server.js",
+    "backend": "node backend/server.js",
+    "backend:dev": "node --watch backend/server.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "cloudinary": "^2.9.0",
     "framer-motion": "^12.35.2",
     "gsap": "^3.14.2",
     "lucide-react": "^0.577.0",
-    "nodemailer": "^8.0.5",
     "react": "^19.2.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.0",

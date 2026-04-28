@@ -9,7 +9,7 @@ export default function BlogDetails() {
     <Wrapper>
       <HeaderOne />
       <main>
-        <Breadcrumb title="Blog Details" subtitle="Blog Details" />
+        <Breadcrumb title="Blog Details" subtitle="Blog" />
         <BlogDetailsArea />
       </main>
       <FooterOne />

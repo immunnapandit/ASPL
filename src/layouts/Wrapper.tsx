@@ -24,7 +24,7 @@ export default function Wrapper({ children }: WrapperProps) {
       clearTimeout(timer);
       cleanupAnimation?.();
     };
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!location.hash) {

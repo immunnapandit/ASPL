@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import {
+  CLOUDINARY_TRANSFORMS,
+  getCloudinaryAssetUrl,
+} from '../../../lib/cloudinary';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -173,7 +177,10 @@ export default function ServiceHomeTwo() {
                   <div className="service-image-wrap">
                     <div className="image-frame" />
                     <img
-                      src={item.img}
+                      src={getCloudinaryAssetUrl(
+                        item.img,
+                        CLOUDINARY_TRANSFORMS.logo,
+                      )}
                       alt={item.title}
                       className="service-image"
                     />
