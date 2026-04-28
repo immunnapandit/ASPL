@@ -17,14 +17,16 @@ const envPaths = [
 
 loadEnvFiles(envPaths);
 
-const dataDir = normalizeDataDir(process.env.CMS_DATA_DIR);
-const paymentsFile = join(dataDir, 'payments.json');
-const careerOpeningsFile = join(dataDir, 'career-openings.json');
-const careerApplicationsFile = join(dataDir, 'career-applications.json');
-const careersSettingsFile = join(dataDir, 'careers-settings.json');
-const blogPostsFile = join(dataDir, 'blog-posts.json');
-const blogCommentsFile = join(dataDir, 'blog-comments.json');
-const newsletterStoreFile = join(dataDir, 'newsletter-subscribers.jsonl');
+let dataDir = normalizeDataDir(process.env.CMS_DATA_DIR);
+let paymentsFile;
+let careerOpeningsFile;
+let careerApplicationsFile;
+let careersSettingsFile;
+let blogPostsFile;
+let blogCommentsFile;
+let newsletterStoreFile;
+
+setDataStorePaths(dataDir);
 
 const PORT = Number(process.env.PORT || 5001);
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -1287,7 +1289,27 @@ function withCors(req, response) {
 
 function ensureDataStore() {
   if (!existsSync(dataDir)) {
-    mkdirSync(dataDir, { recursive: true });
+    try {
+      mkdirSync(dataDir, { recursive: true });
+    } catch (error) {
+      if (!isPermissionError(error)) {
+        throw error;
+      }
+
+      const fallbackDataDir = join(__dirname, 'data');
+
+      if (dataDir === fallbackDataDir) {
+        throw error;
+      }
+
+      console.warn(
+        `Cannot write to CMS_DATA_DIR "${dataDir}". Falling back to "${fallbackDataDir}".`
+      );
+
+      dataDir = fallbackDataDir;
+      setDataStorePaths(dataDir);
+      mkdirSync(dataDir, { recursive: true });
+    }
   }
 
   ensureJsonFile(paymentsFile, { payments: [] });
@@ -1300,6 +1322,16 @@ function ensureDataStore() {
   if (!existsSync(newsletterStoreFile)) {
     writeFileSync(newsletterStoreFile, '', 'utf8');
   }
+}
+
+function setDataStorePaths(directory) {
+  paymentsFile = join(directory, 'payments.json');
+  careerOpeningsFile = join(directory, 'career-openings.json');
+  careerApplicationsFile = join(directory, 'career-applications.json');
+  careersSettingsFile = join(directory, 'careers-settings.json');
+  blogPostsFile = join(directory, 'blog-posts.json');
+  blogCommentsFile = join(directory, 'blog-comments.json');
+  newsletterStoreFile = join(directory, 'newsletter-subscribers.jsonl');
 }
 
 function readPayments() {
@@ -1408,6 +1440,10 @@ function parseCsvList(value, fallback = []) {
 
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function isPermissionError(error) {
+  return error?.code === 'EACCES' || error?.code === 'EPERM';
 }
 
 function normalizePaymentMethod(value) {
