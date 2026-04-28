@@ -21,6 +21,9 @@ import {
 } from 'lucide-react';
 import '../../styles/scss/layout/_pay-now.scss';
 
+const PRODUCTION_API_BASE_URL = 'https://aspl-server-1.onrender.com';
+const DEVELOPMENT_API_BASE_URL = 'http://localhost:5001';
+
 type PaymentMethod = 'card' | 'upi' | 'netbanking';
 
 type PaymentFormState = {
@@ -234,13 +237,13 @@ function buildApiUrl(explicitUrl: string | undefined, path: string) {
       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     if (isLocalhost) {
-      return `http://localhost:5001${normalizedPath}`;
+      return `${DEVELOPMENT_API_BASE_URL}${normalizedPath}`;
     }
 
-    return `${window.location.origin}${normalizedPath}`;
+    return `${PRODUCTION_API_BASE_URL}${normalizedPath}`;
   }
 
-  return `http://localhost:5001${normalizedPath}`;
+  return `${PRODUCTION_API_BASE_URL}${normalizedPath}`;
 }
 
 function loadRazorpayScript() {
