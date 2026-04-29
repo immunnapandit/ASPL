@@ -94,6 +94,64 @@ function slugify(value: string) {
     .slice(0, 100);
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function convertInlineMarkdownToHtml(value: string) {
+  return escapeHtml(value)
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+function markdownToEditorHtml(content: string) {
+  if (/<\/?[a-z][\s\S]*>/i.test(content)) {
+    return content;
+  }
+
+  return content
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      const imageMatch = block.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (imageMatch) {
+        return `<figure><img src="${escapeHtml(imageMatch[2])}" alt="${escapeHtml(imageMatch[1])}" /></figure>`;
+      }
+
+      if (block.startsWith('## ')) {
+        return `<h2>${convertInlineMarkdownToHtml(block.slice(3))}</h2>`;
+      }
+
+      if (block.startsWith('# ')) {
+        return `<h2>${convertInlineMarkdownToHtml(block.slice(2))}</h2>`;
+      }
+
+      if (block.startsWith('> ')) {
+        return `<blockquote>${convertInlineMarkdownToHtml(block.replace(/^>\s?/gm, ''))}</blockquote>`;
+      }
+
+      const lines = block.split(/\r?\n/);
+      const isList = lines.every((line) => /^[-*]\s+/.test(line.trim()));
+
+      if (isList) {
+        return `<ul>${lines
+          .map((line) => `<li>${convertInlineMarkdownToHtml(line.replace(/^[-*]\s+/, ''))}</li>`)
+          .join('')}</ul>`;
+      }
+
+      return `<p>${convertInlineMarkdownToHtml(block).replace(/\r?\n/g, '<br />')}</p>`;
+    })
+    .join('');
+}
+
 function textToTags(value: string) {
   return value
     .split(',')
@@ -126,7 +184,7 @@ function toFormState(post?: BlogPost): BlogForm {
     title: post.title,
     slug: post.slug,
     excerpt: post.excerpt,
-    content: post.content,
+    content: markdownToEditorHtml(post.content),
     category: post.category,
     tagsText: post.tags.join(', '),
     authorName: post.authorName,
@@ -139,7 +197,7 @@ function toFormState(post?: BlogPost): BlogForm {
 }
 
 export default function BlogAdmin() {
-  const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const contentEditorRef = useRef<HTMLDivElement | null>(null);
   const inlineImageInputRef = useRef<HTMLInputElement | null>(null);
   const [token, setToken] = useState('');
   const [tokenInput, setTokenInput] = useState('');
@@ -190,6 +248,15 @@ export default function BlogAdmin() {
       void loadPosts(token);
     }
   }, [token]);
+
+  useEffect(() => {
+    const editor = contentEditorRef.current;
+    if (!editor || editor.innerHTML === formState.content) {
+      return;
+    }
+
+    editor.innerHTML = formState.content;
+  }, [formState.content]);
 
   useEffect(() => {
     if (editWindowPostId) {
@@ -353,56 +420,41 @@ export default function BlogAdmin() {
     });
   };
 
-  const insertContentMarkup = (
-    prefix: string,
-    suffix = prefix,
-    placeholder = 'text'
-  ) => {
-    const textarea = contentTextareaRef.current;
-    const content = formState.content;
-    const selectionStart = textarea?.selectionStart ?? content.length;
-    const selectionEnd = textarea?.selectionEnd ?? content.length;
-    const selectedText = content.slice(selectionStart, selectionEnd) || placeholder;
-    const nextText = `${prefix}${selectedText}${suffix}`;
-    const nextContent = `${content.slice(0, selectionStart)}${nextText}${content.slice(selectionEnd)}`;
-
+  const syncEditorContent = () => {
+    const editor = contentEditorRef.current;
     setFormState((current) => ({
       ...current,
-      content: nextContent,
+      content: editor?.innerHTML || '',
     }));
-
-    window.requestAnimationFrame(() => {
-      textarea?.focus();
-      textarea?.setSelectionRange(
-        selectionStart + prefix.length,
-        selectionStart + prefix.length + selectedText.length
-      );
-    });
   };
 
-  const insertListMarkup = () => {
-    const textarea = contentTextareaRef.current;
-    const content = formState.content;
-    const selectionStart = textarea?.selectionStart ?? content.length;
-    const selectionEnd = textarea?.selectionEnd ?? content.length;
-    const selectedText = content.slice(selectionStart, selectionEnd);
-    const nextText = selectedText
-      ? selectedText
-          .split(/\r?\n/)
-          .map((line) => `- ${line.replace(/^[-*]\s+/, '')}`)
-          .join('\n')
-      : '- First point\n- Second point';
-    const nextContent = `${content.slice(0, selectionStart)}${nextText}${content.slice(selectionEnd)}`;
+  const focusEditor = () => {
+    contentEditorRef.current?.focus();
+  };
 
-    setFormState((current) => ({
-      ...current,
-      content: nextContent,
-    }));
+  const runEditorCommand = (command: string, value?: string) => {
+    focusEditor();
+    document.execCommand(command, false, value);
+    syncEditorContent();
+  };
 
-    window.requestAnimationFrame(() => {
-      textarea?.focus();
-      textarea?.setSelectionRange(selectionStart, selectionStart + nextText.length);
-    });
+  const applyHeading = () => {
+    runEditorCommand('formatBlock', 'H2');
+  };
+
+  const applyLink = () => {
+    const url = window.prompt('Enter link URL');
+    if (!url?.trim()) {
+      return;
+    }
+
+    runEditorCommand('createLink', url.trim());
+  };
+
+  const insertInlineImage = (url: string, alt = 'Blog image') => {
+    focusEditor();
+    document.execCommand('insertHTML', false, `<figure><img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" /></figure><p><br></p>`);
+    syncEditorContent();
   };
 
   const uploadImageFile = async (imageFile: File) => {
@@ -467,7 +519,7 @@ export default function BlogAdmin() {
       const image = await uploadImageFile(imageFile);
       if (!image) return;
 
-      insertContentMarkup('\n\n![Image](', ')\n\n', image.url);
+      insertInlineImage(image.url);
       setStatus('success', 'Inline image uploaded and inserted into content.');
     } catch (error) {
       setStatus('error', error instanceof Error ? error.message : 'Unable to upload inline image.');
@@ -581,9 +633,16 @@ export default function BlogAdmin() {
 
   const handleSave = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const editorContent = contentEditorRef.current?.innerHTML || formState.content;
+    const editorText = contentEditorRef.current?.textContent?.trim() || '';
 
     if (!formState.imageUrl.trim()) {
       setStatus('error', 'Please upload a featured image before publishing this post.');
+      return;
+    }
+
+    if (!editorText && !editorContent.includes('<img')) {
+      setStatus('error', 'Please write the blog content before publishing this post.');
       return;
     }
 
@@ -591,7 +650,7 @@ export default function BlogAdmin() {
       title: formState.title.trim(),
       slug: slugify(formState.slug || formState.title),
       excerpt: formState.excerpt.trim(),
-      content: formState.content.trim(),
+      content: editorContent.trim(),
       category: formState.category.trim(),
       tags: textToTags(formState.tagsText),
       authorName: formState.authorName.trim(),
@@ -691,7 +750,7 @@ export default function BlogAdmin() {
       slug: formState.slug || slugify(formState.title) || 'draft-preview',
       title: formState.title || 'Untitled draft',
       excerpt: formState.excerpt,
-      content: formState.content,
+      content: contentEditorRef.current?.innerHTML || formState.content,
       category: formState.category,
       tags: textToTags(formState.tagsText),
       authorName: formState.authorName || 'Draft author',
@@ -720,37 +779,61 @@ export default function BlogAdmin() {
         <div className="tv-blog-cms-grid">
           <label>
             Title
-            <input name="title" value={formState.title} onChange={handleInputChange} required />
+            <input
+              name="title"
+              value={formState.title}
+              onChange={handleInputChange}
+              placeholder="example: How Dynamics 365 Helps Growing Businesses"
+              required
+            />
+            <span className="tv-blog-field-help">Write the main blog heading shown on the blog page.</span>
           </label>
           <label>
             Slug
-            <input name="slug" value={formState.slug} onChange={handleInputChange} required />
+            <input
+              name="slug"
+              value={formState.slug}
+              onChange={handleInputChange}
+              placeholder="example: microsoft-dynamics-365-training"
+              required
+            />
+            <span className="tv-blog-field-help">
+              This becomes the blog URL. Use small letters, numbers, and hyphens only.
+            </span>
           </label>
         </div>
         <label>
           Excerpt
-          <textarea name="excerpt" value={formState.excerpt} onChange={handleInputChange} rows={3} required />
+          <textarea
+            name="excerpt"
+            value={formState.excerpt}
+            onChange={handleInputChange}
+            rows={3}
+            placeholder="Write a short 1-2 line summary of this blog post."
+            required
+          />
+          <span className="tv-blog-field-help">This appears on blog cards and at the top of the post.</span>
         </label>
         <label>
           Content
-          <div className="tv-blog-editor-shell">
-            <div className="tv-blog-editor-toolbar" aria-label="Blog content formatting">
-              <button type="button" title="Bold" onClick={() => insertContentMarkup('**', '**', 'bold text')}>
+            <div className="tv-blog-editor-shell">
+              <div className="tv-blog-editor-toolbar" aria-label="Blog content formatting">
+              <button type="button" title="Bold" onClick={() => runEditorCommand('bold')}>
                 <Bold size={16} />
               </button>
-              <button type="button" title="Italic" onClick={() => insertContentMarkup('*', '*', 'italic text')}>
+              <button type="button" title="Italic" onClick={() => runEditorCommand('italic')}>
                 <Italic size={16} />
               </button>
-              <button type="button" title="Heading" onClick={() => insertContentMarkup('## ', '', 'Section heading')}>
+              <button type="button" title="Heading" onClick={applyHeading}>
                 <Heading2 size={16} />
               </button>
-              <button type="button" title="List" onClick={insertListMarkup}>
+              <button type="button" title="List" onClick={() => runEditorCommand('insertUnorderedList')}>
                 <List size={16} />
               </button>
-              <button type="button" title="Quote" onClick={() => insertContentMarkup('> ', '', 'Important quote')}>
+              <button type="button" title="Quote" onClick={() => runEditorCommand('formatBlock', 'BLOCKQUOTE')}>
                 <TextQuote size={16} />
               </button>
-              <button type="button" title="Link" onClick={() => insertContentMarkup('[', '](https://example.com)', 'link text')}>
+              <button type="button" title="Link" onClick={applyLink}>
                 <LinkIcon size={16} />
               </button>
               <button type="button" title="Inline image" onClick={() => inlineImageInputRef.current?.click()} disabled={isUploading}>
@@ -765,19 +848,20 @@ export default function BlogAdmin() {
               />
             </div>
             <div className="tv-blog-editor-grid tv-blog-editor-grid--write-only">
-              <textarea
-                ref={contentTextareaRef}
-                name="content"
-                value={formState.content}
-                onChange={handleInputChange}
-                rows={16}
-                placeholder="Write with formatting: **bold**, *italic*, ## heading, - list item, > quote, ![alt](image-url)"
-                required
+              <div
+                ref={contentEditorRef}
+                className="tv-blog-rich-editor"
+                contentEditable
+                data-placeholder="Start writing your blog post..."
+                onInput={syncEditorContent}
+                onBlur={syncEditorContent}
+                role="textbox"
+                aria-label="Blog content"
               />
             </div>
           </div>
           <span className="tv-blog-editor-help">
-            Use toolbar controls for rich content. Inline image uploads go to Cloudinary and are inserted where your cursor is.
+            Select text and use the toolbar for rich formatting. Images are inserted directly into the editor.
           </span>
         </label>
       </div>
@@ -804,20 +888,41 @@ export default function BlogAdmin() {
                 {isUploading ? 'Uploading...' : formState.imageUrl ? 'Replace image' : 'Upload image'}
               </span>
             </span>
+            <span className="tv-blog-field-help">Upload the main image shown on blog cards and the post detail page.</span>
           </label>
         </div>
         <div className="tv-blog-cms-grid">
           <label>
             Author name
-            <input name="authorName" value={formState.authorName} onChange={handleInputChange} required />
+            <input
+              name="authorName"
+              value={formState.authorName}
+              onChange={handleInputChange}
+              placeholder="example: ASPL Team"
+              required
+            />
+            <span className="tv-blog-field-help">Enter the writer or team name shown with this post.</span>
           </label>
           <label>
             Category
-            <input name="category" value={formState.category} onChange={handleInputChange} required />
+            <input
+              name="category"
+              value={formState.category}
+              onChange={handleInputChange}
+              placeholder="example: Technology"
+              required
+            />
+            <span className="tv-blog-field-help">Use one main topic such as Technology, ERP, Cloud, or Training.</span>
           </label>
           <label>
             Tags
-            <input name="tagsText" value={formState.tagsText} onChange={handleInputChange} placeholder="Dynamics 365, ERP, Cloud" />
+            <input
+              name="tagsText"
+              value={formState.tagsText}
+              onChange={handleInputChange}
+              placeholder="example: Dynamics 365, ERP, Cloud"
+            />
+            <span className="tv-blog-field-help">Add multiple tags separated by commas.</span>
           </label>
           <label>
             Status
@@ -825,6 +930,7 @@ export default function BlogAdmin() {
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
+            <span className="tv-blog-field-help">Choose Draft to save privately, or Published to show it on the website.</span>
           </label>
         </div>
       </div>
@@ -836,11 +942,24 @@ export default function BlogAdmin() {
         </div>
         <label>
           SEO title
-          <input name="seoTitle" value={formState.seoTitle} onChange={handleInputChange} />
+          <input
+            name="seoTitle"
+            value={formState.seoTitle}
+            onChange={handleInputChange}
+            placeholder="example: Dynamics 365 Benefits for Growing Businesses"
+          />
+          <span className="tv-blog-field-help">Optional search title. Keep it clear and close to the blog title.</span>
         </label>
         <label>
           SEO description
-          <textarea name="seoDescription" value={formState.seoDescription} onChange={handleInputChange} rows={3} />
+          <textarea
+            name="seoDescription"
+            value={formState.seoDescription}
+            onChange={handleInputChange}
+            rows={3}
+            placeholder="Write a short search-friendly description for Google results."
+          />
+          <span className="tv-blog-field-help">Optional summary for search engines, ideally around 150-160 characters.</span>
         </label>
       </div>
 

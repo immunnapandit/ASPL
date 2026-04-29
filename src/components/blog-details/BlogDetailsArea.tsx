@@ -66,7 +66,91 @@ function renderInlineMarkdown(text: string) {
   });
 }
 
+function hasHtmlContent(content: string) {
+  return /<\/?[a-z][\s\S]*>/i.test(content);
+}
+
+function sanitizeRichHtml(content: string) {
+  if (typeof document === 'undefined') {
+    return '';
+  }
+
+  const template = document.createElement('template');
+  template.innerHTML = content;
+  const allowedTags = new Set([
+    'A',
+    'B',
+    'BLOCKQUOTE',
+    'BR',
+    'EM',
+    'FIGURE',
+    'H2',
+    'H3',
+    'I',
+    'IMG',
+    'LI',
+    'OL',
+    'P',
+    'STRONG',
+    'U',
+    'UL',
+  ]);
+
+  const cleanNode = (node: Node) => {
+    Array.from(node.childNodes).forEach(cleanNode);
+
+    if (!(node instanceof HTMLElement)) {
+      return;
+    }
+
+    if (!allowedTags.has(node.tagName)) {
+      if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') {
+        node.remove();
+        return;
+      }
+
+      node.replaceWith(...Array.from(node.childNodes));
+      return;
+    }
+
+    const href = node instanceof HTMLAnchorElement ? node.getAttribute('href') || '' : '';
+    const src = node instanceof HTMLImageElement ? node.getAttribute('src') || '' : '';
+    const alt = node instanceof HTMLImageElement ? node.getAttribute('alt') || 'Blog content' : '';
+
+    Array.from(node.attributes).forEach((attribute) => {
+      node.removeAttribute(attribute.name);
+    });
+
+    if (node instanceof HTMLAnchorElement) {
+      if (/^(https?:|mailto:|tel:|\/)/i.test(href)) {
+        node.setAttribute('href', href);
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noreferrer');
+      }
+    }
+
+    if (node instanceof HTMLImageElement) {
+      if (/^(https?:|\/|data:image\/)/i.test(src)) {
+        node.setAttribute('src', src);
+        node.setAttribute('alt', alt);
+      }
+    }
+  };
+
+  cleanNode(template.content);
+  return template.innerHTML;
+}
+
 function renderRichBlogContent(content: string) {
+  if (hasHtmlContent(content)) {
+    return (
+      <div
+        className="tv-blog-rendered-content"
+        dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(content) }}
+      />
+    );
+  }
+
   const blocks = content.split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
 
   return blocks.map((block, blockIndex) => {
