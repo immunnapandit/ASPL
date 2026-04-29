@@ -140,19 +140,19 @@ const METHOD_OPTIONS: MethodOption[] = [
   {
     id: 'card',
     label: 'Card',
-    helper: 'Debit / Credit - Razorpay',
+    helper: 'Debit or credit card via Razorpay',
     icon: CreditCard,
   },
   {
     id: 'netbanking',
     label: 'Bank Transfer',
-    helper: 'Beneficiary bank details for transfer',
+    helper: 'Beneficiary account details for transfer',
     icon: Landmark,
   },
   {
     id: 'upi',
     label: 'QR / UPI',
-    helper: 'AtiSunya QR or UPI app payment',
+    helper: 'Pay with your UPI app or shared QR',
     icon: QrCode,
   },
 ];
@@ -572,7 +572,7 @@ function validateFormState(formState: PaymentFormState, supportedCurrencies: str
   }
 
   if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-    errors.phone = 'Enter a valid phone number.';
+    errors.phone = 'Enter a valid mobile number with country code.';
   }
 
   if (!formState.addressLine1.trim()) {
@@ -652,7 +652,9 @@ function hasBankFallback(bankDetails: BankDetails | null) {
       bankDetails?.accountNumber ||
       bankDetails?.ifsc ||
       bankDetails?.bankName ||
-      bankDetails?.branch
+      bankDetails?.branch ||
+      bankDetails?.micr ||
+      bankDetails?.swiftCode
   );
 }
 
@@ -697,7 +699,7 @@ function getCheckoutDescription({
 }) {
   if (paymentMethod === 'card') {
     return isOnlineCheckoutReady
-      ? 'Razorpay will open a secure card checkout with your details prefilled.'
+      ? 'Razorpay will open a secure card checkout. OTP and 3D Secure approval are handled by your bank.'
       : 'Card payments need live Razorpay keys on the backend before the checkout can open.';
   }
 
@@ -768,6 +770,7 @@ export default function PayNow() {
   const [lastPayment, setLastPayment] = useState<VerifiedPayment | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isQrPreviewOpen, setIsQrPreviewOpen] = useState(false);
+  const [isTaxDetailsOpen, setIsTaxDetailsOpen] = useState(false);
   const [exchangeRates, setExchangeRates] = useState<ExchangeRateSnapshot | null>(null);
   const [isLoadingExchangeRates, setIsLoadingExchangeRates] = useState(false);
   const [exchangeRateError, setExchangeRateError] = useState<string | null>(null);
@@ -943,6 +946,16 @@ export default function PayNow() {
     : isOnlineCheckoutReady
       ? 'Razorpay popup'
       : 'Guided fallback';
+  const isCardCheckout = formState.paymentMethod === 'card';
+  const phoneFieldLabel = isCardCheckout
+    ? 'Mobile linked with card / bank OTP *'
+    : 'Mobile number *';
+  const phoneFieldHelper = isCardCheckout
+    ? 'For card payments, OTP is always sent by the issuing bank to the mobile number linked with the card. Razorpay cannot redirect it to another number.'
+    : 'Use an active number for payment updates and support.';
+  const checkoutProfileNote = isCardCheckout
+    ? 'If Razorpay shows a remembered checkout number, that is only the checkout profile. Card OTP still goes to the card-linked mobile number.'
+    : 'The selected payment method will continue through the secure hosted flow or the fallback shown on this page.';
 
   useEffect(() => {
     let isMounted = true;
@@ -1019,6 +1032,12 @@ export default function PayNow() {
       }));
     }
   }, [formState.currency, formState.paymentMethod]);
+
+  useEffect(() => {
+    if (fieldErrors.pan || fieldErrors.gstn) {
+      setIsTaxDetailsOpen(true);
+    }
+  }, [fieldErrors.gstn, fieldErrors.pan]);
 
   useEffect(() => {
     if (!supportedQuoteCurrencies.length) {
@@ -1428,6 +1447,13 @@ export default function PayNow() {
 
       const order = (await orderResponse.json()) as RazorpayOrderResponse;
       const RazorpayConstructor = window.Razorpay;
+      const razorpayPrefill = {
+        name: customerFullName,
+        email: formState.email.trim(),
+        ...(formState.paymentMethod !== 'card' && formState.phone.trim()
+          ? { contact: formState.phone.trim() }
+          : {}),
+      };
 
       const razorpay = new RazorpayConstructor({
         key: gatewayConfig.keyId,
@@ -1438,11 +1464,7 @@ export default function PayNow() {
           gatewayConfig.merchantDescription || order.merchantDescription || 'Secure Payment',
         image: gatewayConfig.logoUrl,
         order_id: order.id,
-        prefill: {
-          name: customerFullName,
-          email: formState.email.trim(),
-          contact: formState.phone.trim(),
-        },
+        prefill: razorpayPrefill,
         notes: {
           paymentMethod: formState.paymentMethod,
           course: gatewayConfig.defaultCourse,
@@ -1542,8 +1564,25 @@ export default function PayNow() {
         <div className="pn-wrap">
           <div className="pn-head">
             <span className="pn-badge">Secure Payment</span>
-            <h1>Complete your payment</h1>
-            <p>Simple, secure, and direct payment for the selected program.</p>
+            <h1>Make your payment in one step</h1>
+            <p>
+              Enter the required billing details once, choose your payment method, and
+              continue through Razorpay or the available fallback.
+            </p>
+            <div className="pn-head-meta">
+              <div className="pn-head-stat">
+                <span>Program</span>
+                <strong>{gatewayConfig.defaultCourse}</strong>
+              </div>
+              <div className="pn-head-stat">
+                <span>Payable today</span>
+                <strong>{payableAmount}</strong>
+              </div>
+              <div className="pn-head-stat">
+                <span>Checkout</span>
+                <strong>{checkoutChannelLabel}</strong>
+              </div>
+            </div>
           </div>
 
           <div className="pn-card pn-main-card">
@@ -1562,11 +1601,11 @@ export default function PayNow() {
 
             <div className="pn-layout">
               <form className="pn-form" onSubmit={handleSubmit}>
-                <section className="pn-section-card">
+                <section className="pn-section-card pn-section-card-primary">
                   <div className="pn-section-head">
-                    <span className="pn-section-kicker">Enter Your Details</span>
+                    <span className="pn-section-kicker">Required</span>
                     <h2>Payer information</h2>
-                    <p>Enter the payer details exactly as they should appear on the payment record.</p>
+                    <p>Use the same details you want to appear on the payment record.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1625,7 +1664,7 @@ export default function PayNow() {
                     </div>
 
                     <div className="pn-field">
-                      <label htmlFor="phone">Phone (include country code) *</label>
+                      <label htmlFor="phone">{phoneFieldLabel}</label>
                       <div className={`pn-input-shell ${fieldErrors.phone ? 'pn-input-shell-error' : ''}`}>
                         <Phone size={18} />
                         <input
@@ -1639,6 +1678,7 @@ export default function PayNow() {
                           required
                         />
                       </div>
+                      <span className="pn-field-helper">{phoneFieldHelper}</span>
                       {fieldErrors.phone && <span className="pn-field-error">{fieldErrors.phone}</span>}
                     </div>
                   </div>
@@ -1648,7 +1688,7 @@ export default function PayNow() {
                   <div className="pn-section-head">
                     <span className="pn-section-kicker">Billing Address</span>
                     <h2>Address details</h2>
-                    <p>Use the billing address that should be linked to this payment.</p>
+                    <p>Use the billing address that should be linked with this payment.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1730,7 +1770,7 @@ export default function PayNow() {
                   <div className="pn-section-head">
                     <span className="pn-section-kicker">Payment</span>
                     <h2>Amount and method</h2>
-                    <p>Choose amount, currency, and how you want to complete the payment.</p>
+                    <p>Keep INR for Indian payments, or switch currency for international card checkout.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1784,8 +1824,8 @@ export default function PayNow() {
                     <strong>{isInternationalCurrency ? 'International card checkout' : 'INR checkout options'}</strong>
                     <p>
                       {isInternationalCurrency
-                        ? 'For non-INR currencies, the amount is auto-converted from the INR base using the latest available reference rate. Bank transfer and QR / UPI stay disabled.'
-                        : 'INR is the base price. You can keep INR for card, bank transfer, or QR / UPI, or switch currency to auto-convert for international card payments.'}
+                        ? 'The amount is auto-converted from the INR base using the latest reference rate. UPI and bank transfer stay disabled outside INR.'
+                        : 'INR is the base price. You can pay by card, QR / UPI, or bank transfer, or switch currency for international card checkout.'}
                     </p>
                   </div>
 
@@ -1829,18 +1869,31 @@ export default function PayNow() {
                       <span className="pn-field-error">{fieldErrors.paymentMethod}</span>
                     )}
                   </div>
+
+                  {isCardCheckout && (
+                    <div className="pn-card-otp-note">
+                      <CircleAlert size={16} />
+                      <p>{checkoutProfileNote}</p>
+                    </div>
+                  )}
                 </section>
 
-                <section className="pn-section-card pn-section-card-soft">
-                  <div className="pn-section-head">
-                    <span className="pn-section-kicker">Optional</span>
-                    <h2>Tax details</h2>
-                    <p>Add PAN or GSTIN only if these details should be recorded for billing.</p>
-                  </div>
+                <details
+                  className="pn-optional-block"
+                  open={isTaxDetailsOpen}
+                  onToggle={(event) => setIsTaxDetailsOpen(event.currentTarget.open)}
+                >
+                  <summary className="pn-optional-summary">
+                    <div className="pn-optional-copy">
+                      <span className="pn-section-kicker">Optional</span>
+                      <strong>Tax details</strong>
+                      <p>Add PAN or GSTIN only if you need them on the billing record.</p>
+                    </div>
+                  </summary>
 
-                  <div className="pn-grid">
+                  <div className="pn-grid pn-optional-grid">
                     <div className="pn-field">
-                      <label htmlFor="pan">PAN (India) - optional</label>
+                      <label htmlFor="pan">PAN (India)</label>
                       <div className={`pn-input-shell ${fieldErrors.pan ? 'pn-input-shell-error' : ''}`}>
                         <User size={18} />
                         <input
@@ -1857,7 +1910,7 @@ export default function PayNow() {
                     </div>
 
                     <div className="pn-field">
-                      <label htmlFor="gstn">GSTN - optional</label>
+                      <label htmlFor="gstn">GSTIN</label>
                       <div className={`pn-input-shell ${fieldErrors.gstn ? 'pn-input-shell-error' : ''}`}>
                         <Building2 size={18} />
                         <input
@@ -1873,12 +1926,17 @@ export default function PayNow() {
                       {fieldErrors.gstn && <span className="pn-field-error">{fieldErrors.gstn}</span>}
                     </div>
                   </div>
-                </section>
+                </details>
 
                 <div className="pn-footer">
                   <div className="pn-total">
                     <span>Total</span>
                     <strong>{payableAmount}</strong>
+                    <small className="pn-footer-note">
+                      {isCardCheckout
+                        ? 'Card OTP verification is completed by your bank during checkout.'
+                        : 'You can switch payment methods anytime before continuing.'}
+                    </small>
                   </div>
 
                   <button
@@ -1903,10 +1961,13 @@ export default function PayNow() {
 
               <aside className="pn-summary" ref={summaryRef}>
                 <div className="pn-summary-head">
-                  <h3>Summary</h3>
-                  <span className={`pn-summary-badge pn-summary-badge-${summaryBadgeTone}`}>
-                    {summaryBadgeLabel}
-                  </span>
+                  <div>
+                    <span className={`pn-summary-badge pn-summary-badge-${summaryBadgeTone}`}>
+                      {summaryBadgeLabel}
+                    </span>
+                    <h3>Payment snapshot</h3>
+                  </div>
+                  <strong className="pn-summary-amount">{payableAmount}</strong>
                 </div>
 
                 <div className="pn-summary-row">
@@ -1920,8 +1981,8 @@ export default function PayNow() {
                 </div>
 
                 <div className="pn-summary-row">
-                  <span>Currency</span>
-                  <strong>{selectedCurrencyLabel}</strong>
+                  <span>Mobile</span>
+                  <strong>{formState.phone.trim() || 'Add your payment mobile number'}</strong>
                 </div>
 
                 <div className="pn-summary-row">
@@ -1930,13 +1991,13 @@ export default function PayNow() {
                 </div>
 
                 <div className="pn-summary-row">
-                  <span>Checkout</span>
-                  <strong>{checkoutChannelLabel}</strong>
+                  <span>Currency</span>
+                  <strong>{selectedCurrencyLabel}</strong>
                 </div>
 
                 <div className="pn-summary-row">
-                  <span>Amount</span>
-                  <strong>{payableAmount}</strong>
+                  <span>Checkout</span>
+                  <strong>{checkoutChannelLabel}</strong>
                 </div>
 
                 <div className="pn-detail-panel">
@@ -1951,18 +2012,18 @@ export default function PayNow() {
                   {formState.paymentMethod === 'card' && (
                     <div className="pn-note-list">
                       <div className="pn-note-item">
+                        <CircleAlert size={16} />
+                        <span>Card OTP is always sent by the issuing bank to the mobile number linked with the card.</span>
+                      </div>
+                      <div className="pn-note-item">
                         <ShieldCheck size={16} />
-                        <span>Visa, Mastercard, RuPay and supported international cards continue in Razorpay.</span>
+                        <span>Visa, Mastercard, RuPay, and supported international cards continue inside Razorpay.</span>
                       </div>
                       <div className="pn-note-item">
                         <CheckCircle2 size={16} />
-                        <span>Your form details are prefilled for a faster checkout experience.</span>
-                      </div>
-                      <div className="pn-note-item">
-                        <CircleAlert size={16} />
                         <span>
                           {isOnlineCheckoutReady
-                            ? 'The payment will stay inside the secure hosted checkout.'
+                            ? 'If Razorpay shows a remembered checkout number, it does not change the OTP destination for the card.'
                             : 'Add live backend Razorpay keys to make card checkout available.'}
                         </span>
                       </div>
@@ -2102,12 +2163,53 @@ export default function PayNow() {
                               <strong>{gatewayConfig.bankDetails.accountType}</strong>
                             </div>
                           )}
+
+                          {gatewayConfig.bankDetails?.micr && (
+                            <div className="pn-info-card">
+                              <span>MICR code</span>
+                              <div className="pn-copy-row">
+                                <strong>{gatewayConfig.bankDetails.micr}</strong>
+                                <button
+                                  type="button"
+                                  className="pn-copy-btn"
+                                  onClick={() =>
+                                    handleCopy('micr code', gatewayConfig.bankDetails?.micr || '')
+                                  }
+                                >
+                                  <Copy size={14} />
+                                  {copiedKey === 'micr code' ? 'Copied' : 'Copy'}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {gatewayConfig.bankDetails?.swiftCode && (
+                            <div className="pn-info-card">
+                              <span>SWIFT code</span>
+                              <div className="pn-copy-row">
+                                <strong>{gatewayConfig.bankDetails.swiftCode}</strong>
+                                <button
+                                  type="button"
+                                  className="pn-copy-btn"
+                                  onClick={() =>
+                                    handleCopy(
+                                      'swift code',
+                                      gatewayConfig.bankDetails?.swiftCode || ''
+                                    )
+                                  }
+                                >
+                                  <Copy size={14} />
+                                  {copiedKey === 'swift code' ? 'Copied' : 'Copy'}
+                                </button>
+                              </div>
+                            </div>
+                          )}
                           </div>
                       ) : (
                         <p className="pn-inline-note">
                           {isOnlineCheckoutReady
                             ? 'Razorpay will show the supported bank list after you continue.'
-                            : 'Add PAYMENT_BANK_ACCOUNT_NAME, PAYMENT_BANK_ACCOUNT_NUMBER, PAYMENT_BANK_IFSC, PAYMENT_BANK_NAME and PAYMENT_BANK_BRANCH for a manual fallback here.'}
+                            : 'Add PAYMENT_BANK_ACCOUNT_NAME, PAYMENT_BANK_ACCOUNT_NUMBER, PAYMENT_BANK_IFSC, PAYMENT_BANK_NAME, PAYMENT_BANK_BRANCH, PAYMENT_BANK_MICR, and PAYMENT_BANK_SWIFT_CODE for a manual fallback here.'}
                         </p>
                       )}
                     </>
