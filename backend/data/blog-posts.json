@@ -4,7 +4,7 @@
     "slug": "cybersecurity-foundations-every-business-needs",
     "title": "Cybersecurity Foundations Every Business Needs",
     "excerpt": "Strong cybersecurity starts with identity protection, regular patching, backups, user awareness, and continuous monitoring.",
-    "content": "Cybersecurity is now a basic requirement for every business, not only large enterprises. Customer data, financial systems, employee accounts, and operational platforms all need protection. A single weak password or unpatched system can create serious disruption.\n\nIdentity security is the first foundation. Businesses should use multi-factor authentication, strong password policies, conditional access, and regular access reviews. User accounts are often the easiest path for attackers, so protecting identity reduces a major part of the risk.\n\nPatching and endpoint protection are equally important. Laptops, servers, applications, and network devices need regular updates. Security tools should monitor suspicious activity and help teams respond quickly when something unusual happens.\n\nBackups protect business continuity. A reliable backup strategy includes scheduled backups, offsite or cloud storage, recovery testing, and clear ownership. Backups are especially important for ransomware resilience because they give teams a path to restore operations.\n\nUser awareness ties everything together. Employees should know how to identify phishing attempts, suspicious links, unexpected attachments, and social engineering. Combined with monitoring and response planning, these foundations help companies build a practical and professional security posture.",
+    "content": "<p>Cybersecurity is now a basic requirement for every business, not only large enterprises. Customer data, financial systems, employee accounts, and operational platforms all need protection. A single weak password or unpatched system can create serious disruption.</p><p>Identity security is the first foundation. Businesses should use multi-factor authentication, strong password policies, conditional access, and regular access reviews. User accounts are often the easiest path for attackers, so protecting identity reduces a major part of the risk.</p><p>Patching and endpoint protection are equally important. Laptops, servers, applications, and network devices need regular updates. Security tools should monitor suspicious activity and help teams respond quickly when something unusual happens.</p><p>Backups protect business continuity. A reliable backup strategy includes scheduled backups, offsite or cloud storage, recovery testing, and clear ownership. Backups are especially important for ransomware resilience because they give teams a path to restore operations.</p><p>User awareness ties everything together. Employees should know how to identify phishing attempts, suspicious links, unexpected attachments, and social engineering. Combined with monitoring and response planning, these foundations help companies build a practical and professional security posture.</p>",
     "category": "Cybersecurity",
     "tags": [
       "Cybersecurity",
@@ -12,15 +12,15 @@
       "Compliance"
     ],
     "authorName": "Munna Kumar",
-    "imageUrl": "https://res.cloudinary.com/dkrjlekne/image/upload/v1777018035/aspl/blog/lmgnubpb6fcepeynr15j.png",
-    "imagePublicId": "aspl/blog/lmgnubpb6fcepeynr15j",
+    "imageUrl": "https://res.cloudinary.com/dkrjlekne/image/upload/v1777471333/aspl/blog/aupnrlenm2gecpsmy0xp.jpg",
+    "imagePublicId": "aspl/blog/aupnrlenm2gecpsmy0xp",
     "seoTitle": "Cybersecurity Foundations for Modern Businesses",
     "seoDescription": "Understand the core cybersecurity practices every business should prioritize to reduce risk and improve resilience.",
     "status": "published",
     "featured": false,
     "publishedAt": "2026-04-24T08:07:15.994Z",
     "createdAt": "2026-04-24T08:07:15.994Z",
-    "updatedAt": "2026-04-24T08:07:15.994Z"
+    "updatedAt": "2026-04-29T14:02:35.538Z"
   },
   {
     "id": "4a21e4f9-fbcf-4e7e-af0b-f34f345dc238",

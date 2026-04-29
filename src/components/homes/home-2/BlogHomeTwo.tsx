@@ -6,6 +6,7 @@ import {
   CLOUDINARY_TRANSFORMS,
   getCloudinaryAssetUrl,
 } from '../../../lib/cloudinary';
+import { animationCreate } from '../../../utils/utils';
 
 export default function BlogHomeTwo() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -21,6 +22,15 @@ export default function BlogHomeTwo() {
 
     void loadPosts();
   }, []);
+
+  useEffect(() => {
+    if (!posts.length) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => animationCreate(), 50);
+    return () => window.clearTimeout(timer);
+  }, [posts.length]);
 
   if (!posts.length) {
     return null;

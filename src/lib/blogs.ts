@@ -34,6 +34,32 @@ type BlogPostsResponse = {
 };
 
 const BLOG_REQUEST_TIMEOUT_MS = 15000;
+const BLOG_POSTS_CACHE_KEY = 'aspl-published-blog-posts-cache';
+
+function readCachedBlogPosts() {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  try {
+    const cachedPosts = JSON.parse(window.localStorage.getItem(BLOG_POSTS_CACHE_KEY) || '[]');
+    return Array.isArray(cachedPosts) ? (cachedPosts as BlogPost[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCachedBlogPosts(posts: BlogPost[]) {
+  if (typeof window === 'undefined' || !posts.length) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(BLOG_POSTS_CACHE_KEY, JSON.stringify(posts));
+  } catch {
+    // Cache is best-effort only; API data remains the source of truth.
+  }
+}
 
 async function fetchBlogApi(url: string, init?: RequestInit) {
   const controller = new AbortController();
@@ -61,14 +87,25 @@ export function formatBlogDate(value: string) {
 }
 
 export async function fetchPublishedBlogPosts() {
-  const response = await fetchBlogApi(BLOG_POSTS_API_URL);
-  const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
+  try {
+    const response = await fetchBlogApi(BLOG_POSTS_API_URL);
+    const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
-  if (!response.ok || !Array.isArray(result?.posts)) {
-    throw new Error(result?.error || 'Unable to load blog posts.');
+    if (!response.ok || !Array.isArray(result?.posts)) {
+      throw new Error(result?.error || 'Unable to load blog posts.');
+    }
+
+    writeCachedBlogPosts(result.posts);
+    return result.posts;
+  } catch (error) {
+    const cachedPosts = readCachedBlogPosts();
+
+    if (cachedPosts.length) {
+      return cachedPosts;
+    }
+
+    throw error;
   }
-
-  return result.posts;
 }
 
 export async function fetchPublishedBlogPost(slug: string) {

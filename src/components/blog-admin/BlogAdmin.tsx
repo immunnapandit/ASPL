@@ -63,6 +63,22 @@ type BlogAdminResponse = {
   };
 };
 
+type BlogPostPayload = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string[];
+  authorName: string;
+  imageUrl: string;
+  imagePublicId: string;
+  seoTitle: string;
+  seoDescription: string;
+  status: BlogPostStatus;
+  featured: boolean;
+};
+
 const STORAGE_KEY = 'aspl-blog-admin-token';
 const SIDEBAR_STORAGE_KEY = 'aspl-blog-cms-sidebar-hidden';
 
@@ -194,6 +210,15 @@ function toFormState(post?: BlogPost): BlogForm {
     seoDescription: post.seoDescription,
     status: post.status,
   };
+}
+
+function getPreviewImageUrl(imageUrl: string, cacheKey: string) {
+  if (!imageUrl || !cacheKey) {
+    return imageUrl;
+  }
+
+  const separator = imageUrl.includes('?') ? '&' : '?';
+  return `${imageUrl}${separator}cmsPreview=${encodeURIComponent(cacheKey)}`;
 }
 
 export default function BlogAdmin() {
@@ -428,6 +453,40 @@ export default function BlogAdmin() {
     }));
   };
 
+  const buildPostPayload = (
+    form: BlogForm,
+    editorContent = contentEditorRef.current?.innerHTML || form.content
+  ): BlogPostPayload => ({
+    title: form.title.trim(),
+    slug: slugify(form.slug || form.title),
+    excerpt: form.excerpt.trim(),
+    content: editorContent.trim(),
+    category: form.category.trim(),
+    tags: textToTags(form.tagsText),
+    authorName: form.authorName.trim(),
+    imageUrl: form.imageUrl.trim(),
+    imagePublicId: form.imagePublicId.trim(),
+    seoTitle: form.seoTitle.trim(),
+    seoDescription: form.seoDescription.trim(),
+    status: form.status,
+    featured: false,
+  });
+
+  const persistPostPayload = async (postId: string, payload: BlogPostPayload) => {
+    const response = await fetch(`${ADMIN_BLOG_POSTS_API_URL}/${postId}`, {
+      method: 'PATCH',
+      headers: getAdminHeaders(true),
+      body: JSON.stringify(payload),
+    });
+    const result = (await response.json().catch(() => null)) as BlogAdminResponse | null;
+
+    if (!response.ok || !result?.post) {
+      throw new Error(result?.error || 'Unable to save this blog post.');
+    }
+
+    return result.post;
+  };
+
   const focusEditor = () => {
     contentEditorRef.current?.focus();
   };
@@ -492,14 +551,29 @@ export default function BlogAdmin() {
       const image = await uploadImageFile(imageFile);
       if (!image) return;
 
-      setFormState((current) => ({
-        ...current,
+      const nextFormState = {
+        ...formState,
         imageUrl: image.url,
         imagePublicId: image.publicId,
-      }));
-      setStatus('success', 'Featured image uploaded to Cloudinary.');
+      };
+
+      setFormState(nextFormState);
+
+      if (selectedPostId) {
+        const savedPost = await persistPostPayload(selectedPostId, buildPostPayload(nextFormState));
+        setPosts((current) => [savedPost, ...current.filter((post) => post.id !== savedPost.id)]);
+        setFormState(toFormState(savedPost));
+        setStatus('success', 'Featured image replaced and saved.');
+      } else {
+        setStatus('success', 'Featured image uploaded. Publish the post to save it.');
+      }
     } catch (error) {
-      setStatus('error', error instanceof Error ? error.message : 'Unable to upload this image.');
+      setStatus(
+        'error',
+        error instanceof Error
+          ? error.message
+          : 'Image uploaded, but the post could not be saved automatically.'
+      );
     } finally {
       setIsUploading(false);
       inputElement.value = '';
@@ -646,21 +720,7 @@ export default function BlogAdmin() {
       return;
     }
 
-    const payload = {
-      title: formState.title.trim(),
-      slug: slugify(formState.slug || formState.title),
-      excerpt: formState.excerpt.trim(),
-      content: editorContent.trim(),
-      category: formState.category.trim(),
-      tags: textToTags(formState.tagsText),
-      authorName: formState.authorName.trim(),
-      imageUrl: formState.imageUrl.trim(),
-      imagePublicId: formState.imagePublicId.trim(),
-      seoTitle: formState.seoTitle.trim(),
-      seoDescription: formState.seoDescription.trim(),
-      status: formState.status,
-      featured: false,
-    };
+    const payload = buildPostPayload(formState, editorContent);
 
     setIsSaving(true);
     setStatusMessage('');
@@ -873,7 +933,11 @@ export default function BlogAdmin() {
         </div>
         <div className="tv-blog-featured-upload">
           {formState.imageUrl ? (
-            <img src={formState.imageUrl} alt="Blog preview" />
+            <img
+              key={formState.imagePublicId || formState.imageUrl}
+              src={getPreviewImageUrl(formState.imageUrl, formState.imagePublicId)}
+              alt="Blog preview"
+            />
           ) : (
             <div className="tv-blog-featured-upload__placeholder">
               <ImageIcon size={22} />
@@ -885,7 +949,7 @@ export default function BlogAdmin() {
               <input type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploading} />
               <span>
                 <UploadCloud size={16} />
-                {isUploading ? 'Uploading...' : formState.imageUrl ? 'Replace image' : 'Upload image'}
+                {isUploading ? 'Replacing...' : formState.imageUrl ? 'Replace and save image' : 'Upload image'}
               </span>
             </span>
             <span className="tv-blog-field-help">Upload the main image shown on blog cards and the post detail page.</span>
@@ -1206,7 +1270,7 @@ export default function BlogAdmin() {
   );
 
   const currentPanelTitle =
-    editWindowPostId ? 'Edit Post' : activeView === 'dashboard' ? 'Blog Dashboard' : activeView === 'posts' ? 'Manage Posts' : 'Add Blog Post';
+    editWindowPostId ? 'Edit Post' : activeView === 'dashboard' ? 'Blog Dashboard' : activeView === 'posts' ? 'Manage Posts' : 'Create Blog Post';
   const content = editWindowPostId && selectedPost ? (
     <section className="tv-blog-cms-editor">
       <div className="tv-blog-cms-editor__header">
@@ -1232,7 +1296,7 @@ export default function BlogAdmin() {
       <div className="tv-blog-cms-editor__header">
         <div>
           <span>Create post</span>
-          <h3>New blog post</h3>
+          <h3>Create a new post</h3>
         </div>
       </div>
       {renderPostForm(false)}
