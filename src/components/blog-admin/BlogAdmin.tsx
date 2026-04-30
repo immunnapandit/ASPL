@@ -1,12 +1,13 @@
 import {
   Bold,
+  Eraser,
   Eye,
   FileText,
-  Heading2,
   Image as ImageIcon,
   Italic,
   Link as LinkIcon,
   List,
+  ListOrdered,
   LayoutDashboard,
   LoaderCircle,
   LockKeyhole,
@@ -14,11 +15,14 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   PencilLine,
+  Pilcrow,
   Plus,
+  Redo2,
   Save,
   ShieldCheck,
   TextQuote,
   Trash2,
+  Undo2,
   UploadCloud,
 } from 'lucide-react';
 import {
@@ -27,6 +31,7 @@ import {
   useRef,
   useState,
   type ChangeEvent,
+  type ClipboardEvent,
   type FormEvent,
 } from 'react';
 import { Link } from 'react-router-dom';
@@ -79,8 +84,33 @@ type BlogPostPayload = {
   featured: boolean;
 };
 
+type EditorBlock = 'P' | 'H2' | 'H3' | 'BLOCKQUOTE';
+
+type EditorState = {
+  block: EditorBlock;
+  bold: boolean;
+  italic: boolean;
+  unorderedList: boolean;
+  orderedList: boolean;
+  link: boolean;
+};
+
 const STORAGE_KEY = 'aspl-blog-admin-token';
 const SIDEBAR_STORAGE_KEY = 'aspl-blog-cms-sidebar-hidden';
+const defaultEditorState: EditorState = {
+  block: 'P',
+  bold: false,
+  italic: false,
+  unorderedList: false,
+  orderedList: false,
+  link: false,
+};
+const editorBlockLabels: Record<EditorBlock, string> = {
+  P: 'Paragraph',
+  H2: 'Heading 2',
+  H3: 'Heading 3',
+  BLOCKQUOTE: 'Quote',
+};
 
 const initialForm: BlogForm = {
   title: '',
@@ -168,6 +198,62 @@ function markdownToEditorHtml(content: string) {
     .join('');
 }
 
+function plainTextToEditorHtml(value: string) {
+  return value
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => `<p>${escapeHtml(block).replace(/\r?\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+function sanitizeEditorHtml(value: string) {
+  const template = document.createElement('template');
+  template.innerHTML = value;
+  const allowedTags = new Set([
+    'A',
+    'B',
+    'BLOCKQUOTE',
+    'BR',
+    'EM',
+    'FIGURE',
+    'H2',
+    'H3',
+    'I',
+    'IMG',
+    'LI',
+    'OL',
+    'P',
+    'STRONG',
+    'U',
+    'UL',
+  ]);
+
+  template.content.querySelectorAll('*').forEach((element) => {
+    if (!allowedTags.has(element.tagName)) {
+      element.replaceWith(...Array.from(element.childNodes));
+      return;
+    }
+
+    Array.from(element.attributes).forEach((attribute) => {
+      const isLinkAttribute = element.tagName === 'A' && attribute.name === 'href';
+      const isImageAttribute =
+        element.tagName === 'IMG' && ['src', 'alt'].includes(attribute.name);
+
+      if (!isLinkAttribute && !isImageAttribute) {
+        element.removeAttribute(attribute.name);
+      }
+    });
+
+    if (element.tagName === 'A') {
+      element.setAttribute('target', '_blank');
+      element.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+
+  return template.innerHTML;
+}
+
 function textToTags(value: string) {
   return value
     .split(',')
@@ -224,6 +310,7 @@ function getPreviewImageUrl(imageUrl: string, cacheKey: string) {
 export default function BlogAdmin() {
   const contentEditorRef = useRef<HTMLDivElement | null>(null);
   const inlineImageInputRef = useRef<HTMLInputElement | null>(null);
+  const savedEditorSelectionRef = useRef<Range | null>(null);
   const [token, setToken] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -250,6 +337,7 @@ export default function BlogAdmin() {
   const [selectedBulkPostIds, setSelectedBulkPostIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [editWindowPostId, setEditWindowPostId] = useState(initialEditWindowPostId);
+  const [editorState, setEditorState] = useState<EditorState>(defaultEditorState);
 
   useEffect(() => {
     const storedToken = window.localStorage.getItem(STORAGE_KEY) || '';
@@ -282,6 +370,16 @@ export default function BlogAdmin() {
 
     editor.innerHTML = formState.content;
   }, [formState.content]);
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      saveEditorSelection();
+      refreshEditorState();
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => document.removeEventListener('selectionchange', handleSelectionChange);
+  }, []);
 
   useEffect(() => {
     if (editWindowPostId) {
@@ -453,6 +551,82 @@ export default function BlogAdmin() {
     }));
   };
 
+  const saveEditorSelection = () => {
+    const editor = contentEditorRef.current;
+    const selection = window.getSelection();
+
+    if (!editor || !selection?.rangeCount) {
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    if (editor.contains(range.commonAncestorContainer)) {
+      savedEditorSelectionRef.current = range.cloneRange();
+    }
+  };
+
+  const restoreEditorSelection = () => {
+    const editor = contentEditorRef.current;
+    const selection = window.getSelection();
+    const range = savedEditorSelectionRef.current;
+
+    if (!editor || !selection || !range) {
+      editor?.focus();
+      return;
+    }
+
+    editor.focus();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  const getCurrentEditorBlock = (): EditorBlock => {
+    const editor = contentEditorRef.current;
+    const selection = window.getSelection();
+
+    if (!editor || !selection?.rangeCount) {
+      return 'P';
+    }
+
+    let node: Node | null = selection.anchorNode;
+    if (node?.nodeType === Node.TEXT_NODE) {
+      node = node.parentElement;
+    }
+
+    const element = node instanceof Element ? node : null;
+    const blockElement = element?.closest('h2, h3, blockquote, p');
+
+    if (!blockElement || !editor.contains(blockElement)) {
+      return 'P';
+    }
+
+    const tagName = blockElement.tagName;
+    return tagName === 'H2' || tagName === 'H3' || tagName === 'BLOCKQUOTE'
+      ? tagName
+      : 'P';
+  };
+
+  const refreshEditorState = () => {
+    const selection = window.getSelection();
+    const editor = contentEditorRef.current;
+
+    if (!editor || !selection?.rangeCount || !selection.anchorNode || !editor.contains(selection.anchorNode)) {
+      return;
+    }
+
+    setEditorState({
+      block: getCurrentEditorBlock(),
+      bold: document.queryCommandState('bold'),
+      italic: document.queryCommandState('italic'),
+      unorderedList: document.queryCommandState('insertUnorderedList'),
+      orderedList: document.queryCommandState('insertOrderedList'),
+      link:
+        selection.anchorNode instanceof Element
+          ? Boolean(selection.anchorNode.closest('a'))
+          : Boolean(selection.anchorNode?.parentElement?.closest('a')),
+    });
+  };
+
   const buildPostPayload = (
     form: BlogForm,
     editorContent = contentEditorRef.current?.innerHTML || form.content
@@ -487,21 +661,20 @@ export default function BlogAdmin() {
     return result.post;
   };
 
-  const focusEditor = () => {
-    contentEditorRef.current?.focus();
-  };
-
   const runEditorCommand = (command: string, value?: string) => {
-    focusEditor();
+    restoreEditorSelection();
     document.execCommand(command, false, value);
     syncEditorContent();
+    saveEditorSelection();
+    refreshEditorState();
   };
 
-  const applyHeading = () => {
-    runEditorCommand('formatBlock', 'H2');
+  const applyBlock = (block: EditorBlock) => {
+    runEditorCommand('formatBlock', block);
   };
 
   const applyLink = () => {
+    restoreEditorSelection();
     const url = window.prompt('Enter link URL');
     if (!url?.trim()) {
       return;
@@ -511,9 +684,24 @@ export default function BlogAdmin() {
   };
 
   const insertInlineImage = (url: string, alt = 'Blog image') => {
-    focusEditor();
+    restoreEditorSelection();
     document.execCommand('insertHTML', false, `<figure><img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" /></figure><p><br></p>`);
     syncEditorContent();
+    saveEditorSelection();
+    refreshEditorState();
+  };
+
+  const handleEditorPaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const html = event.clipboardData.getData('text/html');
+    const text = event.clipboardData.getData('text/plain');
+    const nextHtml = html ? sanitizeEditorHtml(html) : plainTextToEditorHtml(text);
+
+    restoreEditorSelection();
+    document.execCommand('insertHTML', false, nextHtml);
+    syncEditorContent();
+    saveEditorSelection();
+    refreshEditorState();
   };
 
   const uploadImageFile = async (imageFile: File) => {
@@ -878,43 +1066,152 @@ export default function BlogAdmin() {
           Content
             <div className="tv-blog-editor-shell">
               <div className="tv-blog-editor-toolbar" aria-label="Blog content formatting">
-              <button type="button" title="Bold" onClick={() => runEditorCommand('bold')}>
-                <Bold size={16} />
-              </button>
-              <button type="button" title="Italic" onClick={() => runEditorCommand('italic')}>
-                <Italic size={16} />
-              </button>
-              <button type="button" title="Heading" onClick={applyHeading}>
-                <Heading2 size={16} />
-              </button>
-              <button type="button" title="List" onClick={() => runEditorCommand('insertUnorderedList')}>
-                <List size={16} />
-              </button>
-              <button type="button" title="Quote" onClick={() => runEditorCommand('formatBlock', 'BLOCKQUOTE')}>
-                <TextQuote size={16} />
-              </button>
-              <button type="button" title="Link" onClick={applyLink}>
-                <LinkIcon size={16} />
-              </button>
-              <button type="button" title="Inline image" onClick={() => inlineImageInputRef.current?.click()} disabled={isUploading}>
-                <ImageIcon size={16} />
-              </button>
-              <input
-                ref={inlineImageInputRef}
-                className="d-none"
-                type="file"
-                accept="image/*"
-                onChange={handleInlineImageUpload}
-              />
-            </div>
+                <div className="tv-blog-editor-toolbar__group tv-blog-editor-toolbar__group--block">
+                  <Pilcrow size={16} aria-hidden="true" />
+                  <select
+                    aria-label="Text style"
+                    value={editorState.block}
+                    onChange={(event) => applyBlock(event.currentTarget.value as EditorBlock)}
+                    onMouseDown={saveEditorSelection}
+                  >
+                    {Object.entries(editorBlockLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="tv-blog-editor-toolbar__group">
+                  <button
+                    type="button"
+                    title="Undo"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('undo')}
+                  >
+                    <Undo2 size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Redo"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('redo')}
+                  >
+                    <Redo2 size={16} />
+                  </button>
+                </div>
+                <div className="tv-blog-editor-toolbar__group">
+                  <button
+                    type="button"
+                    title="Bold"
+                    aria-pressed={editorState.bold}
+                    className={editorState.bold ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('bold')}
+                  >
+                    <Bold size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Italic"
+                    aria-pressed={editorState.italic}
+                    className={editorState.italic ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('italic')}
+                  >
+                    <Italic size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Clear formatting"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('removeFormat')}
+                  >
+                    <Eraser size={16} />
+                  </button>
+                </div>
+                <div className="tv-blog-editor-toolbar__group">
+                  <button
+                    type="button"
+                    title="Bulleted list"
+                    aria-pressed={editorState.unorderedList}
+                    className={editorState.unorderedList ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('insertUnorderedList')}
+                  >
+                    <List size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Numbered list"
+                    aria-pressed={editorState.orderedList}
+                    className={editorState.orderedList ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => runEditorCommand('insertOrderedList')}
+                  >
+                    <ListOrdered size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Quote"
+                    aria-pressed={editorState.block === 'BLOCKQUOTE'}
+                    className={editorState.block === 'BLOCKQUOTE' ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => applyBlock('BLOCKQUOTE')}
+                  >
+                    <TextQuote size={16} />
+                  </button>
+                </div>
+                <div className="tv-blog-editor-toolbar__group">
+                  <button
+                    type="button"
+                    title="Link"
+                    aria-pressed={editorState.link}
+                    className={editorState.link ? 'is-active' : ''}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={applyLink}
+                  >
+                    <LinkIcon size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Inline image"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      saveEditorSelection();
+                    }}
+                    onClick={() => inlineImageInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    <ImageIcon size={16} />
+                  </button>
+                </div>
+                <input
+                  ref={inlineImageInputRef}
+                  className="d-none"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleInlineImageUpload}
+                />
+              </div>
             <div className="tv-blog-editor-grid tv-blog-editor-grid--write-only">
               <div
                 ref={contentEditorRef}
                 className="tv-blog-rich-editor"
                 contentEditable
                 data-placeholder="Start writing your blog post..."
-                onInput={syncEditorContent}
+                onInput={() => {
+                  syncEditorContent();
+                  saveEditorSelection();
+                  refreshEditorState();
+                }}
                 onBlur={syncEditorContent}
+                onFocus={refreshEditorState}
+                onKeyUp={refreshEditorState}
+                onMouseUp={() => {
+                  saveEditorSelection();
+                  refreshEditorState();
+                }}
+                onPaste={handleEditorPaste}
                 role="textbox"
                 aria-label="Blog content"
               />

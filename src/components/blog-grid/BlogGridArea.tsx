@@ -1,36 +1,48 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { type BlogPost } from '../../data/blog-posts';
-import { fetchPublishedBlogPosts, formatBlogDate } from '../../lib/blogs';
+import {
+  fetchPublishedBlogPosts,
+  formatBlogDate,
+  getCachedOrFallbackPublishedBlogPosts,
+} from '../../lib/blogs';
 
 export default function BlogGridArea() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [posts, setPosts] = useState<BlogPost[]>(() => getCachedOrFallbackPublishedBlogPosts());
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadPosts = async () => {
       try {
-        setPosts(await fetchPublishedBlogPosts());
+        const publishedPosts = await fetchPublishedBlogPosts();
+
+        if (isMounted) {
+          setPosts(publishedPosts);
+        }
       } catch {
-        setPosts([]);
+        if (isMounted) {
+          setPosts(getCachedOrFallbackPublishedBlogPosts());
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setHasLoaded(true);
+        }
       }
     };
 
     void loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
     <div className="tv-blog-area pt-130 pb-130 blog-grid">
       <div className="container">
-        {isLoading ? (
-          <div className="tv-blog-empty">
-            <p>Loading blog posts...</p>
-          </div>
-        ) : null}
-
-        {!isLoading && !posts.length ? (
+        {hasLoaded && !posts.length ? (
           <div className="tv-blog-empty">
             <h3>No blog posts published yet</h3>
             <p>Published CMS posts will appear here in the blog grid.</p>

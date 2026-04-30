@@ -1,5 +1,6 @@
 import { BLOG_COMMENTS_API_BASE_URL, BLOG_POSTS_API_URL } from '../config/api';
 import { type BlogPost } from '../data/blog-posts';
+import { fallbackPublishedBlogPosts } from '../data/published-blog-posts';
 
 export type BlogComment = {
   id: string;
@@ -33,8 +34,14 @@ type BlogPostsResponse = {
   error?: string;
 };
 
-const BLOG_REQUEST_TIMEOUT_MS = 15000;
+const BLOG_REQUEST_TIMEOUT_MS = 5000;
 const BLOG_POSTS_CACHE_KEY = 'aspl-published-blog-posts-cache';
+
+function sortPublishedPosts(posts: BlogPost[]) {
+  return posts
+    .filter((post) => post.status === 'published')
+    .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
+}
 
 function readCachedBlogPosts() {
   if (typeof window === 'undefined') {
@@ -59,6 +66,11 @@ function writeCachedBlogPosts(posts: BlogPost[]) {
   } catch {
     // Cache is best-effort only; API data remains the source of truth.
   }
+}
+
+export function getCachedOrFallbackPublishedBlogPosts() {
+  const cachedPosts = readCachedBlogPosts();
+  return cachedPosts.length ? sortPublishedPosts(cachedPosts) : fallbackPublishedBlogPosts;
 }
 
 async function fetchBlogApi(url: string, init?: RequestInit) {
@@ -95,13 +107,14 @@ export async function fetchPublishedBlogPosts() {
       throw new Error(result?.error || 'Unable to load blog posts.');
     }
 
-    writeCachedBlogPosts(result.posts);
-    return result.posts;
+    const posts = sortPublishedPosts(result.posts);
+    writeCachedBlogPosts(posts);
+    return posts;
   } catch (error) {
-    const cachedPosts = readCachedBlogPosts();
+    const fallbackPosts = getCachedOrFallbackPublishedBlogPosts();
 
-    if (cachedPosts.length) {
-      return cachedPosts;
+    if (fallbackPosts.length) {
+      return fallbackPosts;
     }
 
     throw error;

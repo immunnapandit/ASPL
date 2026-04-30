@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { type BlogPost } from '../../../data/blog-posts';
-import { fetchPublishedBlogPosts, formatBlogDate } from '../../../lib/blogs';
+import {
+  fetchPublishedBlogPosts,
+  formatBlogDate,
+  getCachedOrFallbackPublishedBlogPosts,
+} from '../../../lib/blogs';
 import {
   CLOUDINARY_TRANSFORMS,
   getCloudinaryAssetUrl,
@@ -9,18 +13,32 @@ import {
 import { animationCreate } from '../../../utils/utils';
 
 export default function BlogHomeTwo() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>(() =>
+    getCachedOrFallbackPublishedBlogPosts().slice(0, 3),
+  );
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadPosts = async () => {
       try {
-        setPosts((await fetchPublishedBlogPosts()).slice(0, 3));
+        const publishedPosts = (await fetchPublishedBlogPosts()).slice(0, 3);
+
+        if (isMounted) {
+          setPosts(publishedPosts);
+        }
       } catch {
-        setPosts([]);
+        if (isMounted) {
+          setPosts(getCachedOrFallbackPublishedBlogPosts().slice(0, 3));
+        }
       }
     };
 
     void loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
