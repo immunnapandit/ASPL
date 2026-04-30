@@ -106,9 +106,9 @@ const defaultEditorState: EditorState = {
   link: false,
 };
 const editorBlockLabels: Record<EditorBlock, string> = {
-  P: 'Paragraph',
-  H2: 'Heading 2',
-  H3: 'Heading 3',
+  P: 'P',
+  H2: 'H2',
+  H3: 'H3',
   BLOCKQUOTE: 'Quote',
 };
 
@@ -311,6 +311,7 @@ export default function BlogAdmin() {
   const contentEditorRef = useRef<HTMLDivElement | null>(null);
   const inlineImageInputRef = useRef<HTMLInputElement | null>(null);
   const savedEditorSelectionRef = useRef<Range | null>(null);
+  const editorContentSnapshotRef = useRef('');
   const [token, setToken] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -364,11 +365,16 @@ export default function BlogAdmin() {
 
   useEffect(() => {
     const editor = contentEditorRef.current;
-    if (!editor || editor.innerHTML === formState.content) {
+    if (
+      !editor ||
+      editor.innerHTML === formState.content ||
+      editorContentSnapshotRef.current === formState.content
+    ) {
       return;
     }
 
     editor.innerHTML = formState.content;
+    editorContentSnapshotRef.current = formState.content;
   }, [formState.content]);
 
   useEffect(() => {
@@ -545,9 +551,11 @@ export default function BlogAdmin() {
 
   const syncEditorContent = () => {
     const editor = contentEditorRef.current;
+    const editorContent = editor?.innerHTML || '';
+    editorContentSnapshotRef.current = editorContent;
     setFormState((current) => ({
       ...current,
-      content: editor?.innerHTML || '',
+      content: editorContent,
     }));
   };
 
@@ -1070,6 +1078,7 @@ export default function BlogAdmin() {
                   <Pilcrow size={16} aria-hidden="true" />
                   <select
                     aria-label="Text style"
+                    title="Text style"
                     value={editorState.block}
                     onChange={(event) => applyBlock(event.currentTarget.value as EditorBlock)}
                     onMouseDown={saveEditorSelection}

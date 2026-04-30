@@ -1699,13 +1699,14 @@
       min-height: 34px;
 
       &--block {
-        flex: 1 1 100%;
-        min-width: 100%;
+        flex: 0 0 auto;
+        min-width: 0;
       }
     }
 
     select {
-      min-width: 0;
+      width: 64px;
+      min-width: 64px;
       font-size: 13px;
     }
 
@@ -2127,9 +2128,9 @@
     }
 
     &--block {
-      gap: 8px;
-      min-width: min(220px, 100%);
-      padding: 0 8px;
+      gap: 5px;
+      min-width: 0;
+      padding: 0 6px;
       border: 1px solid rgba(10, 22, 94, 0.1);
       border-radius: 6px;
       background: #ffffff;
@@ -2138,10 +2139,10 @@
   }
 
   select {
-    width: 100%;
-    min-width: 150px;
+    width: 72px;
+    min-width: 72px;
     height: 34px;
-    padding: 0 28px 0 0;
+    padding: 0 18px 0 0;
     border: 0;
     background: transparent;
     color: #1d2939;
