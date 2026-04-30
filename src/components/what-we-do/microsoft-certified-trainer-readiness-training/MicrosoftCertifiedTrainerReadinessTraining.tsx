@@ -1,357 +1,508 @@
+import { useMemo } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { ServicePageConfig } from '../../../data/service-page-types';
+import pageConfig from './pageConfig';
 
-const pageConfig: ServicePageConfig = {
-  title: 'Microsoft Certified Trainer Readiness Training',
-  subtitle:
-    'Course components, trainer preparation, and MCT application readiness',
-  category: 'service',
-  focus:
-    'instructional skills development, Microsoft certification readiness, and trainer confidence',
-  summary:
-    'AtiSunya’s Microsoft Certified Trainer Readiness Course helps future trainers strengthen delivery skills, improve instructional confidence, and prepare for Microsoft Certified Trainer application requirements.',
-  image: '/assets/img/service/MCTRT.png',
-  highlights: [
-    'Live trainer readiness sessions',
-    'Scenario-based instructional practice',
-    'Microsoft-aligned eligibility guidance',
-    'Certificate-backed MCT application support',
-  ],
+type UpcomingBatch = {
+  leftDate: Date;
+  rightDate?: Date;
 };
 
-const audienceCards = [
+const batchWeekdays = new Set([1, 3, 4, 5]);
+
+const buildUpcomingBatches = (today = new Date()): UpcomingBatch[] => {
+  const currentDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const batchDates: Date[] = [];
+  const dateCursor = new Date(currentDate);
+
+  while (batchDates.length < 10) {
+    if (batchWeekdays.has(dateCursor.getDay())) {
+      batchDates.push(new Date(dateCursor));
+    }
+
+    dateCursor.setDate(dateCursor.getDate() + 1);
+  }
+
+  return Array.from({ length: Math.ceil(batchDates.length / 2) }, (_, index) => {
+    const pairIndex = index * 2;
+
+    return {
+      leftDate: batchDates[pairIndex],
+      rightDate: batchDates[pairIndex + 1],
+    };
+  });
+};
+
+const formatBatchDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+
+  return `${day}-${month}-${date.getFullYear()}`;
+};
+
+const getBatchKey = ({ leftDate, rightDate }: UpcomingBatch) => {
+  return `${formatBatchDate(leftDate)}-${rightDate ? formatBatchDate(rightDate) : 'single'}`;
+};
+
+const overviewBenefits = [
+  'Build the confidence to conduct structured technical sessions for corporate and professional learners.',
+  'Prepare for the readiness evaluation with stronger command over your Microsoft Associate or Expert-level subject area.',
+  'Earn a readiness certificate after successfully demonstrating your instructional capability.',
+];
+
+const outcomePoints = [
+  'Plan learner-focused sessions with clear objectives and practical teaching methods.',
+  'Explain technical concepts through demonstrations, examples, and guided problem solving.',
+  'Communicate complex Microsoft topics with better structure, pacing, and clarity.',
+  'Handle classroom conversations, learner questions, timing, and transitions with confidence.',
+  'Present as a professional trainer in virtual, classroom, and hybrid delivery formats.',
+  'Use demos, whiteboarding, and interactive techniques to keep learners engaged.',
+];
+
+const highlightCards = [
   {
-    title: 'Who This Is For',
-    description:
-      'Ideal for professionals who are enthusiastic about training others and want to sharpen their instructional toolkit.',
+    accent: 'blue',
+    text: 'Hands-on trainer readiness experience designed around real technical classroom situations.',
   },
   {
-    title: 'Why Continue This Course',
-    description:
-      'This program helps you stay prepared and confident when the next training opportunity arrives.',
+    accent: 'gold',
+    text: 'Personalized guidance from AtiSunya trainers to improve delivery confidence and session control.',
   },
   {
-    title: 'Who Can Apply',
-    description:
-      'Applicants should be familiar with Associate or Expert-level Microsoft topics and hold at least one certification at the corresponding level.',
+    accent: 'red',
+    text: 'Competency-based practice that helps participants demonstrate instructional skills, not just theory.',
+  },
+  {
+    accent: 'teal',
+    text: 'Microsoft-aligned readiness guidance for certified professionals preparing for the MCT pathway.',
+  },
+  {
+    accent: 'amber',
+    text: 'Delivery techniques for online, onsite, and blended learning environments used by modern teams.',
+  },
+  {
+    accent: 'orange',
+    text: 'Clear next-step support so participants understand what to do after completing the readiness session.',
   },
 ];
 
-const benefitPoints = [
-  'Practical, scenario-based learning that mirrors real training environments and teaching challenges.',
-  'Access to an LMS and Exam Ready platform for resources, guidance, and ongoing preparation support.',
-  'Instructor-led sessions and mentorship from certified Microsoft trainers focused on capability building.',
-  'Microsoft Learning Partner access to exclusive learning content, tools, and trainer resources.',
+const attendeePoints = [
+  'Certified professionals who enjoy teaching and want to grow into confident Microsoft technology trainers.',
+  'Consultants, developers, administrators, and subject matter experts preparing to deliver technical learning sessions.',
+  'Participants with strong knowledge of an Associate or Expert-level Microsoft certification area and at least one relevant credential.',
 ];
 
-const whyChoosePoints = [
-  'As an official ISCP, we help you meet one of the key requirements for the Microsoft Certified Trainer program.',
-  'Programs are led by Microsoft Certified Trainers and industry experts with practical, project-based experience.',
-  'Online and offline classes are available, giving learners flexibility across time zones and delivery formats.',
-  'Successful participants receive a Microsoft-approved Instructional Skills Certificate required for MCT application readiness.',
-  'The MCT Readiness Program supports career growth through global recognition and stronger training credibility.',
-  'Ongoing support, peer networking, and access to the broader MCT community continue beyond the class itself.',
+const programStats = [
+  {
+    value: '8 hrs',
+    label: 'Live readiness session',
+  },
+  {
+    value: 'Global',
+    label: 'Virtual and classroom batches',
+  },
+  {
+    value: 'MCTRC',
+    label: 'Readiness evaluation support',
+  },
+];
+
+const prerequisitePoints = [
+  'An active Microsoft Associate or Expert-level certification that matches your training focus.',
+  'Practical understanding of the certification content, labs, scenarios, and learner questions you may need to explain.',
+];
+
+const whyAtiSunyaPoints = [
+  'AtiSunya combines Microsoft technology consulting experience with practical training delivery expertise.',
+  'Our readiness sessions are structured, instructor-led, and focused on measurable improvement in presentation quality.',
+  'We help participants strengthen confidence, learner engagement, demo handling, and professional training presence.',
 ];
 
 const processSteps = [
-  'Enroll in the 8-hour MCTRC session. After registration, you receive a digital handbook covering the curriculum and preparation guidance.',
-  'Attend the live session, where trainers explain the step-by-step Microsoft Certified Trainer application process and each eligibility requirement.',
-  'Complete the MCTRC assessment by delivering a 90-minute live session on an Associate or Expert Microsoft Certified topic.',
-  'Receive your MCTRC certificate after successful evaluation of your instructional delivery.',
-  'Email AtiSunya with your Microsoft Certificate ID (MCID) using the subject line “Start MCT Registration” and ensure your MCID is linked to the relevant certification.',
-  'Receive a welcome email from Microsoft after processing, confirming successful enrollment as an MCT.',
+  'Register for the AtiSunya MCT readiness session and receive guidance on how to prepare for the training day.',
+  'Attend the live instructor-led program where the trainer explains expectations, delivery standards, and the MCT application flow.',
+  'Practice presenting a Microsoft certification topic with attention to clarity, structure, learner engagement, and technical accuracy.',
+  'Complete the readiness evaluation by delivering your session and receiving professional review from the trainer.',
+  'Receive the MCTRC readiness certificate after successfully meeting the evaluation expectations.',
+  'Use the application guidance shared in the program to continue with the Microsoft MCT registration process.',
+  'After Microsoft completes the review and confirmation steps, proceed toward your official MCT enrollment.',
 ];
 
-const upcomingBatches = [
-  '20 Apr-2026 to 21 Apr-2026',
-  '23 Apr-2026 to 24 Apr-2026',
-];
+const viewport = {
+  once: true,
+  amount: 0.18,
+};
 
-export { pageConfig };
+const fadeUpVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 28,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.58,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+const fadeInVariants: Variants = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      duration: 0.68,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+const staggerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
 
 export default function MicrosoftCertifiedTrainerReadinessTraining() {
+  const upcomingBatches = useMemo(() => buildUpcomingBatches(), []);
+
   return (
     <main className="mctrt-page">
-      <section className="mctrt-hero">
+      <section className="mctrt-course-overview">
         <div className="container">
-          <div className="row align-items-center g-4 g-xl-5">
-            <div className="col-xl-7 col-lg-7">
-              <div className="mctrt-hero-copy">
-                <span className="mctrt-kicker">Enroll Now</span>
-                <h1>
-                  Microsoft Certified Trainer Readiness: Course Components &
-                  Overview
-                </h1>
-                <p>
-                  AtiSunya&apos;s specially designed Microsoft Certified Trainer
-                  Readiness Course equips future trainers with the practical
-                  instructional skills and structured guidance needed to succeed
-                  as Microsoft-certified trainers.
-                </p>
-                <p>
-                  The program focuses on effective communication, confident body
-                  language, dynamic delivery techniques, and the teaching
-                  discipline required for modern classroom, hybrid, and virtual
-                  learning environments.
-                </p>
+          <motion.div
+            className="mctrt-overview-grid"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={staggerVariants}
+          >
+            <motion.div
+              className="mctrt-overview-copy"
+              variants={fadeUpVariants}
+            >
+              <h1>Microsoft Certified Trainer Readiness - Course Overview</h1>
 
-                <div className="mctrt-actions">
-                  <Link to="/contact" className="tv-btn-primary">
-                    <span className="btn-wrap">
-                      <span className="btn-text1">Enroll Now</span>
-                      <span className="btn-text2">Enroll Now</span>
-                    </span>
-                  </Link>
-                </div>
+              <p>
+                AtiSunya&apos;s Microsoft Certified Trainer Readiness Training
+                is built for certified technology professionals who want to
+                teach with more confidence, structure, and impact. The program
+                helps participants prepare for the readiness evaluation while
+                strengthening the practical skills expected from modern
+                technical trainers.
+              </p>
+
+              <p>
+                Through instructor-led guidance, participants work on
+                communication, session planning, learner engagement, demo
+                delivery, classroom presence, and the ability to explain
+                Microsoft technologies in a clear and professional way.
+              </p>
+
+              <h2>
+                Key advantages of completing the Microsoft Certified Trainer
+                Readiness Course with AtiSunya:
+              </h2>
+
+              <ul className="mctrt-dot-list">
+                {overviewBenefits.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+
+              <p>
+                The training is suitable for professionals preparing to deliver
+                Microsoft learning experiences for organizations, teams,
+                partners, or public classroom audiences.
+              </p>
+
+              <p className="mctrt-emphasis">
+                AtiSunya supports flexible delivery models, including virtual
+                sessions for global learners and classroom-style sessions for
+                group or enterprise batches.
+              </p>
+
+              <p className="mctrt-language-note">
+                Standard delivery is available in English. Additional language
+                support can be discussed for corporate, regional, or group
+                training requirements.
+              </p>
+            </motion.div>
+
+            <motion.aside
+              className="mctrt-batch-card"
+              variants={fadeUpVariants}
+            >
+              <div className="mctrt-batch-card-head">
+                <h2>Upcoming Global Batches</h2>
               </div>
-            </div>
-
-            <div className="col-xl-5 col-lg-5">
-              <aside className="mctrt-hero-card">
-                <div className="mctrt-media-panel">
-                  <div className="mctrt-card-image">
-                    <img src={pageConfig.image} alt={pageConfig.title} />
+              <div className="mctrt-batch-list">
+                {upcomingBatches.map((batch) => (
+                  <div key={getBatchKey(batch)} className="mctrt-batch-row">
+                    <span>{formatBatchDate(batch.leftDate)}</span>
+                    <i aria-hidden="true" />
+                    <span>
+                      {batch.rightDate ? formatBatchDate(batch.rightDate) : ''}
+                    </span>
                   </div>
-                </div>
-              </aside>
-            </div>
-          </div>
+                ))}
+              </div>
+            </motion.aside>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mctrt-batches">
+      <section className="mctrt-snapshot-section">
         <div className="container">
-          <div className="mctrt-batch-card">
-            <div className="mctrt-batch-card-head">
-              <h2>Upcoming Global Batches</h2>
-            </div>
+          <motion.div
+            className="mctrt-snapshot-card"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={staggerVariants}
+          >
+            <motion.div className="mctrt-snapshot-copy" variants={fadeUpVariants}>
+              <span>AtiSunya Program Snapshot</span>
+              <h2>Practical preparation for trainers who need to deliver, not just present.</h2>
+            </motion.div>
 
-            <div className="mctrt-batch-strip">
-              {upcomingBatches.map((batch, index) => (
-                <div key={batch} className="mctrt-batch-cell">
-                  <span>{batch}</span>
-                  {index === 0 && <i aria-hidden="true" />}
-                </div>
+            <div className="mctrt-snapshot-stats">
+              {programStats.map((item) => (
+                <motion.article key={item.label} variants={fadeUpVariants}>
+                  <strong>{item.value}</strong>
+                  <p>{item.label}</p>
+                </motion.article>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mctrt-overview">
+      <section className="mctrt-section">
         <div className="container">
-          <div className="row g-4 g-xl-5 align-items-start">
-            <div className="col-lg-7">
-              <div className="mctrt-section-copy">
-                <span className="mctrt-section-tag">Program Value</span>
-                <h2>
-                  Advantages of earning the Microsoft Certified Trainer
-                  Readiness Course
-                </h2>
-                <p>
-                  Enrolling in the MCTRC at AtiSunya offers a structured path
-                  toward becoming a qualified corporate trainer. The
-                  certification improves instructional delivery skills while
-                  helping participants align with key evaluation criteria for
-                  Microsoft Certified Trainer status.
-                </p>
-                <p>
-                  After successful completion and evaluation, you receive a
-                  qualified MCTRC certificate that demonstrates your readiness
-                  to deliver official Microsoft training.
-                </p>
-                <p>
-                  To support different learning preferences, AtiSunya offers
-                  both virtual and classroom-based sessions delivered across
-                  global regions, giving participants the flexibility to learn
-                  in the format that fits them best.
-                </p>
-              </div>
-            </div>
-
-            <div className="col-lg-5">
-              <div className="mctrt-highlight-stack">
-                {pageConfig.highlights.map((item) => (
-                  <article key={item} className="mctrt-highlight-card">
-                    <div className="mctrt-check" aria-hidden="true">
-                      <Check size={18} strokeWidth={3} />
-                    </div>
-                    <p>{item}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mctrt-audience">
-        <div className="container">
-          <div className="mctrt-section-heading text-center">
-            <span className="mctrt-section-tag">Eligibility</span>
+          <motion.div
+            className="mctrt-outcomes-card"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
             <h2>
-              Who should enroll in the Microsoft Certified Trainer Readiness
-              Course?
+              After completing AtiSunya&apos;s Microsoft Certified Trainer
+              Readiness course, participants will be able to:
             </h2>
-          </div>
+            <ul className="mctrt-check-list">
+              {outcomePoints.map((item) => (
+                <li key={item}>
+                  <Check size={18} strokeWidth={3} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
 
-          <div className="row g-4">
-            {audienceCards.map((item) => (
-              <div key={item.title} className="col-lg-4">
-                <article className="mctrt-info-card">
-                  <h3>{item.title}</h3>
-                  <p>{item.description}</p>
-                </article>
-              </div>
+          <motion.div
+            className="mctrt-heading-block"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <h2>Main Highlights of MCT Readiness Course (MCTRC)</h2>
+          </motion.div>
+
+          <motion.div
+            className="mctrt-highlight-grid"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={staggerVariants}
+          >
+            {highlightCards.map((item) => (
+              <motion.article
+                key={item.text}
+                className={`mctrt-highlight-card mctrt-accent-${item.accent}`}
+                variants={fadeUpVariants}
+                whileHover={{ y: -4 }}
+              >
+                <p>{item.text}</p>
+              </motion.article>
             ))}
-          </div>
-
-          <div className="mctrt-prerequisites">
-            <div className="row g-4 align-items-start">
-              <div className="col-lg-5">
-                <div className="mctrt-prereq-copy">
-                  <span className="mctrt-section-tag">Prerequisites</span>
-                  <h3>Prerequisites for MCTRC enrollment</h3>
-                  <p>
-                    To enroll in the MCTRC, participants must meet the following
-                    requirements.
-                  </p>
-                </div>
-              </div>
-
-              <div className="col-lg-7">
-                <div className="mctrt-prereq-list">
-                  <article className="mctrt-prereq-item">
-                    <h4>Hold a qualifying certification</h4>
-                    <p>
-                      Possess at least one Microsoft Associate or Expert-level
-                      certification.
-                    </p>
-                  </article>
-                  <article className="mctrt-prereq-item">
-                    <h4>Understand the subject matter</h4>
-                    <p>
-                      Demonstrate a strong understanding of the corresponding
-                      course material.
-                    </p>
-                  </article>
-                </div>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mctrt-benefits">
+      <section className="mctrt-section mctrt-section-tight">
         <div className="container">
-          <div className="row g-4 g-xl-5">
-            <div className="col-lg-5">
-              <div className="mctrt-section-copy mctrt-sticky-copy">
-                <span className="mctrt-section-tag">Top Benefits</span>
-                <h2>What participants gain from the MCT readiness course</h2>
-                <p>
-                  The course combines guided practice, platform support, trainer
-                  mentorship, and Microsoft-aligned resources to help
-                  participants build real delivery confidence.
-                </p>
-              </div>
-            </div>
+          <motion.div
+            className="mctrt-heading-block"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <h2>Who Should Attend MCT Readiness Course (MCTRC)</h2>
+          </motion.div>
 
-            <div className="col-lg-7">
-              <div className="row g-4">
-                {benefitPoints.map((benefit) => (
-                  <div key={benefit} className="col-md-6">
-                    <article className="mctrt-benefit-card">
-                      <div className="mctrt-check" aria-hidden="true">
-                        <Check size={18} strokeWidth={3} />
-                      </div>
-                      <p>{benefit}</p>
-                    </article>
-                  </div>
+          <motion.div
+            className="mctrt-attend-band"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeInVariants}
+          >
+            <div className="mctrt-attend-copy">
+              <ul className="mctrt-check-list mctrt-check-list-light">
+                {attendeePoints.map((item) => (
+                  <li key={item}>
+                    <Check size={18} strokeWidth={3} />
+                    <span>{item}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
-          </div>
+            <div className="mctrt-attend-image" aria-hidden="true">
+              <img src={pageConfig.image} alt="" />
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="mctrt-process">
+      <section className="mctrt-section mctrt-section-tight">
         <div className="container">
-          <div className="row g-4 g-xl-5">
-            <div className="col-lg-5">
-              <div className="mctrt-section-copy">
-                <span className="mctrt-section-tag">Why AtiSunya</span>
-                <h2>Why choose AtiSunya for MCT readiness certification?</h2>
+          <motion.div
+            className="mctrt-heading-block"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <h2>What are the prerequisites for MCT Readiness Course (MCTRC)?</h2>
+            <p>Participants should have an understanding of the following:</p>
+          </motion.div>
+
+          <motion.ul
+            className="mctrt-dot-list mctrt-contained-list"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            {prerequisitePoints.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </motion.ul>
+
+          <motion.div
+            className="mctrt-heading-block mctrt-spaced-heading"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <h2>Why opt AtiSunya for MCT Readiness Certification (MCTRC)?</h2>
+          </motion.div>
+
+          <motion.div
+            className="mctrt-why-list"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={staggerVariants}
+          >
+            {whyAtiSunyaPoints.map((item) => (
+              <motion.div
+                key={item}
+                className="mctrt-why-row"
+                variants={fadeUpVariants}
+              >
+                <Check size={18} strokeWidth={3} />
+                <p>{item}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="mctrt-process-section">
+        <div className="container">
+          <motion.div
+            className="mctrt-heading-block"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <h2>Here are 7 steps of the MCTRC process:</h2>
+          </motion.div>
+
+          <motion.div
+            className="mctrt-process-list"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={staggerVariants}
+          >
+            {processSteps.map((step, index) => (
+              <motion.article
+                key={step}
+                className="mctrt-process-row"
+                variants={fadeUpVariants}
+              >
+                <span className="mctrt-process-dot" aria-hidden="true" />
                 <p>
-                  AtiSunya is committed to helping IT professionals and emerging
-                  educators become certified Microsoft trainers through
-                  structured delivery, practical mentoring, and guided
-                  certification support.
+                  <strong>Step {index + 1}:</strong> {step}
                 </p>
-              </div>
-
-              <div className="mctrt-why-list">
-                {whyChoosePoints.map((item) => (
-                  <div key={item} className="mctrt-why-item">
-                    <div className="mctrt-check" aria-hidden="true">
-                      <Check size={18} strokeWidth={3} />
-                    </div>
-                    <p>{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="col-lg-7">
-              <div className="mctrt-process-panel">
-                <div className="mctrt-process-head">
-                  <span className="mctrt-section-tag">MCTRC Process</span>
-                  <h3>Here are the steps in the MCTRC journey</h3>
-                </div>
-
-                <div className="mctrt-step-list">
-                  {processSteps.map((step, index) => (
-                    <article key={step} className="mctrt-step-card">
-                      <span className="mctrt-step-number">
-                        Step {index + 1}
-                      </span>
-                      <p>{step}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+              </motion.article>
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      <section className="mctrt-outcome">
+      <section className="mctrt-outline-section">
         <div className="container">
-          <div className="mctrt-outcome-card">
-            <span className="mctrt-section-tag">Completion Outcome</span>
-            <h2>What you are equipped to do after completing the course</h2>
-            <p>
-              Upon successful completion, participants receive a
-              Microsoft-approved Instructional Skills Certificate, a key
-              requirement for MCT application readiness and a strong validation
-              of their training capability.
-            </p>
-            <p>
-              The program helps you step into technical training with stronger
-              communication, recognized instructional credibility, and career
-              growth supported by Microsoft-aligned global recognition.
-            </p>
-
+          <motion.div
+            className="mctrt-outline-card"
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            variants={fadeUpVariants}
+          >
+            <div>
+              <span>MCT Readiness Course Outline</span>
+              <h2>Sharpen your delivery. Strengthen your trainer profile.</h2>
+              <p>
+                Begin your MCT readiness journey with AtiSunya&apos;s practical,
+                instructor-led training experience.
+              </p>
+            </div>
             <div className="mctrt-actions">
-              <Link to="/contact" className="tv-btn-primary">
+              <Link to="/pay-now" className="tv-btn-primary p-relative mctrt-global-btn">
+                <span className="btn-wrap">
+                  <span className="btn-text1">Pay Now</span>
+                  <span className="btn-text2">Pay Now</span>
+                </span>
+              </Link>
+              <Link to="/contact" className="tv-btn-secondary p-relative mctrt-global-btn">
                 <span className="btn-wrap">
                   <span className="btn-text1">Enroll Now</span>
                   <span className="btn-text2">Enroll Now</span>
                 </span>
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </main>

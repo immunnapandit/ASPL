@@ -2,7 +2,8 @@ import Breadcrumb from '../../../common/Breadcrumb';
 import FooterOne from '../../../layouts/footers/FooterOne';
 import HeaderOne from '../../../layouts/headers/HeaderOne';
 import Wrapper from '../../../layouts/Wrapper';
-import MicrosoftCertifiedTrainerReadinessTraining, { pageConfig } from './MicrosoftCertifiedTrainerReadinessTraining';
+import MicrosoftCertifiedTrainerReadinessTraining from './MicrosoftCertifiedTrainerReadinessTraining';
+import pageConfig from './pageConfig';
 export default function MicrosoftCertifiedTrainerReadinessTrainingPage() {
   return (
     <Wrapper>
