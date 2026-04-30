@@ -1070,8 +1070,8 @@ export default function BlogAdmin() {
           />
           <span className="tv-blog-field-help">This appears on blog cards and at the top of the post.</span>
         </label>
-        <label>
-          Content
+        <div className="tv-blog-cms-field">
+          <span className="tv-blog-cms-field__label">Content</span>
             <div className="tv-blog-editor-shell">
               <div className="tv-blog-editor-toolbar" aria-label="Blog content formatting">
                 <div className="tv-blog-editor-toolbar__group tv-blog-editor-toolbar__group--block">
@@ -1229,7 +1229,7 @@ export default function BlogAdmin() {
           <span className="tv-blog-editor-help">
             Select text and use the toolbar for rich formatting. Images are inserted directly into the editor.
           </span>
-        </label>
+        </div>
       </div>
 
       <div className="tv-blog-cms-panel">

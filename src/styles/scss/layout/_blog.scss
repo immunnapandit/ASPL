@@ -671,13 +671,18 @@
   }
 }
 
-.tv-blog-cms-form label {
+.tv-blog-cms-form label,
+.tv-blog-cms-field {
   display: grid;
   gap: 8px;
   color: var(--tv-heading-primary);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0;
+}
+
+.tv-blog-cms-field__label {
+  display: block;
 }
 
 .tv-blog-field-help {
