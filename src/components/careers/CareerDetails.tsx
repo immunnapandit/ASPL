@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   BriefcaseBusiness,
+  CalendarDays,
+  Linkedin,
   LoaderCircle,
   MapPin,
   Upload,
@@ -19,6 +21,23 @@ import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
 
 type DisplayJob = JobOpening | typeof generalApplication;
+
+function formatPostedDate(value?: string) {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : date.toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+}
 
 export default function CareerDetails() {
   const { slug } = useParams();
@@ -182,6 +201,12 @@ export default function CareerDetails() {
                   </span>
                   {'department' in job ? <span>{job.department}</span> : null}
                   {'experience' in job ? <span>{job.experience}</span> : null}
+                  {'postedAt' in job && job.postedAt ? (
+                    <span>
+                      <CalendarDays size={14} />
+                      Posted {formatPostedDate(job.postedAt)}
+                    </span>
+                  ) : null}
                 </div>
 
                 <h2>{job.title}</h2>
@@ -210,6 +235,17 @@ export default function CareerDetails() {
                 <h5>
                   {isGeneralApplication ? 'Send your resume' : 'Apply for this role'}
                 </h5>
+                {'linkedinUrl' in job && job.linkedinUrl ? (
+                  <a
+                    href={job.linkedinUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="tv-linkedin-job-link"
+                  >
+                    <Linkedin size={18} />
+                    View this job on LinkedIn
+                  </a>
+                ) : null}
                 <form onSubmit={handleApplicationSubmit} className="tv-application-form">
                   <div className="tv-form-group">
                     <label htmlFor="fullName">Full Name *</label>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   ArrowRight,
   BriefcaseBusiness,
+  CalendarDays,
   CheckCircle2,
   LoaderCircle,
   MapPin,
@@ -13,6 +14,51 @@ import {
   type JobOpening,
 } from '../../data/career-openings';
 import { fetchCareerOpenings } from '../../lib/careers';
+
+function formatPostedLabel(value?: string) {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const diffMs = Date.now() - date.getTime();
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diffMs < 0) {
+    return `Posted ${date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })}`;
+  }
+
+  if (diffMs < hour) {
+    const minutes = Math.max(1, Math.floor(diffMs / minute));
+    return `Posted ${minutes} min ago`;
+  }
+
+  if (diffMs < day) {
+    const hours = Math.max(1, Math.floor(diffMs / hour));
+    return `Posted ${hours} hr ago`;
+  }
+
+  if (diffMs < 30 * day) {
+    const days = Math.max(1, Math.floor(diffMs / day));
+    return `Posted ${days} day${days === 1 ? '' : 's'} ago`;
+  }
+
+  return `Posted ${date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })}`;
+}
 
 export default function CareersArea() {
   const [jobs, setJobs] = useState<JobOpening[]>([]);
@@ -66,6 +112,10 @@ export default function CareersArea() {
                     <span>
                       <MapPin size={16} />
                       {job.location}
+                    </span>
+                    <span>
+                      <CalendarDays size={16} />
+                      {formatPostedLabel(job.postedAt)}
                     </span>
                   </div>
                   <h4>{job.title}</h4>

@@ -11,6 +11,7 @@ import {
   Eye,
   FileText,
   LayoutDashboard,
+  Linkedin,
   LoaderCircle,
   LockKeyhole,
   LogOut,
@@ -46,6 +47,8 @@ type AdminCareerForm = {
   responsibilitiesText: string;
   requirementsText: string;
   status: JobOpeningStatus;
+  postedAt: string;
+  linkedinUrl: string;
 };
 
 type CareerApplicationStatus = 'new' | 'reviewed' | 'contacted' | 'archived';
@@ -114,6 +117,8 @@ const initialForm: AdminCareerForm = {
   responsibilitiesText: '',
   requirementsText: '',
   status: 'active',
+  postedAt: '',
+  linkedinUrl: '',
 };
 
 const initialSettings: CareersSettingsForm = {
@@ -152,6 +157,24 @@ function toListItems(value: string) {
     .filter(Boolean);
 }
 
+function toDatetimeLocalValue(value?: string) {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return offsetDate.toISOString().slice(0, 16);
+}
+
+function fromDatetimeLocalValue(value: string) {
+  return value ? new Date(value).toISOString() : '';
+}
+
 function toFormState(job?: JobOpening): AdminCareerForm {
   if (!job) {
     return initialForm;
@@ -169,6 +192,8 @@ function toFormState(job?: JobOpening): AdminCareerForm {
     responsibilitiesText: toMultilineText(job.responsibilities),
     requirementsText: toMultilineText(job.requirements),
     status: job.status,
+    postedAt: toDatetimeLocalValue(job.postedAt),
+    linkedinUrl: job.linkedinUrl || '',
   };
 }
 
@@ -182,14 +207,20 @@ function formatApplicationDate(value: string) {
       });
 }
 
-function formatAdminDate(value: string) {
+function formatAdminDateTime(value?: string) {
+  if (!value) {
+    return 'Not set';
+  }
+
   const date = new Date(value);
   return Number.isNaN(date.getTime())
     ? value
-    : date.toLocaleDateString('en-IN', {
+    : date.toLocaleString('en-IN', {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       });
 }
 
@@ -544,6 +575,8 @@ export default function CareersAdmin() {
       responsibilities: toListItems(formState.responsibilitiesText),
       requirements: toListItems(formState.requirementsText),
       status: formState.status,
+      postedAt: fromDatetimeLocalValue(formState.postedAt),
+      linkedinUrl: formState.linkedinUrl.trim(),
     };
 
     setIsSaving(true);
@@ -735,6 +768,18 @@ export default function CareersAdmin() {
     }
   };
 
+  const getPublicJobUrl = (job: JobOpening) => {
+    const path = `/careers/${job.slug}`;
+    if (typeof window === 'undefined') {
+      return path;
+    }
+
+    return new URL(path, window.location.origin).toString();
+  };
+
+  const getLinkedInShareUrl = (job: JobOpening) =>
+    `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPublicJobUrl(job))}`;
+
   const currentPanelTitle = editWindowJobId
     ? 'Edit Job'
     : activeView === 'dashboard'
@@ -887,6 +932,25 @@ export default function CareersAdmin() {
               <option value="active">Active</option>
               <option value="draft">Draft</option>
             </select>
+          </label>
+          <label>
+            Posted date and time
+            <input
+              type="datetime-local"
+              name="postedAt"
+              value={formState.postedAt}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            LinkedIn job URL
+            <input
+              type="url"
+              name="linkedinUrl"
+              value={formState.linkedinUrl}
+              onChange={handleInputChange}
+              placeholder="https://www.linkedin.com/jobs/view/..."
+            />
           </label>
         </div>
       </div>
@@ -1087,7 +1151,7 @@ export default function CareersAdmin() {
                   <td>{job.location}</td>
                   <td>
                     <strong>{job.status === 'active' ? 'Published' : 'Draft'}</strong>
-                    <span>{formatAdminDate(job.updatedAt || job.postedAt)}</span>
+                    <span>{formatAdminDateTime(job.postedAt || job.updatedAt)}</span>
                   </td>
                   <td className="is-actions">
                     <button type="button" onClick={() => openJobEditorWindow(job)} title="Edit job">
@@ -1099,6 +1163,17 @@ export default function CareersAdmin() {
                         <Eye size={15} />
                         View
                       </Link>
+                    ) : null}
+                    {job.status === 'active' ? (
+                      <a
+                        href={job.linkedinUrl || getLinkedInShareUrl(job)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={job.linkedinUrl ? 'Open LinkedIn job' : 'Share job on LinkedIn'}
+                      >
+                        <Linkedin size={15} />
+                        LinkedIn
+                      </a>
                     ) : null}
                     <button
                       type="button"

@@ -176,6 +176,7 @@ const DEFAULT_CAREER_OPENINGS = [
     featured: true,
     postedAt: '2026-04-24T09:00:00.000Z',
     updatedAt: '2026-04-24T09:00:00.000Z',
+    linkedinUrl: '',
   },
   {
     id: 'job-power-platform-developer',
@@ -211,6 +212,7 @@ const DEFAULT_CAREER_OPENINGS = [
     featured: true,
     postedAt: '2026-04-24T09:00:00.000Z',
     updatedAt: '2026-04-24T09:00:00.000Z',
+    linkedinUrl: '',
   },
   {
     id: 'job-erp-support-specialist',
@@ -246,6 +248,7 @@ const DEFAULT_CAREER_OPENINGS = [
     featured: false,
     postedAt: '2026-04-24T09:00:00.000Z',
     updatedAt: '2026-04-24T09:00:00.000Z',
+    linkedinUrl: '',
   },
 ];
 
@@ -1740,7 +1743,9 @@ async function handleCareerApplication(req) {
 function handleCareerOpeningsRequest(req) {
   const openings = readCareerOpenings()
     .filter((opening) => opening.status === 'active')
-    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+    .sort((left, right) =>
+      (right.postedAt || right.updatedAt).localeCompare(left.postedAt || left.updatedAt)
+    );
 
   return json(200, { ok: true, openings }, req);
 }
@@ -1782,7 +1787,7 @@ async function handleAdminCareerOpeningCreate(req) {
   const opening = {
     id: randomUUID(),
     ...validation.data,
-    postedAt: now,
+    postedAt: validation.data.postedAt || now,
     updatedAt: now,
   };
 
@@ -1819,6 +1824,7 @@ async function handleAdminCareerOpeningUpdate(req, openingId) {
   const opening = {
     ...currentOpening,
     ...validation.data,
+    postedAt: validation.data.postedAt || currentOpening.postedAt || currentOpening.updatedAt,
     updatedAt: new Date().toISOString(),
   };
 
@@ -2388,6 +2394,8 @@ function validateCareerOpeningPayload(data) {
   const requirements = normalizeStringArray(data.requirements);
   const status = getObjectString(data, 'status') === 'draft' ? 'draft' : 'active';
   const featured = Boolean(data.featured);
+  const postedAt = getObjectString(data, 'postedAt');
+  const linkedinUrl = getObjectString(data, 'linkedinUrl');
 
   if (!title || !slug || !type || !location || !department || !experience) {
     return { ok: false, error: 'All job overview fields are required.' };
@@ -2399,6 +2407,14 @@ function validateCareerOpeningPayload(data) {
 
   if (!responsibilities.length || !requirements.length) {
     return { ok: false, error: 'Responsibilities and requirements are required.' };
+  }
+
+  if (postedAt && Number.isNaN(new Date(postedAt).getTime())) {
+    return { ok: false, error: 'Posted date must be a valid date and time.' };
+  }
+
+  if (linkedinUrl && !/^https:\/\/([\w-]+\.)?linkedin\.com\//i.test(linkedinUrl)) {
+    return { ok: false, error: 'LinkedIn job URL must be a valid linkedin.com link.' };
   }
 
   return {
@@ -2416,6 +2432,8 @@ function validateCareerOpeningPayload(data) {
       requirements,
       status,
       featured,
+      postedAt: postedAt ? new Date(postedAt).toISOString() : '',
+      linkedinUrl,
     },
   };
 }

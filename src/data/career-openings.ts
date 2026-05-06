@@ -16,6 +16,7 @@ export type JobOpening = {
   featured: boolean;
   postedAt: string;
   updatedAt: string;
+  linkedinUrl?: string;
 };
 
 const defaultPostedAt = '2026-04-24T09:00:00.000Z';
@@ -53,6 +54,7 @@ export const fallbackCareerOpenings: JobOpening[] = [
     featured: true,
     postedAt: defaultPostedAt,
     updatedAt: defaultPostedAt,
+    linkedinUrl: '',
   },
   {
     id: 'job-power-platform-developer',
@@ -88,6 +90,7 @@ export const fallbackCareerOpenings: JobOpening[] = [
     featured: true,
     postedAt: defaultPostedAt,
     updatedAt: defaultPostedAt,
+    linkedinUrl: '',
   },
   {
     id: 'job-erp-support-specialist',
@@ -123,6 +126,7 @@ export const fallbackCareerOpenings: JobOpening[] = [
     featured: false,
     postedAt: defaultPostedAt,
     updatedAt: defaultPostedAt,
+    linkedinUrl: '',
   },
 ];
 

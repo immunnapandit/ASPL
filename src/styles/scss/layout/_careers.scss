@@ -754,6 +754,26 @@
   }
 }
 
+.tv-linkedin-job-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 48px;
+  margin: 0 0 22px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #0a66c2;
+  color: var(--tv-common-white);
+  font-weight: 700;
+
+  &:hover {
+    color: var(--tv-common-white);
+    background: #084f95;
+  }
+}
+
 .tv-application-form {
   .tv-form-group {
     margin-bottom: 20px;
