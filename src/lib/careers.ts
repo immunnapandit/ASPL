@@ -32,9 +32,9 @@ export async function fetchCareerOpenings(): Promise<JobOpening[]> {
       throw new Error('Unable to load career openings.');
     }
 
-    return payload.openings;
+    return payload.openings.filter((opening) => opening.status === 'active');
   } catch {
-    return fallbackCareerOpenings;
+    return fallbackCareerOpenings.filter((opening) => opening.status === 'active');
   }
 }
 

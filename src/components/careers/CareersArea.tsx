@@ -25,7 +25,7 @@ export default function CareersArea() {
     fetchCareerOpenings()
       .then((openings) => {
         if (isMounted) {
-          setJobs(openings);
+          setJobs(openings.filter((opening) => opening.status === 'active'));
         }
       })
       .finally(() => {
@@ -83,10 +83,6 @@ export default function CareersArea() {
           {!jobs.length ? (
             <div className="tv-careers-empty">
               <h4>No open roles right now</h4>
-              <p>
-                New positions can be published from the careers CMS anytime. Until
-                then, candidates can still send a general application.
-              </p>
             </div>
           ) : null}
         </div>

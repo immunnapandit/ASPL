@@ -15,7 +15,6 @@ import {
   LockKeyhole,
   LogOut,
   Mail,
-  MapPin,
   PanelLeftClose,
   PanelLeftOpen,
   PencilLine,
@@ -99,6 +98,9 @@ type AdminView = 'dashboard' | 'jobs' | 'add-job' | 'applications' | 'settings';
 
 const STORAGE_KEY = 'aspl-careers-admin-token';
 const SIDEBAR_STORAGE_KEY = 'aspl-careers-cms-sidebar-hidden';
+const adminSearchParams = new URLSearchParams(window.location.search);
+const initialAdminView = adminSearchParams.get('view');
+const initialEditWindowJobId = adminSearchParams.get('edit');
 
 const initialForm: AdminCareerForm = {
   title: '',
@@ -180,12 +182,32 @@ function formatApplicationDate(value: string) {
       });
 }
 
+function formatAdminDate(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      });
+}
+
 export default function CareersAdmin() {
   const [token, setToken] = useState('');
   const [tokenInput, setTokenInput] = useState('');
   const [jobs, setJobs] = useState<JobOpening[]>([]);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<AdminView>('dashboard');
+  const [activeView, setActiveView] = useState<AdminView>(
+    initialEditWindowJobId
+      ? 'jobs'
+      : initialAdminView === 'jobs' ||
+          initialAdminView === 'add-job' ||
+          initialAdminView === 'applications' ||
+          initialAdminView === 'settings'
+        ? initialAdminView
+        : 'dashboard'
+  );
   const [formState, setFormState] = useState<AdminCareerForm>(initialForm);
   const [applications, setApplications] = useState<CareerApplicationRecord[]>([]);
   const [settingsForm, setSettingsForm] = useState<CareersSettingsForm>(initialSettings);
@@ -196,6 +218,9 @@ export default function CareersAdmin() {
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
+  const [jobSearch, setJobSearch] = useState('');
+  const [currentJobPage, setCurrentJobPage] = useState(1);
+  const [editWindowJobId, setEditWindowJobId] = useState(initialEditWindowJobId);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState<'success' | 'error'>('success');
 
@@ -252,12 +277,72 @@ export default function CareersAdmin() {
     void loadSettings(token);
   }, [token, activeView]);
 
+  useEffect(() => {
+    if (editWindowJobId || typeof window === 'undefined') {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (activeView === 'dashboard') {
+      params.delete('view');
+    } else {
+      params.set('view', activeView);
+    }
+
+    const nextSearch = params.toString();
+    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+
+    window.history.replaceState(null, '', nextUrl);
+  }, [activeView, editWindowJobId]);
+
+  useEffect(() => {
+    if (!editWindowJobId || !jobs.length) {
+      return;
+    }
+
+    const job = jobs.find((item) => item.id === editWindowJobId);
+    if (job) {
+      setSelectedJobId(job.id);
+      setFormState(toFormState(job));
+      setActiveView('jobs');
+    }
+  }, [editWindowJobId, jobs]);
+
   const selectedJob = useMemo(
     () => jobs.find((job) => job.id === selectedJobId),
     [jobs, selectedJobId]
   );
   const activeJobsCount = jobs.filter((job) => job.status === 'active').length;
   const newApplicationsCount = applications.filter((item) => item.status === 'new').length;
+  const filteredJobs = useMemo(() => {
+    const normalizedSearch = jobSearch.trim().toLowerCase();
+
+    return jobs.filter((job) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        [job.title, job.slug, job.department, job.type, job.location]
+          .join(' ')
+          .toLowerCase()
+          .includes(normalizedSearch);
+
+      return job.status === 'active' && matchesSearch;
+    });
+  }, [jobs, jobSearch]);
+  const jobPageSize = 10;
+  const totalJobPages = Math.max(1, Math.ceil(filteredJobs.length / jobPageSize));
+  const paginatedJobs = filteredJobs.slice(
+    (currentJobPage - 1) * jobPageSize,
+    currentJobPage * jobPageSize
+  );
+
+  useEffect(() => {
+    setCurrentJobPage(1);
+  }, [jobSearch]);
+
+  useEffect(() => {
+    setCurrentJobPage((page) => Math.min(page, totalJobPages));
+  }, [totalJobPages]);
 
   const setStatus = (type: 'success' | 'error', message: string) => {
     setStatusType(type);
@@ -296,7 +381,9 @@ export default function CareersAdmin() {
 
       if (result.openings.length) {
         const nextSelectedJob =
-          result.openings.find((job) => job.id === selectedJobId) || result.openings[0];
+          result.openings.find((job) => job.id === editWindowJobId) ||
+          result.openings.find((job) => job.id === selectedJobId) ||
+          result.openings[0];
         setSelectedJobId(nextSelectedJob.id);
         setFormState(toFormState(nextSelectedJob));
       } else {
@@ -376,6 +463,10 @@ export default function CareersAdmin() {
     setStatusMessage('');
   };
 
+  const openJobEditorWindow = (job: JobOpening) => {
+    window.open(`/admin/careers?edit=${encodeURIComponent(job.id)}`, '_blank', 'noopener,noreferrer');
+  };
+
   const handleTokenSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -426,6 +517,7 @@ export default function CareersAdmin() {
   };
 
   const resetFormForCreate = () => {
+    setEditWindowJobId(null);
     setSelectedJobId(null);
     setFormState(initialForm);
     setStatusMessage('');
@@ -493,12 +585,12 @@ export default function CareersAdmin() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!token || !selectedJob) {
+  const handleDelete = async (jobToDelete = selectedJob) => {
+    if (!token || !jobToDelete) {
       return;
     }
 
-    if (!window.confirm(`Delete "${selectedJob.title}" from the careers CMS?`)) {
+    if (!window.confirm(`Delete "${jobToDelete.title}" from the careers CMS?`)) {
       return;
     }
 
@@ -507,7 +599,7 @@ export default function CareersAdmin() {
 
     try {
       const response = await fetch(
-        `${ADMIN_CAREER_OPENINGS_API_URL}/${selectedJob.id}`,
+        `${ADMIN_CAREER_OPENINGS_API_URL}/${jobToDelete.id}`,
         {
           method: 'DELETE',
           headers: getAdminHeaders(),
@@ -519,8 +611,11 @@ export default function CareersAdmin() {
         throw new Error(result?.error || 'Unable to delete this opening.');
       }
 
-      const remainingJobs = jobs.filter((job) => job.id !== selectedJob.id);
+      const remainingJobs = jobs.filter((job) => job.id !== jobToDelete.id);
       setJobs(remainingJobs);
+      if (editWindowJobId === jobToDelete.id) {
+        setEditWindowJobId(null);
+      }
       if (remainingJobs.length) {
         selectJob(remainingJobs[0]);
       } else {
@@ -632,6 +727,7 @@ export default function CareersAdmin() {
       return;
     }
 
+    setEditWindowJobId(null);
     setActiveView(view);
 
     if (view === 'jobs' && jobs.length && !selectedJobId) {
@@ -639,8 +735,9 @@ export default function CareersAdmin() {
     }
   };
 
-  const currentPanelTitle =
-    activeView === 'dashboard'
+  const currentPanelTitle = editWindowJobId
+    ? 'Edit Job'
+    : activeView === 'dashboard'
       ? 'Careers Dashboard'
       : activeView === 'jobs'
         ? 'Jobs'
@@ -870,94 +967,155 @@ export default function CareersAdmin() {
   );
 
   const renderJobs = () => (
-    <div className="tv-careers-admin-workspace">
-      <aside className="tv-careers-admin-list">
-        <div className="tv-careers-admin-list__header">
-          <div className="tv-careers-admin-list__title">
-            <h3>Job openings</h3>
-          </div>
-          <button type="button" className="tv-careers-admin-add" onClick={resetFormForCreate}>
-            <Plus size={16} />
-            New Job
+    <div className="tv-blog-wp-manager tv-careers-wp-manager">
+      <div className="tv-blog-wp-tabs">
+        <button type="button" className="is-active">
+          Published <span>({activeJobsCount})</span>
+        </button>
+      </div>
+
+      <div className="tv-blog-wp-toolbar">
+        <div className="tv-blog-wp-filters">
+          <select value="active" aria-label="Filter jobs by status" disabled>
+            <option value="active">Published</option>
+          </select>
+          <button type="button" className="tv-blog-wp-button">
+            Filter
           </button>
         </div>
-
-        {isLoading ? (
-          <div className="tv-careers-loading" role="status">
-            <LoaderCircle size={22} className="tv-spin" />
-            Loading CMS data...
-          </div>
-        ) : !jobs.length ? (
-          <div className="tv-careers-admin-empty">
-            <span className="tv-careers-admin-empty__icon">
-              <BriefcaseBusiness size={22} />
-            </span>
-            <h4>No roles created yet</h4>
-            <button type="button" className="tv-careers-admin-add" onClick={resetFormForCreate}>
-              <Plus size={16} />
-              Create first job
-            </button>
-          </div>
-        ) : (
-          <div className="tv-careers-admin-list__items">
-            {jobs.map((job) => (
-              <button
-                key={job.id}
-                type="button"
-                className={`tv-careers-admin-job ${selectedJobId === job.id ? 'is-active' : ''}`}
-                onClick={() => selectJob(job)}
-              >
-                <div className="tv-careers-admin-job__top">
-                  <span className={`tv-job-status is-${job.status}`}>{job.status}</span>
-                </div>
-                <h4>{job.title}</h4>
-                <div className="tv-careers-admin-job__meta">
-                  <span>
-                    <BriefcaseBusiness size={14} />
-                    {job.type}
-                  </span>
-                  <span>
-                    <MapPin size={14} />
-                    {job.location}
-                  </span>
-                </div>
-                <p>{job.description}</p>
-              </button>
-            ))}
-          </div>
-        )}
-      </aside>
-
-      <section className="tv-careers-admin-editor">
-        <div className="tv-careers-admin-editor__header">
-          <div>
-            <span className="tv-careers-admin-editor__label">Editing role</span>
-            <h3>{selectedJob ? selectedJob.title : 'Select a job'}</h3>
-          </div>
-          {selectedJob ? (
-            <button
-              type="button"
-              className="tv-careers-admin-ghost tv-careers-admin-danger"
-              onClick={handleDelete}
-              disabled={isSaving}
-            >
-              <Trash2 size={16} />
-              Delete
-            </button>
-          ) : null}
+        <div className="tv-blog-wp-search">
+          <input
+            value={jobSearch}
+            onChange={(event) => setJobSearch(event.currentTarget.value)}
+            placeholder="Search jobs"
+            aria-label="Search jobs"
+          />
+          <button type="button" className="tv-blog-wp-button">
+            Search Jobs
+          </button>
         </div>
+      </div>
 
-        {selectedJob ? (
-          renderJobForm(true)
-        ) : (
-          <div className="tv-careers-admin-empty">
-            <span className="tv-careers-admin-empty__icon">
-              <BriefcaseBusiness size={22} />
-            </span>
-            <h4>Select a job to edit</h4>
-          </div>
-        )}
-      </section>
+      <div className="tv-blog-wp-table-meta">
+        <span>{filteredJobs.length} items</span>
+        <div className="tv-blog-wp-pagination">
+          <button
+            type="button"
+            onClick={() => setCurrentJobPage(1)}
+            disabled={currentJobPage === 1}
+            aria-label="First page"
+          >
+            {'<<'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentJobPage((page) => Math.max(1, page - 1))}
+            disabled={currentJobPage === 1}
+            aria-label="Previous page"
+          >
+            {'<'}
+          </button>
+          <input value={currentJobPage} readOnly aria-label="Current page" />
+          <span>of {totalJobPages}</span>
+          <button
+            type="button"
+            onClick={() => setCurrentJobPage((page) => Math.min(totalJobPages, page + 1))}
+            disabled={currentJobPage === totalJobPages}
+            aria-label="Next page"
+          >
+            {'>'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentJobPage(totalJobPages)}
+            disabled={currentJobPage === totalJobPages}
+            aria-label="Last page"
+          >
+            {'>>'}
+          </button>
+        </div>
+      </div>
+
+      <div className="tv-blog-wp-table-wrap">
+        <table className="tv-blog-wp-table tv-careers-wp-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Department</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="tv-careers-loading" role="status">
+                    <LoaderCircle size={22} className="tv-spin" />
+                    Loading CMS data...
+                  </div>
+                </td>
+              </tr>
+            ) : !filteredJobs.length ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="tv-careers-admin-empty">
+                    <span className="tv-careers-admin-empty__icon">
+                      <BriefcaseBusiness size={22} />
+                    </span>
+                    <h4>No roles found</h4>
+                    <button type="button" className="tv-careers-admin-add" onClick={resetFormForCreate}>
+                      <Plus size={16} />
+                      Create job
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              paginatedJobs.map((job) => (
+                <tr key={job.id} className={selectedJobId === job.id ? 'is-selected' : ''}>
+                  <td className="is-title">
+                    <button type="button" onClick={() => openJobEditorWindow(job)}>
+                      {job.title}
+                    </button>
+                    <span>{job.slug}</span>
+                  </td>
+                  <td>{job.department}</td>
+                  <td>{job.type}</td>
+                  <td>{job.location}</td>
+                  <td>
+                    <strong>{job.status === 'active' ? 'Published' : 'Draft'}</strong>
+                    <span>{formatAdminDate(job.updatedAt || job.postedAt)}</span>
+                  </td>
+                  <td className="is-actions">
+                    <button type="button" onClick={() => openJobEditorWindow(job)} title="Edit job">
+                      <PencilLine size={15} />
+                      Edit
+                    </button>
+                    {job.status === 'active' ? (
+                      <Link to={`/careers/${job.slug}`} target="_blank" rel="noreferrer" title="View job">
+                        <Eye size={15} />
+                        View
+                      </Link>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="is-danger"
+                      onClick={() => void handleDelete(job)}
+                      title="Delete job"
+                    >
+                      <Trash2 size={15} />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -1161,10 +1319,53 @@ export default function CareersAdmin() {
   );
 
   let content: ReactNode = renderDashboard();
-  if (activeView === 'jobs') content = renderJobs();
-  if (activeView === 'add-job') content = renderAddJob();
-  if (activeView === 'applications') content = renderApplications();
-  if (activeView === 'settings') content = renderSettings();
+  if (editWindowJobId) {
+    content = selectedJob ? (
+      <section className="tv-careers-admin-editor">
+        <div className="tv-careers-admin-editor__header">
+          <div>
+            <span className="tv-careers-admin-editor__label">Editing role</span>
+            <h3>{selectedJob.title}</h3>
+          </div>
+          <div className="tv-careers-admin-editor__tools">
+            {selectedJob.status === 'active' ? (
+              <Link
+                to={`/careers/${selectedJob.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="tv-blog-cms-secondary-action"
+              >
+                <Eye size={16} />
+                View
+              </Link>
+            ) : null}
+            <button
+              type="button"
+              className="tv-careers-admin-ghost tv-careers-admin-danger"
+              onClick={() => void handleDelete()}
+              disabled={isSaving}
+            >
+              <Trash2 size={16} />
+              Delete
+            </button>
+          </div>
+        </div>
+        {renderJobForm(true)}
+      </section>
+    ) : (
+      <section className="tv-careers-admin-editor">
+        <div className="tv-careers-admin-empty">
+          <span className="tv-careers-admin-empty__icon">
+            <BriefcaseBusiness size={22} />
+          </span>
+          <h4>{isLoading ? 'Loading job...' : 'Job not found'}</h4>
+        </div>
+      </section>
+    );
+  } else if (activeView === 'jobs') content = renderJobs();
+  if (!editWindowJobId && activeView === 'add-job') content = renderAddJob();
+  if (!editWindowJobId && activeView === 'applications') content = renderApplications();
+  if (!editWindowJobId && activeView === 'settings') content = renderSettings();
 
   return (
     <Wrapper>
@@ -1239,7 +1440,7 @@ export default function CareersAdmin() {
                       <button
                         key={item.id}
                         type="button"
-                        className={activeView === item.id ? 'is-active' : ''}
+                        className={activeView === item.id && !editWindowJobId ? 'is-active' : ''}
                         onClick={() => handleMenuSelect(item.id)}
                       >
                         <Icon size={18} />
