@@ -1,8 +1,4 @@
-import {
-  fallbackCareerOpenings,
-  generalApplication,
-  type JobOpening,
-} from '../data/career-openings';
+import { generalApplication, type JobOpening } from '../data/career-openings';
 import { CAREER_OPENINGS_API_URL } from '../config/api';
 
 type CareerOpeningsResponse = {
@@ -34,7 +30,7 @@ export async function fetchCareerOpenings(): Promise<JobOpening[]> {
 
     return payload.openings.filter((opening) => opening.status === 'active');
   } catch {
-    return fallbackCareerOpenings.filter((opening) => opening.status === 'active');
+    return [];
   }
 }
 

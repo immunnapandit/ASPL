@@ -101,6 +101,10 @@ const CAREERS_ADMIN_TOKEN = (
 const BLOG_ADMIN_TOKEN = (
   process.env.BLOG_ADMIN_TOKEN || 'change-me-blog-admin-token'
 ).trim();
+const SEED_DEFAULT_CAREER_OPENINGS = parseBoolean(
+  process.env.SEED_DEFAULT_CAREER_OPENINGS,
+  false
+);
 const CLOUDINARY_CLOUD_NAME = (process.env.CLOUDINARY_CLOUD_NAME || '').trim();
 const CLOUDINARY_API_KEY = (process.env.CLOUDINARY_API_KEY || '').trim();
 const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
@@ -1483,7 +1487,10 @@ function ensureDataStore() {
   }
 
   ensureJsonFile(paymentsFile, { payments: [] });
-  ensureJsonFile(careerOpeningsFile, DEFAULT_CAREER_OPENINGS);
+  ensureJsonFile(
+    careerOpeningsFile,
+    SEED_DEFAULT_CAREER_OPENINGS ? DEFAULT_CAREER_OPENINGS : []
+  );
   ensureJsonFile(careerApplicationsFile, []);
   ensureJsonFile(careersSettingsFile, DEFAULT_CAREERS_SETTINGS);
   ensureJsonFile(blogPostsFile, []);
@@ -2669,7 +2676,7 @@ function validateAdminRequest(req, scope = 'careers') {
 }
 
 function readCareerOpenings() {
-  return readJsonArrayFile(careerOpeningsFile, DEFAULT_CAREER_OPENINGS);
+  return readJsonArrayFile(careerOpeningsFile, []);
 }
 
 function writeCareerOpenings(openings) {

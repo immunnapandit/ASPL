@@ -9,14 +9,13 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
-  fallbackCareerOpenings,
   generalApplication,
   type JobOpening,
 } from '../../data/career-openings';
 import { fetchCareerOpenings } from '../../lib/careers';
 
 export default function CareersArea() {
-  const [jobs, setJobs] = useState<JobOpening[]>(fallbackCareerOpenings);
+  const [jobs, setJobs] = useState<JobOpening[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

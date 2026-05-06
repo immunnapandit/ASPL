@@ -11,7 +11,6 @@ import Breadcrumb from '../../common/Breadcrumb';
 import { CAREER_API_URL } from '../../config/api';
 import {
   generalApplication,
-  getFallbackCareerOpeningBySlug,
   type JobOpening,
 } from '../../data/career-openings';
 import { fetchCareerOpeningBySlug } from '../../lib/careers';
@@ -23,14 +22,10 @@ type DisplayJob = JobOpening | typeof generalApplication;
 
 export default function CareerDetails() {
   const { slug } = useParams();
-  const fallbackJob =
-    slug === generalApplication.slug
-      ? generalApplication
-      : getFallbackCareerOpeningBySlug(slug);
   const [job, setJob] = useState<DisplayJob | undefined>(
-    fallbackJob
+    slug === generalApplication.slug ? generalApplication : undefined
   );
-  const [isLoading, setIsLoading] = useState(!fallbackJob && slug !== generalApplication.slug);
+  const [isLoading, setIsLoading] = useState(slug !== generalApplication.slug);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -41,13 +36,10 @@ export default function CareerDetails() {
 
   useEffect(() => {
     let isMounted = true;
-    const localJob =
-      slug === generalApplication.slug
-        ? generalApplication
-        : getFallbackCareerOpeningBySlug(slug);
+    const isGeneralApplicationSlug = slug === generalApplication.slug;
 
-    setJob(localJob);
-    setIsLoading(!localJob && slug !== generalApplication.slug);
+    setJob(isGeneralApplicationSlug ? generalApplication : undefined);
+    setIsLoading(!isGeneralApplicationSlug);
 
     fetchCareerOpeningBySlug(slug)
       .then((opening) => {
