@@ -11,7 +11,6 @@ import {
   Eye,
   FileText,
   LayoutDashboard,
-  Linkedin,
   LoaderCircle,
   LockKeyhole,
   LogOut,
@@ -48,7 +47,6 @@ type AdminCareerForm = {
   requirementsText: string;
   status: JobOpeningStatus;
   postedAt: string;
-  linkedinUrl: string;
 };
 
 type CareerApplicationStatus = 'new' | 'reviewed' | 'contacted' | 'archived';
@@ -118,7 +116,6 @@ const initialForm: AdminCareerForm = {
   requirementsText: '',
   status: 'active',
   postedAt: '',
-  linkedinUrl: '',
 };
 
 const initialSettings: CareersSettingsForm = {
@@ -193,7 +190,6 @@ function toFormState(job?: JobOpening): AdminCareerForm {
     requirementsText: toMultilineText(job.requirements),
     status: job.status,
     postedAt: toDatetimeLocalValue(job.postedAt),
-    linkedinUrl: job.linkedinUrl || '',
   };
 }
 
@@ -576,7 +572,6 @@ export default function CareersAdmin() {
       requirements: toListItems(formState.requirementsText),
       status: formState.status,
       postedAt: fromDatetimeLocalValue(formState.postedAt),
-      linkedinUrl: formState.linkedinUrl.trim(),
     };
 
     setIsSaving(true);
@@ -768,18 +763,6 @@ export default function CareersAdmin() {
     }
   };
 
-  const getPublicJobUrl = (job: JobOpening) => {
-    const path = `/careers/${job.slug}`;
-    if (typeof window === 'undefined') {
-      return path;
-    }
-
-    return new URL(path, window.location.origin).toString();
-  };
-
-  const getLinkedInShareUrl = (job: JobOpening) =>
-    `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPublicJobUrl(job))}`;
-
   const currentPanelTitle = editWindowJobId
     ? 'Edit Job'
     : activeView === 'dashboard'
@@ -928,16 +911,6 @@ export default function CareersAdmin() {
               name="postedAt"
               value={formState.postedAt}
               onChange={handleInputChange}
-            />
-          </label>
-          <label>
-            LinkedIn job URL
-            <input
-              type="url"
-              name="linkedinUrl"
-              value={formState.linkedinUrl}
-              onChange={handleInputChange}
-              placeholder="https://www.linkedin.com/jobs/view/..."
             />
           </label>
         </div>
@@ -1151,17 +1124,6 @@ export default function CareersAdmin() {
                         <Eye size={15} />
                         View
                       </Link>
-                    ) : null}
-                    {job.status === 'active' ? (
-                      <a
-                        href={job.linkedinUrl || getLinkedInShareUrl(job)}
-                        target="_blank"
-                        rel="noreferrer"
-                        title={job.linkedinUrl ? 'Open LinkedIn job' : 'Share job on LinkedIn'}
-                      >
-                        <Linkedin size={15} />
-                        LinkedIn
-                      </a>
                     ) : null}
                     <button
                       type="button"

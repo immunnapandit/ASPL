@@ -677,6 +677,50 @@
   line-height: 1.8;
 }
 
+.tv-career-share {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: -4px 0 22px;
+
+  span {
+    color: rgba(20, 34, 67, 0.68);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  a {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(10, 22, 94, 0.1);
+    border-radius: 10px;
+    background: var(--tv-common-white);
+    color: #0a66c2;
+    box-shadow: 0 8px 18px rgba(15, 49, 58, 0.06);
+
+    &:hover {
+      border-color: rgba(43, 77, 255, 0.22);
+      background: #f7fbff;
+      color: #084f95;
+    }
+
+    &:last-child {
+      color: #128c7e;
+
+      &:hover {
+        border-color: rgba(18, 140, 126, 0.25);
+        background: #f0fdf9;
+        color: #0f766e;
+      }
+    }
+  }
+}
+
 .tv-career-not-found {
   max-width: 680px;
   margin: 0 auto;
@@ -751,26 +795,6 @@
     margin-bottom: 20px;
     color: var(--tv-heading-primary);
     font-size: 20px;
-  }
-}
-
-.tv-linkedin-job-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  min-height: 48px;
-  margin: 0 0 22px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  background: #0a66c2;
-  color: var(--tv-common-white);
-  font-weight: 700;
-
-  &:hover {
-    color: var(--tv-common-white);
-    background: #084f95;
   }
 }
 
@@ -2854,6 +2878,7 @@
         color: #b42318;
       }
     }
+
   }
 
   .tv-blog-cms-auth {

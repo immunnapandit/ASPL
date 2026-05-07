@@ -9,6 +9,7 @@ import {
   MapPin,
   Upload,
 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import Breadcrumb from '../../common/Breadcrumb';
 import { CAREER_API_URL } from '../../config/api';
 import {
@@ -21,6 +22,23 @@ import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
 
 type DisplayJob = JobOpening | typeof generalApplication;
+
+function getPublicJobUrl(slug: string) {
+  const path = `/careers/${slug}`;
+  if (typeof window === 'undefined') {
+    return path;
+  }
+
+  return new URL(path, window.location.origin).toString();
+}
+
+function getLinkedInShareUrl(job: DisplayJob) {
+  return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getPublicJobUrl(job.slug))}`;
+}
+
+function getWhatsAppShareUrl(job: DisplayJob) {
+  return `https://wa.me/?text=${encodeURIComponent(`${job.title} - ${getPublicJobUrl(job.slug)}`)}`;
+}
 
 function formatPostedDate(value?: string) {
   if (!value) {
@@ -210,6 +228,29 @@ export default function CareerDetails() {
                 </div>
 
                 <h2>{job.title}</h2>
+                {!isGeneralApplication ? (
+                  <div className="tv-career-share" aria-label="Share this job">
+                    <span>Share</span>
+                    <a
+                      href={getLinkedInShareUrl(job)}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Share job on LinkedIn"
+                      aria-label="Share job on LinkedIn"
+                    >
+                      <Linkedin size={17} />
+                    </a>
+                    <a
+                      href={getWhatsAppShareUrl(job)}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Share job on WhatsApp"
+                      aria-label="Share job on WhatsApp"
+                    >
+                      <FaWhatsapp size={18} />
+                    </a>
+                  </div>
+                ) : null}
                 <p className="tv-career-detail-lead">{job.fullDescription}</p>
 
                 <div className="tv-job-section">
@@ -235,17 +276,6 @@ export default function CareerDetails() {
                 <h5>
                   {isGeneralApplication ? 'Send your resume' : 'Apply for this role'}
                 </h5>
-                {'linkedinUrl' in job && job.linkedinUrl ? (
-                  <a
-                    href={job.linkedinUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="tv-linkedin-job-link"
-                  >
-                    <Linkedin size={18} />
-                    View this job on LinkedIn
-                  </a>
-                ) : null}
                 <form onSubmit={handleApplicationSubmit} className="tv-application-form">
                   <div className="tv-form-group">
                     <label htmlFor="fullName">Full Name *</label>
