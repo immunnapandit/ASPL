@@ -108,6 +108,10 @@ const MONGODB_REQUIRE_CONNECTION = parseBoolean(
   process.env.MONGODB_REQUIRE_CONNECTION,
   Boolean(MONGODB_URI)
 );
+const MONGODB_IMPORT_JSON_ON_EMPTY = parseBoolean(
+  process.env.MONGODB_IMPORT_JSON_ON_EMPTY,
+  false
+);
 const SEED_DEFAULT_CAREER_OPENINGS = parseBoolean(
   process.env.SEED_DEFAULT_CAREER_OPENINGS,
   false
@@ -1622,7 +1626,11 @@ async function readCollectionArray(collectionName, filePath, fallback = []) {
   const collection = await getCollection(collectionName);
 
   if (collection) {
-    if (!hydratedMongoCollections.has(collectionName) && existsSync(filePath)) {
+    if (
+      MONGODB_IMPORT_JSON_ON_EMPTY &&
+      !hydratedMongoCollections.has(collectionName) &&
+      existsSync(filePath)
+    ) {
       const count = await collection.estimatedDocumentCount();
       const existingData = readJsonArrayFile(filePath, fallback);
 
