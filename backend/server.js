@@ -104,6 +104,10 @@ const BLOG_ADMIN_TOKEN = (
 ).trim();
 const MONGODB_URI = (process.env.MONGODB_URI || process.env.MONGO_URI || '').trim();
 const MONGODB_DB_NAME = (process.env.MONGODB_DB_NAME || 'aspl').trim();
+const MONGODB_REQUIRE_CONNECTION = parseBoolean(
+  process.env.MONGODB_REQUIRE_CONNECTION,
+  Boolean(MONGODB_URI)
+);
 const SEED_DEFAULT_CAREER_OPENINGS = parseBoolean(
   process.env.SEED_DEFAULT_CAREER_OPENINGS,
   false
@@ -1557,8 +1561,18 @@ async function getMongoDb() {
         return mongoDb;
       })
       .catch((error) => {
-        console.error('MongoDB connection failed. Falling back to JSON storage:', error);
+        console.error(
+          MONGODB_REQUIRE_CONNECTION
+            ? 'MongoDB connection failed. CMS storage is unavailable:'
+            : 'MongoDB connection failed. Falling back to JSON storage:',
+          error
+        );
         mongoConnectionPromise = null;
+
+        if (MONGODB_REQUIRE_CONNECTION) {
+          throw error;
+        }
+
         return null;
       });
   }
