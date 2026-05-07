@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react';
+import { type ChangeEvent, type FormEvent, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -9,41 +9,89 @@ import {
   Mail,
   MessageSquareText,
   Phone,
-  ShieldCheck,
   User,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { MCT_ENROLLMENT_API_URL } from '../../config/api';
 import '../../styles/scss/layout/_becomemct.scss';
 
+type EnrollFormState = {
+  fullName: string;
+  email: string;
+  phone: string;
+  preferredDateTime: string;
+  subject: string;
+  message: string;
+};
+
+const initialFormState: EnrollFormState = {
+  fullName: '',
+  email: '',
+  phone: '',
+  preferredDateTime: '',
+  subject: '',
+  message: '',
+};
+
 export default function BecomeMctEnroll() {
-  const handleEnrollSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [formState, setFormState] = useState(initialFormState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleEnrollChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormState((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleEnrollSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setStatusMessage('');
+    setIsSuccess(false);
+    setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
-    const fullName = formData.get('fullName');
-    const email = formData.get('email');
-    const microsoftAccountId = formData.get('microsoftAccountId');
-    const phone = formData.get('phone');
-    const preferredDateTime = formData.get('preferredDateTime');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
+    try {
+      const response = await fetch(MCT_ENROLLMENT_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formState.fullName.trim(),
+          email: formState.email.trim(),
+          phone: formState.phone.trim(),
+          preferredDateTime: formState.preferredDateTime,
+          subject: formState.subject.trim(),
+          message: formState.message.trim(),
+        }),
+      });
 
-    const body = [
-      `Full Name: ${fullName}`,
-      `Email: ${email}`,
-      `Microsoft Account ID: ${microsoftAccountId}`,
-      `Phone: ${phone}`,
-      `Preferred Date/Time: ${preferredDateTime}`,
-      '',
-      'Message:',
-      `${message}`,
-    ].join('\n');
+      const result = await response.json().catch(() => null);
 
-    const mailtoLink = `mailto:info@atisunya.com?subject=${encodeURIComponent(
-      String(subject || 'MCT Enrollment Inquiry')
-    )}&body=${encodeURIComponent(body)}`;
+      if (!response.ok) {
+        throw new Error(
+          result?.error || 'Unable to submit your enrollment request right now.'
+        );
+      }
 
-    window.location.href = mailtoLink;
+      setIsSuccess(true);
+      setStatusMessage(
+        result?.message ||
+          'Enrollment request submitted successfully. Our team will contact you soon.'
+      );
+      setFormState(initialFormState);
+    } catch (error) {
+      setIsSuccess(false);
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unable to submit your enrollment request right now.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,6 +144,8 @@ export default function BecomeMctEnroll() {
                       name="fullName"
                       type="text"
                       placeholder="Enter your full name"
+                      value={formState.fullName}
+                      onChange={handleEnrollChange}
                       required
                     />
                   </div>
@@ -110,22 +160,8 @@ export default function BecomeMctEnroll() {
                       name="email"
                       type="email"
                       placeholder="Enter your email address"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="pm-form-group">
-                  <label htmlFor="microsoftAccountId">
-                    Microsoft Account ID *
-                  </label>
-                  <div className="pm-input-shell">
-                    <ShieldCheck size={18} />
-                    <input
-                      id="microsoftAccountId"
-                      name="microsoftAccountId"
-                      type="text"
-                      placeholder="Enter your Microsoft account ID"
+                      value={formState.email}
+                      onChange={handleEnrollChange}
                       required
                     />
                   </div>
@@ -140,6 +176,8 @@ export default function BecomeMctEnroll() {
                       name="phone"
                       type="tel"
                       placeholder="Enter your phone number"
+                      value={formState.phone}
+                      onChange={handleEnrollChange}
                       required
                     />
                   </div>
@@ -153,6 +191,8 @@ export default function BecomeMctEnroll() {
                       id="preferredDateTime"
                       name="preferredDateTime"
                       type="datetime-local"
+                      value={formState.preferredDateTime}
+                      onChange={handleEnrollChange}
                       required
                     />
                   </div>
@@ -167,6 +207,8 @@ export default function BecomeMctEnroll() {
                       name="subject"
                       type="text"
                       placeholder="Enter the subject"
+                      value={formState.subject}
+                      onChange={handleEnrollChange}
                       required
                     />
                   </div>
@@ -187,18 +229,35 @@ export default function BecomeMctEnroll() {
                     name="message"
                     rows={5}
                     placeholder="Tell us about your goals, preferred batch, or any questions you have"
+                    value={formState.message}
+                    onChange={handleEnrollChange}
                     required
                   />
                 </div>
               </div>
+
+              {statusMessage ? (
+                <p
+                  className={`pm-form-message ${
+                    isSuccess ? 'is-success' : 'is-error'
+                  }`}
+                  role="status"
+                >
+                  {statusMessage}
+                </p>
+              ) : null}
 
               <div className="pm-form-footer">
                 <p>
                   Your details are used only for enrollment follow-up and
                   schedule coordination.
                 </p>
-                <button type="submit" className="pm-btn pm-btn-primary">
-                  Submit Enrollment Request
+                <button
+                  type="submit"
+                  className="pm-btn pm-btn-primary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Enrollment Request'}
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -209,6 +268,3 @@ export default function BecomeMctEnroll() {
     </section>
   );
 }
-
-
-//Comment Added

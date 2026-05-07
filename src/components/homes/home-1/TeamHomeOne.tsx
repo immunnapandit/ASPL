@@ -9,25 +9,25 @@ const teamMembers = [
   {
     name: 'Saroj Pandit',
     designation: 'Director & Founder',
-    image: '/assets/img/team/Saroj.jpg',
+    image: '/assets/img/team/Saroj.png',
     linkedin: 'https://in.linkedin.com/in/sarojpandit',
   },
   {
     name: 'Shalini Verma',
     designation: 'Director',
-    image: '/assets/img/team/Shalini.jpg',
+    image: '/assets/img/team/Shalini.png',
     linkedin: 'https://in.linkedin.com/in/shalinivermaaspl',
   },
   {
     name: 'Atul Verma',
     designation: 'Managing Director',
-    image: '/assets/img/team/Atul.jpg',
+    image: '/assets/img/team/Atul.png',
     linkedin: 'https://in.linkedin.com/in/atulk-verma',
   },
   {
     name: 'Umesh Prajapati',
     designation: 'Solution Architect',
-    image: '/assets/img/team/Umesh.jpg',
+    image: '/assets/img/team/Umesh.png',
     linkedin: 'https://in.linkedin.com/in/umeshprajapatiaspl',
   },
   {

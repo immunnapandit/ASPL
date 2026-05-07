@@ -87,7 +87,7 @@ export default function TeamHomeThree() {
           >
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/Saroj.jpg" alt="" />
+                <img src="assets/img/team/Saroj.png" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -114,7 +114,7 @@ export default function TeamHomeThree() {
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/Shalini.jpg" alt="" />
+                <img src="assets/img/team/Shalini.png" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -141,7 +141,7 @@ export default function TeamHomeThree() {
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/Atul.jpg" alt="" />
+                <img src="assets/img/team/Atul.png" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>
@@ -168,7 +168,7 @@ export default function TeamHomeThree() {
             </SwiperSlide>
             <SwiperSlide className="swiper-slide">
               <div className="single-team-item style-2">
-                <img src="assets/img/team/Umesh.jpg" alt="" />
+                <img src="assets/img/team/Umesh.png" alt="" />
                 <div className="team-social">
                   <a href="#">
                     <i className="fa-brands fa-facebook-f"></i>

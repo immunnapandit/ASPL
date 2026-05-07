@@ -88,6 +88,10 @@ const PAYMENT_BANK_MICR = (process.env.PAYMENT_BANK_MICR || '').trim();
 const PAYMENT_BANK_SWIFT_CODE = (process.env.PAYMENT_BANK_SWIFT_CODE || '').trim().toUpperCase();
 
 const CONTACT_TO_EMAIL = (process.env.CONTACT_TO_EMAIL || 'info@atisunya.co').trim();
+const MCT_ENROLLMENT_TO_EMAILS = parseCsvList(
+  process.env.MCT_ENROLLMENT_TO_EMAILS,
+  ['info@atisunya.co', 'sangeeta@atisunya.co']
+);
 const CONTACT_FROM_EMAIL = (
   process.env.CONTACT_FROM_EMAIL ||
   process.env.GRAPH_FROM_EMAIL ||
@@ -305,6 +309,10 @@ const server = BunLikeServe({
 
     if (req.method === 'POST' && url.pathname === '/api/contact') {
       return handleContactForm(req);
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/mct-enrollment') {
+      return handleMctEnrollment(req);
     }
 
     if (req.method === 'POST' && url.pathname === '/api/careers') {
@@ -773,6 +781,45 @@ async function handleContactForm(req) {
   }
 }
 
+async function handleMctEnrollment(req) {
+  const body = await safeJson(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid JSON body.' }, req);
+  }
+
+  const validation = validateMctEnrollmentPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    await sendMctEnrollmentEmail(validation.data);
+    return json(
+      200,
+      {
+        ok: true,
+        message:
+          'Enrollment request submitted successfully. Our team will contact you soon.',
+      },
+      req
+    );
+  } catch (error) {
+    console.error('MCT enrollment email delivery failed:', error);
+
+    const message = isContactEmailConfigError(error)
+      ? error.message
+      : error?.message || 'Unable to submit your enrollment request right now.';
+
+    return json(
+      isContactEmailConfigError(error) ? 500 : 502,
+      { error: message },
+      req
+    );
+  }
+}
+
 async function handleVerifyPayment(req) {
   if (!RAZORPAY_KEY_SECRET) {
     return json(500, { error: 'Missing Razorpay key secret.' }, req);
@@ -1031,6 +1078,30 @@ async function sendContactEmail(contact) {
   });
 }
 
+async function sendMctEnrollmentEmail(enrollment) {
+  const submittedAt = new Date().toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  await sendNotificationEmail({
+    from: {
+      name: 'AtiSunya MCT Enrollment',
+      address: CONTACT_FROM_EMAIL,
+    },
+    to: MCT_ENROLLMENT_TO_EMAILS,
+    replyTo: {
+      name: sanitizeEmailHeaderValue(enrollment.fullName),
+      address: enrollment.email,
+    },
+    subject: `MCT enrollment request from ${sanitizeEmailHeaderValue(
+      enrollment.fullName
+    )}`,
+    text: buildMctEnrollmentEmailText(enrollment, submittedAt),
+    html: buildMctEnrollmentEmailHtml(enrollment, submittedAt),
+  });
+}
+
 async function sendNotificationEmail(message) {
   if (isGraphEmailConfigured()) {
     await sendGraphEmail(message);
@@ -1283,6 +1354,56 @@ function buildContactEmailHtml(contact, submittedAt) {
     </html>`;
 }
 
+function buildMctEnrollmentEmailText(enrollment, submittedAt) {
+  return [
+    'New MCT enrollment request',
+    '',
+    `Name: ${enrollment.fullName}`,
+    `Email: ${enrollment.email}`,
+    `Phone: ${enrollment.phone}`,
+    `Preferred date/time: ${enrollment.preferredDateTime}`,
+    `Subject: ${enrollment.subject}`,
+    `Submitted at: ${submittedAt}`,
+    '',
+    'Message:',
+    enrollment.message,
+  ].join('\n');
+}
+
+function buildMctEnrollmentEmailHtml(enrollment, submittedAt) {
+  const rows = [
+    ['Name', enrollment.fullName],
+    ['Email', enrollment.email],
+    ['Phone', enrollment.phone],
+    ['Preferred date/time', enrollment.preferredDateTime],
+    ['Subject', enrollment.subject],
+    ['Submitted at', submittedAt],
+  ]
+    .map(
+      ([label, value]) => `
+        <tr>
+          <th align="left" style="padding: 8px 12px; border: 1px solid #ddd; background: #f7f7f7;">${escapeHtml(label)}</th>
+          <td style="padding: 8px 12px; border: 1px solid #ddd;">${escapeHtml(value)}</td>
+        </tr>`
+    )
+    .join('');
+
+  return `
+    <!doctype html>
+    <html lang="en">
+      <body style="font-family: Arial, sans-serif; color: #222; line-height: 1.5;">
+        <h2 style="margin: 0 0 16px;">New MCT enrollment request</h2>
+        <table style="border-collapse: collapse; margin-bottom: 18px;">
+          ${rows}
+        </table>
+        <p style="margin: 0 0 8px;"><strong>Message</strong></p>
+        <div style="white-space: pre-wrap; border: 1px solid #ddd; padding: 12px;">${escapeHtml(
+          enrollment.message
+        )}</div>
+      </body>
+    </html>`;
+}
+
 function createContactEmailConfigError(message) {
   const error = new Error(message);
   error.code = 'CONTACT_EMAIL_CONFIG_ERROR';
@@ -1434,6 +1555,51 @@ function validateContactPayload(data) {
       email,
       phone,
       service,
+      message,
+    },
+  };
+}
+
+function validateMctEnrollmentPayload(data) {
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Request body is required.' };
+  }
+
+  const fullName = getObjectString(data, 'fullName');
+  const email = getObjectString(data, 'email').toLowerCase();
+  const phone = getObjectString(data, 'phone');
+  const preferredDateTime = getObjectString(data, 'preferredDateTime');
+  const subject = getObjectString(data, 'subject') || 'MCT Enrollment Inquiry';
+  const message = getObjectString(data, 'message');
+
+  if (!fullName) {
+    return { ok: false, error: 'Full name is required.' };
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  if (!phone) {
+    return { ok: false, error: 'Phone number is required.' };
+  }
+
+  if (!preferredDateTime) {
+    return { ok: false, error: 'Preferred date/time is required.' };
+  }
+
+  if (!message) {
+    return { ok: false, error: 'Message is required.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      fullName,
+      email,
+      phone,
+      preferredDateTime,
+      subject,
       message,
     },
   };

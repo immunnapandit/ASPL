@@ -9,26 +9,25 @@ export default function TeamDetailsArea() {
             data-wow-delay=".3s"
           >
             <div className="tv-team-thum-single">
-              <img src="assets/img/team/team-details.png" alt="" />
+              <img src="/assets/img/team/Atul.png" alt="Atul Verma" />
             </div>
           </div>
           <div className="col-xl-7 col-lg-7 wow itfadeUp">
             <div className="tv-team-single-content">
-              <h2>Arush Aggarwal</h2>
-              <h6>CEO & Founder</h6>
+              <h2>Atul Verma</h2>
+              <h6>Managing Director</h6>
               <p>
-                Habitant metus lobortis quam pharetra maximus parturient
-                fringilla taciti. Quisque pulvinar facilisi tempor condimentum
-                dui pharetra ad fringilla cursus. Consectetur nisl lacus incepto
-                vestibu lum mi fermentum cubilia.
+                Atul helps lead AtiSunya Private Limited with a focus on
+                enterprise consulting, Microsoft Dynamics 365 delivery, and
+                practical digital transformation outcomes for growing teams.
               </p>
               <div className="team-contact">
                 <a href="tel:216-564-3678">
                   <i className="fa-solid fa-phone"></i>216-564-3678
                 </a>
-                <a href="mailto:arush.aggarwal@example.com">
+                <a href="mailto:info@atisunya.com">
                   <i className="fa-solid fa-envelope"></i>
-                  arush.aggarwal@example.com
+                  info@atisunya.com
                 </a>
               </div>
               <div className="tv-header-top-social-box">
@@ -38,7 +37,12 @@ export default function TeamDetailsArea() {
                 <a href="#">
                   <i className="fa-brands fa-twitter"></i>
                 </a>
-                <a href="#">
+                <a
+                  href="https://in.linkedin.com/in/atulk-verma"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Atul Verma LinkedIn profile"
+                >
                   <i className="fa-brands fa-linkedin-in"></i>
                 </a>
                 <a href="#">

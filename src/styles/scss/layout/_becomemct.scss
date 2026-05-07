@@ -563,8 +563,8 @@
 
 .pm-enroll-shell {
   display: grid;
-  grid-template-columns: minmax(300px, 0.42fr) minmax(0, 0.58fr);
-  gap: 28px;
+  grid-template-columns: minmax(310px, 0.38fr) minmax(0, 0.62fr);
+  gap: 32px;
   align-items: stretch;
 }
 
@@ -578,7 +578,7 @@
 .pm-enroll-aside {
   position: relative;
   overflow: hidden;
-  padding: 34px;
+  padding: 38px;
   background: var(--tv-theme-1);
   color: var(--tv-common-white);
 }
@@ -623,9 +623,10 @@
 .pm-back-link {
   position: relative;
   z-index: 1;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
+  width: fit-content;
   margin-bottom: 34px;
   color: var(--tv-common-white);
   font-weight: 800;
@@ -662,11 +663,11 @@
 }
 
 .pm-enroll-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f7f8ff 100%);
+  background: #ffffff;
 }
 
 .pm-enroll-card .pm-enroll-form {
-  padding: 30px;
+  padding: 34px;
 }
 
 .pm-modal-overlay {
@@ -778,7 +779,7 @@
 
 .pm-enroll-form {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   padding: 22px 28px 28px;
 }
 
@@ -787,7 +788,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 18px;
-  padding-bottom: 10px;
+  padding-bottom: 14px;
   border-bottom: 1px solid rgba(43, 77, 255, 0.14);
 }
 
@@ -809,7 +810,7 @@
 .pm-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .pm-form-group {
@@ -827,8 +828,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
-  padding: 0 16px;
+  min-height: 58px;
+  padding: 0 18px;
   border: 1px solid rgba(28, 31, 86, 0.14);
   border-radius: 8px;
   background: var(--tv-common-white);
@@ -875,8 +876,29 @@
 }
 
 .pm-input-shell-textarea textarea {
-  min-height: 140px;
+  min-height: 132px;
   resize: vertical;
+}
+
+.pm-form-message {
+  margin: -2px 0 0;
+  padding: 13px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.pm-form-message.is-success {
+  border: 1px solid rgba(16, 185, 129, 0.26);
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+}
+
+.pm-form-message.is-error {
+  border: 1px solid rgba(220, 38, 38, 0.24);
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
 }
 
 .pm-form-footer {
@@ -884,8 +906,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  margin-top: 4px;
-  padding-top: 18px;
+  margin-top: 0;
+  padding-top: 20px;
   border-top: 1px solid rgba(43, 77, 255, 0.14);
 }
 
