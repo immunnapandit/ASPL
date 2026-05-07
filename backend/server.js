@@ -2,6 +2,7 @@ import { createHash, createHmac, timingSafeEqual, randomUUID } from 'node:crypto
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 import nodemailer from 'nodemailer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -101,6 +102,8 @@ const CAREERS_ADMIN_TOKEN = (
 const BLOG_ADMIN_TOKEN = (
   process.env.BLOG_ADMIN_TOKEN || 'change-me-blog-admin-token'
 ).trim();
+const MONGODB_URI = (process.env.MONGODB_URI || process.env.MONGO_URI || '').trim();
+const MONGODB_DB_NAME = (process.env.MONGODB_DB_NAME || 'aspl').trim();
 const SEED_DEFAULT_CAREER_OPENINGS = parseBoolean(
   process.env.SEED_DEFAULT_CAREER_OPENINGS,
   false
@@ -263,6 +266,9 @@ const DEFAULT_CAREERS_SETTINGS = {
 
 let contactTransporter = null;
 let contactTransporterVerified = false;
+let mongoClient = null;
+let mongoDb = null;
+let mongoConnectionPromise = null;
 const exchangeRateCache = new Map();
 
 ensureDataStore();
@@ -484,6 +490,8 @@ function BunLikeServe({ port, fetch }) {
           console.log(`ASPL backend listening on http://localhost:${port}`);
 
           try {
+            await ensureMongoIndexes();
+
             if (isGraphEmailConfigured()) {
               console.log('Microsoft Graph mail provider is configured.');
             } else if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
@@ -691,7 +699,7 @@ async function handleCreateOrder(req) {
 
   const razorpayOrder = await razorpayResponse.json();
 
-  upsertPaymentRecord({
+  await upsertPaymentRecord({
     orderId: razorpayOrder.id,
     receipt,
     status: 'created',
@@ -730,11 +738,19 @@ async function handleContactForm(req) {
     return json(400, { error: validation.error }, req);
   }
 
+  const contactRecord = await persistContactSubmission(validation.data);
+
   try {
     await sendContactEmail(validation.data);
+    await updateContactSubmissionStatus(contactRecord.id, 'email_sent');
     return json(200, { ok: true, message: 'Message sent successfully.' }, req);
   } catch (error) {
     console.error('Contact email delivery failed:', error);
+    await updateContactSubmissionStatus(
+      contactRecord.id,
+      'email_failed',
+      error instanceof Error ? error.message : 'Unknown email delivery error.'
+    );
 
     const message = isContactEmailConfigError(error)
       ? error.message
@@ -760,7 +776,7 @@ async function handleVerifyPayment(req) {
   }
 
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body.data ?? {};
-  const orderRecord = findPaymentRecord({
+  const orderRecord = await findPaymentRecord({
     orderId: razorpay_order_id,
     paymentId: razorpay_payment_id,
   });
@@ -777,7 +793,7 @@ async function handleVerifyPayment(req) {
   const verified = safeEqual(generatedSignature, razorpay_signature);
 
   if (!verified) {
-    upsertPaymentRecord({
+    await upsertPaymentRecord({
       orderId: orderIdForVerification,
       paymentId: razorpay_payment_id,
       signature: razorpay_signature,
@@ -808,7 +824,7 @@ async function handleVerifyPayment(req) {
     }
   }
 
-  upsertPaymentRecord({
+  await upsertPaymentRecord({
     orderId: orderIdForVerification,
     paymentId: razorpay_payment_id,
     signature: razorpay_signature,
@@ -862,7 +878,7 @@ async function handleWebhook(req) {
   const paymentEntity = payload.payload?.payment?.entity;
   const orderEntity = payload.payload?.order?.entity;
 
-  upsertPaymentRecord({
+  await upsertPaymentRecord({
     orderId: orderEntity?.id || paymentEntity?.order_id,
     paymentId: paymentEntity?.id,
     status: paymentEntity?.status || event || 'webhook_received',
@@ -1514,16 +1530,175 @@ function setDataStorePaths(directory) {
   newsletterStoreFile = join(directory, 'newsletter-subscribers.jsonl');
 }
 
-function readPayments() {
+async function getMongoDb() {
+  if (!MONGODB_URI) {
+    return null;
+  }
+
+  if (mongoDb) {
+    return mongoDb;
+  }
+
+  if (!mongoConnectionPromise) {
+    mongoConnectionPromise = MongoClient.connect(MONGODB_URI, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: false,
+        deprecationErrors: true,
+      },
+    })
+      .then((client) => {
+        mongoClient = client;
+        mongoDb = client.db(MONGODB_DB_NAME);
+        console.log(`MongoDB connected: ${MONGODB_DB_NAME}`);
+        return mongoDb;
+      })
+      .catch((error) => {
+        console.error('MongoDB connection failed. Falling back to JSON storage:', error);
+        mongoConnectionPromise = null;
+        return null;
+      });
+  }
+
+  return mongoConnectionPromise;
+}
+
+async function getCollection(name) {
+  const db = await getMongoDb();
+  return db ? db.collection(name) : null;
+}
+
+async function ensureMongoIndexes() {
+  const db = await getMongoDb();
+
+  if (!db) {
+    return;
+  }
+
+  await Promise.all([
+    db.collection('careerOpenings').createIndex({ id: 1 }, { unique: true }),
+    db.collection('careerOpenings').createIndex({ slug: 1 }),
+    db.collection('careerApplications').createIndex({ id: 1 }, { unique: true }),
+    db.collection('careerApplications').createIndex({ submittedAt: -1 }),
+    db.collection('careersSettings').createIndex({ id: 1 }, { unique: true }),
+    db.collection('blogPosts').createIndex({ id: 1 }, { unique: true }),
+    db.collection('blogPosts').createIndex({ slug: 1 }),
+    db.collection('blogComments').createIndex({ id: 1 }, { unique: true }),
+    db.collection('blogComments').createIndex({ postSlug: 1, createdAt: -1 }),
+    db.collection('newsletterSubscriptions').createIndex({ email: 1 }, { unique: true }),
+    db.collection('contactSubmissions').createIndex({ submittedAt: -1 }),
+    db.collection('payments').createIndex({ orderId: 1 }, { sparse: true }),
+    db.collection('payments').createIndex({ paymentId: 1 }, { sparse: true }),
+  ]);
+}
+
+function withoutMongoId(document) {
+  if (!document || typeof document !== 'object') {
+    return document;
+  }
+
+  const { _id, ...rest } = document;
+  return rest;
+}
+
+async function readCollectionArray(collectionName, filePath, fallback = []) {
+  const collection = await getCollection(collectionName);
+
+  if (collection) {
+    const count = await collection.countDocuments();
+
+    if (count === 0 && existsSync(filePath)) {
+      const existingData = readJsonArrayFile(filePath, fallback);
+      if (existingData.length) {
+        await collection.insertMany(existingData, { ordered: false });
+      }
+      return existingData;
+    }
+
+    return collection.find({}, { projection: { _id: 0 } }).toArray();
+  }
+
+  return readJsonArrayFile(filePath, fallback);
+}
+
+async function replaceCollectionArray(collectionName, filePath, data) {
+  const collection = await getCollection(collectionName);
+
+  if (collection) {
+    await collection.deleteMany({});
+    if (data.length) {
+      await collection.insertMany(data, { ordered: false });
+    }
+    return;
+  }
+
+  writeJsonFile(filePath, data);
+}
+
+async function readCollectionObject(collectionName, filePath, fallback = {}) {
+  const collection = await getCollection(collectionName);
+
+  if (collection) {
+    const document = await collection.findOne({ id: 'settings' }, { projection: { _id: 0 } });
+
+    if (document) {
+      return withoutMongoId(document);
+    }
+
+    const existingData = readJsonObjectFile(filePath, fallback);
+    await collection.updateOne(
+      { id: 'settings' },
+      { $set: { id: 'settings', ...existingData } },
+      { upsert: true }
+    );
+    return existingData;
+  }
+
+  return readJsonObjectFile(filePath, fallback);
+}
+
+async function writeCollectionObject(collectionName, filePath, data) {
+  const collection = await getCollection(collectionName);
+
+  if (collection) {
+    await collection.updateOne(
+      { id: 'settings' },
+      { $set: { id: 'settings', ...data } },
+      { upsert: true }
+    );
+    return;
+  }
+
+  writeJsonFile(filePath, data);
+}
+
+async function readPayments() {
+  const collection = await getCollection('payments');
+
+  if (collection) {
+    const payments = await collection.find({}, { projection: { _id: 0 } }).toArray();
+    return { payments };
+  }
+
   return JSON.parse(readFileSync(paymentsFile, 'utf8'));
 }
 
-function writePayments(data) {
+async function writePayments(data) {
+  const collection = await getCollection('payments');
+
+  if (collection) {
+    await collection.deleteMany({});
+    if (data.payments?.length) {
+      await collection.insertMany(data.payments, { ordered: false });
+    }
+    return;
+  }
+
   writeFileSync(paymentsFile, JSON.stringify(data, null, 2));
 }
 
-function findPaymentRecord({ orderId, paymentId }) {
-  const store = readPayments();
+async function findPaymentRecord({ orderId, paymentId }) {
+  const store = await readPayments();
   return (
     store.payments.find(
       (payment) =>
@@ -1532,8 +1707,24 @@ function findPaymentRecord({ orderId, paymentId }) {
   );
 }
 
-function upsertPaymentRecord(partial) {
-  const store = readPayments();
+async function upsertPaymentRecord(partial) {
+  const collection = await getCollection('payments');
+
+  if (collection) {
+    const filters = [
+      partial.orderId ? { orderId: partial.orderId } : null,
+      partial.paymentId ? { paymentId: partial.paymentId } : null,
+    ].filter(Boolean);
+
+    await collection.updateOne(
+      filters.length > 1 ? { $or: filters } : filters[0],
+      { $set: partial },
+      { upsert: true }
+    );
+    return;
+  }
+
+  const store = await readPayments();
   const index = store.payments.findIndex(
     (payment) =>
       payment.orderId === partial.orderId ||
@@ -1549,7 +1740,7 @@ function upsertPaymentRecord(partial) {
     store.payments.push(partial);
   }
 
-  writePayments(store);
+  await writePayments(store);
 }
 
 function safeEqual(a, b) {
@@ -1718,7 +1909,7 @@ async function handleCareerApplication(req) {
   }
 
   try {
-    const record = persistCareerApplicationRecord(validation.data);
+    const record = await persistCareerApplicationRecord(validation.data);
 
     try {
       await sendCareerApplicationEmail(validation.data, record);
@@ -1740,8 +1931,8 @@ async function handleCareerApplication(req) {
   }
 }
 
-function handleCareerOpeningsRequest(req) {
-  const openings = readCareerOpenings()
+async function handleCareerOpeningsRequest(req) {
+  const openings = (await readCareerOpenings())
     .filter((opening) => opening.status === 'active')
     .sort((left, right) =>
       (right.postedAt || right.updatedAt).localeCompare(left.postedAt || left.updatedAt)
@@ -1750,14 +1941,14 @@ function handleCareerOpeningsRequest(req) {
   return json(200, { ok: true, openings }, req);
 }
 
-function handleAdminCareerOpeningsList(req) {
+async function handleAdminCareerOpeningsList(req) {
   const authError = validateAdminRequest(req);
 
   if (authError) {
     return authError;
   }
 
-  const openings = readCareerOpenings().sort((left, right) =>
+  const openings = (await readCareerOpenings()).sort((left, right) =>
     right.updatedAt.localeCompare(left.updatedAt)
   );
   return json(200, { ok: true, openings }, req);
@@ -1782,7 +1973,7 @@ async function handleAdminCareerOpeningCreate(req) {
     return json(400, { error: validation.error }, req);
   }
 
-  const openings = readCareerOpenings();
+  const openings = await readCareerOpenings();
   const now = new Date().toISOString();
   const opening = {
     id: randomUUID(),
@@ -1791,7 +1982,7 @@ async function handleAdminCareerOpeningCreate(req) {
     updatedAt: now,
   };
 
-  writeCareerOpenings([opening, ...openings]);
+  await saveCareerOpening(opening, [opening, ...openings]);
   return json(200, { ok: true, opening }, req);
 }
 
@@ -1814,7 +2005,7 @@ async function handleAdminCareerOpeningUpdate(req, openingId) {
     return json(400, { error: validation.error }, req);
   }
 
-  const openings = readCareerOpenings();
+  const openings = await readCareerOpenings();
   const currentOpening = openings.find((opening) => opening.id === openingId);
 
   if (!currentOpening) {
@@ -1828,38 +2019,39 @@ async function handleAdminCareerOpeningUpdate(req, openingId) {
     updatedAt: new Date().toISOString(),
   };
 
-  writeCareerOpenings(
+  await saveCareerOpening(
+    opening,
     openings.map((item) => (item.id === openingId ? opening : item))
   );
 
   return json(200, { ok: true, opening }, req);
 }
 
-function handleAdminCareerOpeningDelete(req, openingId) {
+async function handleAdminCareerOpeningDelete(req, openingId) {
   const authError = validateAdminRequest(req);
 
   if (authError) {
     return authError;
   }
 
-  const openings = readCareerOpenings();
+  const openings = await readCareerOpenings();
 
   if (!openings.some((opening) => opening.id === openingId)) {
     return json(404, { error: 'Opening not found.' }, req);
   }
 
-  writeCareerOpenings(openings.filter((opening) => opening.id !== openingId));
+  await deleteCareerOpening(openingId, openings.filter((opening) => opening.id !== openingId));
   return json(200, { ok: true }, req);
 }
 
-function handleAdminCareerApplicationsList(req) {
+async function handleAdminCareerApplicationsList(req) {
   const authError = validateAdminRequest(req);
 
   if (authError) {
     return authError;
   }
 
-  const applications = readCareerApplications().sort((left, right) =>
+  const applications = (await readCareerApplications()).sort((left, right) =>
     right.submittedAt.localeCompare(left.submittedAt)
   );
   return json(200, { ok: true, applications }, req);
@@ -1884,7 +2076,7 @@ async function handleAdminCareerApplicationUpdate(req, applicationId) {
     return json(400, { error: validation.error }, req);
   }
 
-  const applications = readCareerApplications();
+  const applications = await readCareerApplications();
   const currentApplication = applications.find((item) => item.id === applicationId);
 
   if (!currentApplication) {
@@ -1897,21 +2089,22 @@ async function handleAdminCareerApplicationUpdate(req, applicationId) {
     updatedAt: new Date().toISOString(),
   };
 
-  writeCareerApplications(
+  await saveCareerApplication(
+    application,
     applications.map((item) => (item.id === applicationId ? application : item))
   );
 
   return json(200, { ok: true, application }, req);
 }
 
-function handleAdminCareersSettingsGet(req) {
+async function handleAdminCareersSettingsGet(req) {
   const authError = validateAdminRequest(req);
 
   if (authError) {
     return authError;
   }
 
-  return json(200, { ok: true, settings: readCareersSettings() }, req);
+  return json(200, { ok: true, settings: await readCareersSettings() }, req);
 }
 
 async function handleAdminCareersSettingsUpdate(req) {
@@ -1933,20 +2126,20 @@ async function handleAdminCareersSettingsUpdate(req) {
     return json(400, { error: validation.error }, req);
   }
 
-  writeCareersSettings(validation.data);
+  await writeCareersSettings(validation.data);
   return json(200, { ok: true, settings: validation.data }, req);
 }
 
-function handleBlogPostsRequest(req) {
-  const posts = readBlogPosts()
+async function handleBlogPostsRequest(req) {
+  const posts = (await readBlogPosts())
     .filter((post) => post.status === 'published')
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
 
   return json(200, { ok: true, posts }, req);
 }
 
-function handleBlogPostDetailsRequest(req, slug) {
-  const post = readBlogPosts().find(
+async function handleBlogPostDetailsRequest(req, slug) {
+  const post = (await readBlogPosts()).find(
     (item) => item.slug === slug && item.status === 'published'
   );
 
@@ -1957,8 +2150,8 @@ function handleBlogPostDetailsRequest(req, slug) {
   return json(200, { ok: true, post }, req);
 }
 
-function handleBlogCommentsList(req, slug) {
-  const post = readBlogPosts().find(
+async function handleBlogCommentsList(req, slug) {
+  const post = (await readBlogPosts()).find(
     (item) => item.slug === slug && item.status === 'published'
   );
 
@@ -1966,7 +2159,7 @@ function handleBlogCommentsList(req, slug) {
     return json(404, { error: 'Blog post not found.' }, req);
   }
 
-  const comments = readBlogComments()
+  const comments = (await readBlogComments())
     .filter((comment) => comment.postSlug === slug && comment.status === 'approved')
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
 
@@ -1986,7 +2179,7 @@ async function handleBlogCommentCreate(req, slug) {
     return json(400, { error: validation.error }, req);
   }
 
-  const post = readBlogPosts().find(
+  const post = (await readBlogPosts()).find(
     (item) => item.slug === slug && item.status === 'published'
   );
 
@@ -2009,18 +2202,19 @@ async function handleBlogCommentCreate(req, slug) {
     updatedAt: now,
   };
 
-  writeBlogComments([comment, ...readBlogComments()]);
+  const comments = await readBlogComments();
+  await saveBlogComment(comment, [comment, ...comments]);
   return json(201, { ok: true, comment }, req);
 }
 
-function handleAdminBlogPostsList(req) {
+async function handleAdminBlogPostsList(req) {
   const authError = validateAdminRequest(req, 'blog');
 
   if (authError) {
     return authError;
   }
 
-  const posts = readBlogPosts().sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+  const posts = (await readBlogPosts()).sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
   return json(200, { ok: true, posts }, req);
 }
 
@@ -2043,7 +2237,7 @@ async function handleAdminBlogPostCreate(req) {
     return json(400, { error: validation.error }, req);
   }
 
-  const posts = readBlogPosts();
+  const posts = await readBlogPosts();
   const now = new Date().toISOString();
   const post = {
     id: randomUUID(),
@@ -2053,7 +2247,7 @@ async function handleAdminBlogPostCreate(req) {
     updatedAt: now,
   };
 
-  writeBlogPosts([post, ...posts]);
+  await saveBlogPost(post, [post, ...posts]);
   return json(200, { ok: true, post }, req);
 }
 
@@ -2076,7 +2270,7 @@ async function handleAdminBlogPostUpdate(req, postId) {
     return json(400, { error: validation.error }, req);
   }
 
-  const posts = readBlogPosts();
+  const posts = await readBlogPosts();
   const currentPost = posts.find((post) => post.id === postId);
 
   if (!currentPost) {
@@ -2094,24 +2288,24 @@ async function handleAdminBlogPostUpdate(req, postId) {
     updatedAt: now,
   };
 
-  writeBlogPosts(posts.map((item) => (item.id === postId ? post : item)));
+  await saveBlogPost(post, posts.map((item) => (item.id === postId ? post : item)));
   return json(200, { ok: true, post }, req);
 }
 
-function handleAdminBlogPostDelete(req, postId) {
+async function handleAdminBlogPostDelete(req, postId) {
   const authError = validateAdminRequest(req, 'blog');
 
   if (authError) {
     return authError;
   }
 
-  const posts = readBlogPosts();
+  const posts = await readBlogPosts();
 
   if (!posts.some((post) => post.id === postId)) {
     return json(404, { error: 'Post not found.' }, req);
   }
 
-  writeBlogPosts(posts.filter((post) => post.id !== postId));
+  await deleteBlogPost(postId, posts.filter((post) => post.id !== postId));
   return json(200, { ok: true }, req);
 }
 
@@ -2172,7 +2366,7 @@ async function handleNewsletterSubscribe(req) {
     );
   }
 
-  const existingSubscription = getExistingNewsletterSubscription(validation.data.email);
+  const existingSubscription = await getExistingNewsletterSubscription(validation.data.email);
 
   if (existingSubscription?.status === 'subscribed') {
     return json(
@@ -2194,7 +2388,7 @@ async function handleNewsletterSubscribe(req) {
     subscribedAt: new Date().toISOString(),
   };
 
-  persistNewsletterSubscription(subscription);
+  await persistNewsletterSubscription(subscription);
 
   try {
     await sendNewsletterSubscriptionEmail(subscription);
@@ -2213,7 +2407,7 @@ async function handleNewsletterSubscribe(req) {
 }
 
 async function sendCareerApplicationEmail(application, record) {
-  const settings = readCareersSettings();
+  const settings = await readCareersSettings();
   const submittedAt = new Date(record.submittedAt).toLocaleString('en-IN', {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -2693,24 +2887,57 @@ function validateAdminRequest(req, scope = 'careers') {
   return null;
 }
 
-function readCareerOpenings() {
-  return readJsonArrayFile(careerOpeningsFile, []);
+async function readCareerOpenings() {
+  return readCollectionArray('careerOpenings', careerOpeningsFile, []);
 }
 
-function writeCareerOpenings(openings) {
-  writeJsonFile(careerOpeningsFile, openings);
+async function writeCareerOpenings(openings) {
+  await replaceCollectionArray('careerOpenings', careerOpeningsFile, openings);
 }
 
-function readCareerApplications() {
-  return readJsonArrayFile(careerApplicationsFile, []);
+async function saveCareerOpening(opening, fallbackOpenings) {
+  const collection = await getCollection('careerOpenings');
+
+  if (collection) {
+    await collection.replaceOne({ id: opening.id }, opening, { upsert: true });
+    return;
+  }
+
+  await writeCareerOpenings(fallbackOpenings);
 }
 
-function writeCareerApplications(applications) {
-  writeJsonFile(careerApplicationsFile, applications);
+async function deleteCareerOpening(openingId, fallbackOpenings) {
+  const collection = await getCollection('careerOpenings');
+
+  if (collection) {
+    await collection.deleteOne({ id: openingId });
+    return;
+  }
+
+  await writeCareerOpenings(fallbackOpenings);
 }
 
-function persistCareerApplicationRecord(application) {
-  const applications = readCareerApplications();
+async function readCareerApplications() {
+  return readCollectionArray('careerApplications', careerApplicationsFile, []);
+}
+
+async function writeCareerApplications(applications) {
+  await replaceCollectionArray('careerApplications', careerApplicationsFile, applications);
+}
+
+async function saveCareerApplication(application, fallbackApplications) {
+  const collection = await getCollection('careerApplications');
+
+  if (collection) {
+    await collection.replaceOne({ id: application.id }, application, { upsert: true });
+    return;
+  }
+
+  await writeCareerApplications(fallbackApplications);
+}
+
+async function persistCareerApplicationRecord(application) {
+  const applications = await readCareerApplications();
   const now = new Date().toISOString();
   const record = {
     id: randomUUID(),
@@ -2728,35 +2955,68 @@ function persistCareerApplicationRecord(application) {
     updatedAt: now,
   };
 
-  writeCareerApplications([record, ...applications]);
+  await saveCareerApplication(record, [record, ...applications]);
   return record;
 }
 
-function readCareersSettings() {
+async function readCareersSettings() {
   return {
     ...DEFAULT_CAREERS_SETTINGS,
-    ...readJsonObjectFile(careersSettingsFile, DEFAULT_CAREERS_SETTINGS),
+    ...(await readCollectionObject('careersSettings', careersSettingsFile, DEFAULT_CAREERS_SETTINGS)),
   };
 }
 
-function writeCareersSettings(settings) {
-  writeJsonFile(careersSettingsFile, settings);
+async function writeCareersSettings(settings) {
+  await writeCollectionObject('careersSettings', careersSettingsFile, settings);
 }
 
-function readBlogPosts() {
-  return readJsonArrayFile(blogPostsFile, []);
+async function readBlogPosts() {
+  return readCollectionArray('blogPosts', blogPostsFile, []);
 }
 
-function writeBlogPosts(posts) {
-  writeJsonFile(blogPostsFile, posts);
+async function writeBlogPosts(posts) {
+  await replaceCollectionArray('blogPosts', blogPostsFile, posts);
 }
 
-function readBlogComments() {
-  return readJsonArrayFile(blogCommentsFile, []);
+async function saveBlogPost(post, fallbackPosts) {
+  const collection = await getCollection('blogPosts');
+
+  if (collection) {
+    await collection.replaceOne({ id: post.id }, post, { upsert: true });
+    return;
+  }
+
+  await writeBlogPosts(fallbackPosts);
 }
 
-function writeBlogComments(comments) {
-  writeJsonFile(blogCommentsFile, comments);
+async function deleteBlogPost(postId, fallbackPosts) {
+  const collection = await getCollection('blogPosts');
+
+  if (collection) {
+    await collection.deleteOne({ id: postId });
+    return;
+  }
+
+  await writeBlogPosts(fallbackPosts);
+}
+
+async function readBlogComments() {
+  return readCollectionArray('blogComments', blogCommentsFile, []);
+}
+
+async function writeBlogComments(comments) {
+  await replaceCollectionArray('blogComments', blogCommentsFile, comments);
+}
+
+async function saveBlogComment(comment, fallbackComments) {
+  const collection = await getCollection('blogComments');
+
+  if (collection) {
+    await collection.replaceOne({ id: comment.id }, comment, { upsert: true });
+    return;
+  }
+
+  await writeBlogComments(fallbackComments);
 }
 
 function readJsonArrayFile(filePath, fallback) {
@@ -2795,7 +3055,55 @@ function writeJsonFile(filePath, data) {
   writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
 }
 
-function getExistingNewsletterSubscription(email) {
+async function persistContactSubmission(contact) {
+  const now = new Date().toISOString();
+  const record = {
+    id: randomUUID(),
+    ...contact,
+    status: 'received',
+    submittedAt: now,
+    updatedAt: now,
+  };
+  const collection = await getCollection('contactSubmissions');
+
+  if (collection) {
+    await collection.insertOne(record);
+  }
+
+  return record;
+}
+
+async function updateContactSubmissionStatus(id, status, errorMessage = '') {
+  const collection = await getCollection('contactSubmissions');
+
+  if (!collection) {
+    return;
+  }
+
+  await collection.updateOne(
+    { id },
+    {
+      $set: {
+        status,
+        errorMessage,
+        updatedAt: new Date().toISOString(),
+      },
+    }
+  );
+}
+
+async function getExistingNewsletterSubscription(email) {
+  const collection = await getCollection('newsletterSubscriptions');
+
+  if (collection) {
+    return withoutMongoId(
+      await collection.findOne(
+        { email },
+        { projection: { _id: 0 }, sort: { subscribedAt: -1 } }
+      )
+    );
+  }
+
   if (!existsSync(newsletterStoreFile)) {
     return null;
   }
@@ -2819,7 +3127,18 @@ function getExistingNewsletterSubscription(email) {
   return null;
 }
 
-function persistNewsletterSubscription(subscription) {
+async function persistNewsletterSubscription(subscription) {
+  const collection = await getCollection('newsletterSubscriptions');
+
+  if (collection) {
+    await collection.updateOne(
+      { email: subscription.email },
+      { $set: subscription },
+      { upsert: true }
+    );
+    return;
+  }
+
   appendFileSync(newsletterStoreFile, `${JSON.stringify(subscription)}\n`, 'utf8');
 }
 
