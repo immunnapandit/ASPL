@@ -867,13 +867,13 @@ export default function CareersAdmin() {
           <h4>Role narrative</h4>
         </div>
         <label>
-          Full description
+          Job Summary
           <textarea
             name="fullDescription"
             value={formState.fullDescription}
             onChange={handleInputChange}
             rows={5}
-            placeholder="A richer role overview shown on the job details page."
+            placeholder="Full description shown on the job details page."
             required
           />
         </label>
