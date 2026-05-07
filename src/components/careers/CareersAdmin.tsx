@@ -570,7 +570,7 @@ export default function CareersAdmin() {
       location: formState.location.trim(),
       department: formState.department.trim(),
       experience: formState.experience.trim(),
-      description: formState.description.trim(),
+      description: '',
       fullDescription: formState.fullDescription.trim(),
       responsibilities: toListItems(formState.responsibilitiesText),
       requirements: toListItems(formState.requirementsText),
@@ -866,18 +866,6 @@ export default function CareersAdmin() {
         <div className="tv-careers-admin-form__section-head">
           <h4>Role narrative</h4>
         </div>
-        <label>
-          Short description
-          <textarea
-            name="description"
-            value={formState.description}
-            onChange={handleInputChange}
-            rows={3}
-            placeholder="A short summary shown on the careers listing cards."
-            required
-          />
-        </label>
-
         <label>
           Full description
           <textarea

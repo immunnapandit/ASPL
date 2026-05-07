@@ -2613,8 +2613,8 @@ function validateCareerOpeningPayload(data) {
     return { ok: false, error: 'All job overview fields are required.' };
   }
 
-  if (!description || !fullDescription) {
-    return { ok: false, error: 'Job description fields are required.' };
+  if (!fullDescription) {
+    return { ok: false, error: 'Job full description is required.' };
   }
 
   if (!responsibilities.length || !requirements.length) {

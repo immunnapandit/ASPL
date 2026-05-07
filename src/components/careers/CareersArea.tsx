@@ -60,6 +60,16 @@ function formatPostedLabel(value?: string) {
   })}`;
 }
 
+function getJobSummary(job: JobOpening) {
+  const summary = (job.fullDescription || job.description || '').trim();
+
+  if (summary.length <= 160) {
+    return summary;
+  }
+
+  return `${summary.slice(0, 157).trim()}...`;
+}
+
 export default function CareersArea() {
   const [jobs, setJobs] = useState<JobOpening[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -119,7 +129,7 @@ export default function CareersArea() {
                     </span>
                   </div>
                   <h4>{job.title}</h4>
-                  <p>{job.description}</p>
+                  <p>{getJobSummary(job)}</p>
                   <span className="tv-btn-link">
                     Apply Now
                     <ArrowRight size={16} />
