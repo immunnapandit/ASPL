@@ -269,6 +269,7 @@ let contactTransporterVerified = false;
 let mongoClient = null;
 let mongoDb = null;
 let mongoConnectionPromise = null;
+const hydratedMongoCollections = new Set();
 const exchangeRateCache = new Map();
 
 ensureDataStore();
@@ -1541,6 +1542,8 @@ async function getMongoDb() {
 
   if (!mongoConnectionPromise) {
     mongoConnectionPromise = MongoClient.connect(MONGODB_URI, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
       serverApi: {
         version: ServerApiVersion.v1,
         strict: false,
@@ -1605,14 +1608,15 @@ async function readCollectionArray(collectionName, filePath, fallback = []) {
   const collection = await getCollection(collectionName);
 
   if (collection) {
-    const count = await collection.countDocuments();
-
-    if (count === 0 && existsSync(filePath)) {
+    if (!hydratedMongoCollections.has(collectionName) && existsSync(filePath)) {
+      const count = await collection.estimatedDocumentCount();
       const existingData = readJsonArrayFile(filePath, fallback);
-      if (existingData.length) {
+
+      if (count === 0 && existingData.length) {
         await collection.insertMany(existingData, { ordered: false });
       }
-      return existingData;
+
+      hydratedMongoCollections.add(collectionName);
     }
 
     return collection.find({}, { projection: { _id: 0 } }).toArray();
