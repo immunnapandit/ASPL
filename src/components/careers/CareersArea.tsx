@@ -13,10 +13,7 @@ import {
   generalApplication,
   type JobOpening,
 } from '../../data/career-openings';
-import {
-  fetchCareerOpenings,
-  getCachedOrFallbackCareerOpenings,
-} from '../../lib/careers';
+import { fetchCareerOpenings } from '../../lib/careers';
 
 function formatPostedLabel(value?: string) {
   if (!value) {
@@ -74,9 +71,7 @@ function getJobSummary(job: JobOpening) {
 }
 
 export default function CareersArea() {
-  const [jobs, setJobs] = useState<JobOpening[]>(() =>
-    getCachedOrFallbackCareerOpenings()
-  );
+  const [jobs, setJobs] = useState<JobOpening[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

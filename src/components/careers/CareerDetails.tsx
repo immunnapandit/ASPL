@@ -5,6 +5,7 @@ import {
   BriefcaseBusiness,
   CalendarDays,
   Linkedin,
+  LoaderCircle,
   MapPin,
   Upload,
 } from 'lucide-react';
@@ -15,10 +16,7 @@ import {
   generalApplication,
   type JobOpening,
 } from '../../data/career-openings';
-import {
-  fetchCareerOpeningBySlug,
-  getCachedOrFallbackCareerOpeningBySlug,
-} from '../../lib/careers';
+import { fetchCareerOpeningBySlug } from '../../lib/careers';
 import FooterOne from '../../layouts/footers/FooterOne';
 import HeaderOne from '../../layouts/headers/HeaderOne';
 import Wrapper from '../../layouts/Wrapper';
@@ -61,12 +59,10 @@ function formatPostedDate(value?: string) {
 
 export default function CareerDetails() {
   const { slug } = useParams();
-  const [job, setJob] = useState<DisplayJob | undefined>(() =>
-    getCachedOrFallbackCareerOpeningBySlug(slug)
+  const [job, setJob] = useState<DisplayJob | undefined>(
+    slug === generalApplication.slug ? generalApplication : undefined
   );
-  const [isLoading, setIsLoading] = useState(() =>
-    !getCachedOrFallbackCareerOpeningBySlug(slug)
-  );
+  const [isLoading, setIsLoading] = useState(slug !== generalApplication.slug);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -77,10 +73,10 @@ export default function CareerDetails() {
 
   useEffect(() => {
     let isMounted = true;
-    const initialJob = getCachedOrFallbackCareerOpeningBySlug(slug);
+    const isGeneralApplicationSlug = slug === generalApplication.slug;
 
-    setJob(initialJob);
-    setIsLoading(!initialJob);
+    setJob(isGeneralApplicationSlug ? generalApplication : undefined);
+    setIsLoading(!isGeneralApplicationSlug);
 
     fetchCareerOpeningBySlug(slug)
       .then((opening) => {
@@ -145,7 +141,27 @@ export default function CareerDetails() {
     }
   };
 
-  if (!job && !isLoading) {
+  if (isLoading) {
+    return (
+      <Wrapper>
+        <HeaderOne />
+        <main>
+          <Breadcrumb title="Career Details" subtitle="Careers" />
+          <section className="tv-career-detail-area pt-130 pb-130">
+            <div className="container">
+              <div className="tv-careers-loading tv-careers-loading--page" role="status">
+                <LoaderCircle size={24} className="tv-spin" />
+                Loading job details...
+              </div>
+            </div>
+          </section>
+        </main>
+        <FooterOne />
+      </Wrapper>
+    );
+  }
+
+  if (!job) {
     return (
       <Wrapper>
         <HeaderOne />
@@ -172,10 +188,6 @@ export default function CareerDetails() {
         <FooterOne />
       </Wrapper>
     );
-  }
-
-  if (!job) {
-    return null;
   }
 
   return (

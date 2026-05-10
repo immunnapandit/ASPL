@@ -1,9 +1,4 @@
-import {
-  fallbackCareerOpenings,
-  generalApplication,
-  getFallbackCareerOpeningBySlug,
-  type JobOpening,
-} from '../data/career-openings';
+import { generalApplication, type JobOpening } from '../data/career-openings';
 import { CAREER_OPENINGS_API_URL } from '../config/api';
 
 type CareerOpeningsResponse = {
@@ -12,7 +7,6 @@ type CareerOpeningsResponse = {
 };
 
 const CAREERS_FETCH_TIMEOUT_MS = 8000;
-const CAREER_OPENINGS_CACHE_KEY = 'aspl-career-openings-cache';
 
 function sortActiveOpenings(openings: JobOpening[]) {
   return openings
@@ -23,55 +17,6 @@ function sortActiveOpenings(openings: JobOpening[]) {
 
       return rightDate.localeCompare(leftDate);
     });
-}
-
-function readCachedCareerOpenings() {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-
-  try {
-    const cachedOpenings = JSON.parse(
-      window.localStorage.getItem(CAREER_OPENINGS_CACHE_KEY) || '[]'
-    );
-    return Array.isArray(cachedOpenings) ? (cachedOpenings as JobOpening[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeCachedCareerOpenings(openings: JobOpening[]) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(CAREER_OPENINGS_CACHE_KEY, JSON.stringify(openings));
-  } catch {
-    // Ignore storage quota/private-mode failures.
-  }
-}
-
-export function getCachedOrFallbackCareerOpenings() {
-  const cachedOpenings = readCachedCareerOpenings();
-  return cachedOpenings.length
-    ? sortActiveOpenings(cachedOpenings)
-    : sortActiveOpenings(fallbackCareerOpenings);
-}
-
-export function getCachedOrFallbackCareerOpeningBySlug(slug?: string) {
-  if (!slug) {
-    return undefined;
-  }
-
-  if (slug === generalApplication.slug) {
-    return generalApplication;
-  }
-
-  return (
-    getCachedOrFallbackCareerOpenings().find((opening) => opening.slug === slug) ||
-    getFallbackCareerOpeningBySlug(slug)
-  );
 }
 
 async function fetchWithTimeout(url: string): Promise<Response> {
@@ -98,14 +43,9 @@ export async function fetchCareerOpenings(): Promise<JobOpening[]> {
     }
 
     const openings = sortActiveOpenings(payload.openings);
-    if (openings.length) {
-      writeCachedCareerOpenings(openings);
-      return openings;
-    }
-
-    return getCachedOrFallbackCareerOpenings();
+    return openings;
   } catch {
-    return getCachedOrFallbackCareerOpenings();
+    return [];
   }
 }
 
@@ -121,8 +61,5 @@ export async function fetchCareerOpeningBySlug(
   }
 
   const openings = await fetchCareerOpenings();
-  return (
-    openings.find((opening) => opening.slug === slug) ||
-    getFallbackCareerOpeningBySlug(slug)
-  );
+  return openings.find((opening) => opening.slug === slug);
 }
