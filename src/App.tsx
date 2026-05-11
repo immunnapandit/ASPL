@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import HomeOne from './components/homes/home-1';
 import HomeTwo from './components/homes/home-2';
 import HomeThree from './components/homes/home-3';
@@ -73,6 +74,7 @@ function App() {
     <>
       <RouterProvider router={router} />
       <MctEnrollmentPopup />
+      <SpeedInsights />
     </>
   );
 }
