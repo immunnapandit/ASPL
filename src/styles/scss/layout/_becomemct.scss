@@ -354,6 +354,23 @@
   line-height: 1.7;
 }
 
+.pm-requirement-chart {
+  margin: 22px 0 0;
+  padding: 16px;
+  border: 1px solid rgba(28, 31, 86, 0.08);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 249, 255, 0.96) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 14px 32px rgba(28, 31, 86, 0.08);
+}
+
+.pm-requirement-chart img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
 .pm-list {
   margin: 18px 0 0;
   padding: 0;
@@ -402,6 +419,7 @@
 .pm-card-titlebar {
   padding: 18px 22px;
   background: var(--tv-theme-1);
+  text-align: center;
 }
 
 .pm-card-titlebar h4 {
@@ -447,12 +465,12 @@
 }
 
 .pm-batch-card .pm-card-titlebar {
-  padding: 10px 18px;
-  text-align: center;
+  padding: 18px 22px;
 }
 
 .pm-batch-card .pm-card-titlebar h4 {
   font-size: 20px;
+  line-height: 1.25;
 }
 
 .pm-batch-row {

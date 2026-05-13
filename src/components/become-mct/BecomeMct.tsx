@@ -124,6 +124,26 @@ export default function BecomeMct() {
       ),
     },
     {
+      title: 'MCT Requirement',
+      subtitle: 'A clear view of the requirement flow.',
+      content: (
+        <>
+          <p>
+            Review the MCT requirement flow to understand the key readiness
+            steps before moving ahead with your Microsoft Certified Trainer
+            journey.
+          </p>
+
+          <figure className="pm-requirement-chart">
+            <img
+              src="assets/img/service/flow chart.png"
+              alt="MCT requirement flow chart"
+            />
+          </figure>
+        </>
+      ),
+    },
+    {
       title: 'Why Choose AtiSunya',
       subtitle: 'A guided and professional learning experience.',
       content: (
@@ -385,6 +405,17 @@ export default function BecomeMct() {
                     <strong>Online / Hybrid / Onsite</strong>
                   </div>
                   <div>
+                    <span>Primary Language</span>
+                    <strong>English</strong>
+                  </div>
+                  <div>
+                    <span>Secondary Languages</span>
+                    <strong>
+                      Bangla (India); English; Gujarati; Hindi; Kannada;
+                      Malayalam; Marathi; Tamil (India); Telugu; Urdu
+                    </strong>
+                  </div>
+                  <div>
                     <span>Website</span>
                     <strong>atisunya.co</strong>
                   </div>
@@ -396,7 +427,7 @@ export default function BecomeMct() {
                 variants={fadeUpVariants}
               >
                 <div className="pm-card-titlebar">
-                  <h4>Upcoming Global Batches</h4>
+                  <h4>Upcoming Batches</h4>
                 </div>
 
                 <div className="pm-batch-list">
