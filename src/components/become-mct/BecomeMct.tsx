@@ -411,8 +411,8 @@ export default function BecomeMct() {
                   <div>
                     <span>Secondary Languages</span>
                     <strong>
-                      Bangla (India); English; Gujarati; Hindi; Kannada;
-                      Malayalam; Marathi; Tamil (India); Telugu; Urdu
+                      Bangla (India); Gujarati; Hindi; Kannada; Malayalam;
+                      Marathi; Tamil (India); Telugu; Urdu
                     </strong>
                   </div>
                   <div>
