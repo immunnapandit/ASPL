@@ -73,6 +73,10 @@ export function getCachedOrFallbackPublishedBlogPosts() {
   return cachedPosts.length ? sortPublishedPosts(cachedPosts) : fallbackPublishedBlogPosts;
 }
 
+export function getCachedOrFallbackPublishedBlogPost(slug: string) {
+  return getCachedOrFallbackPublishedBlogPosts().find((post) => post.slug === slug) || null;
+}
+
 async function fetchBlogApi(url: string, init?: RequestInit) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), BLOG_REQUEST_TIMEOUT_MS);
@@ -122,18 +126,28 @@ export async function fetchPublishedBlogPosts() {
 }
 
 export async function fetchPublishedBlogPost(slug: string) {
-  const response = await fetchBlogApi(`${BLOG_POSTS_API_URL}/${slug}`);
-  const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
+  try {
+    const response = await fetchBlogApi(`${BLOG_POSTS_API_URL}/${encodeURIComponent(slug)}`);
+    const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
-  if (!response.ok || !result?.post) {
-    throw new Error(result?.error || 'Unable to load blog post.');
+    if (!response.ok || !result?.post) {
+      throw new Error(result?.error || 'Unable to load blog post.');
+    }
+
+    return result.post;
+  } catch (error) {
+    const fallbackPost = getCachedOrFallbackPublishedBlogPost(slug);
+
+    if (fallbackPost) {
+      return fallbackPost;
+    }
+
+    throw error;
   }
-
-  return result.post;
 }
 
 export async function fetchBlogComments(slug: string) {
-  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`);
+  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${encodeURIComponent(slug)}/comments`);
   const result = (await response.json().catch(() => null)) as BlogPostsResponse | null;
 
   if (!response.ok || !Array.isArray(result?.comments)) {
@@ -144,7 +158,7 @@ export async function fetchBlogComments(slug: string) {
 }
 
 export async function postBlogComment(slug: string, payload: BlogCommentPayload) {
-  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${slug}/comments`, {
+  const response = await fetchBlogApi(`${BLOG_COMMENTS_API_BASE_URL}/${encodeURIComponent(slug)}/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
