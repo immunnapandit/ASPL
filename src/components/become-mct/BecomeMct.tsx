@@ -394,7 +394,7 @@ export default function BecomeMct() {
                 <div className="pm-info">
                   <div>
                     <span>Program</span>
-                    <strong>Microsoft Trainer Readiness</strong>
+                    <strong>ISCP - Instructional Skills Certification Provider</strong>
                   </div>
                   <div>
                     <span>Category</span>
