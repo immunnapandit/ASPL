@@ -70,6 +70,30 @@ function getJobSummary(job: JobOpening) {
   return `${summary.slice(0, 157).trim()}...`;
 }
 
+function CareersOpeningLoader() {
+  return (
+    <div className="tv-careers-loading-wrap" role="status" aria-live="polite">
+      <div className="tv-careers-loading tv-careers-loading--center">
+        <LoaderCircle size={24} className="tv-spin" aria-hidden="true" />
+        <span className="visually-hidden">Loading career openings</span>
+      </div>
+      <div className="row gy-4" aria-hidden="true">
+        {[0, 1, 2].map((item) => (
+          <div key={item} className="col-xl-4 col-lg-6">
+            <div className="tv-careers-job tv-careers-job--skeleton h-100">
+              <span className="tv-careers-skeleton tv-careers-skeleton--meta" />
+              <span className="tv-careers-skeleton tv-careers-skeleton--title" />
+              <span className="tv-careers-skeleton tv-careers-skeleton--line" />
+              <span className="tv-careers-skeleton tv-careers-skeleton--line is-short" />
+              <span className="tv-careers-skeleton tv-careers-skeleton--button" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CareersArea() {
   const [jobs, setJobs] = useState<JobOpening[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -103,43 +127,40 @@ export default function CareersArea() {
             <h3 className="tv-section-title">Current Job Openings</h3>
           </div>
 
-          {isLoading ? (
-            <div className="tv-careers-loading" role="status">
-              <LoaderCircle size={22} className="tv-spin" />
-              Loading live openings...
+          {isLoading ? <CareersOpeningLoader /> : null}
+
+          {!isLoading && jobs.length ? (
+            <div className="row gy-4">
+              {jobs.map((job) => (
+                <div key={job.id} className="col-xl-4 col-lg-6">
+                  <Link to={`/careers/${job.slug}`} className="tv-careers-job h-100">
+                    <div className="tv-careers-job__meta">
+                      <span>
+                        <BriefcaseBusiness size={16} />
+                        {job.type}
+                      </span>
+                      <span>
+                        <MapPin size={16} />
+                        {job.location}
+                      </span>
+                      <span>
+                        <CalendarDays size={16} />
+                        {formatPostedLabel(job.postedAt)}
+                      </span>
+                    </div>
+                    <h4>{job.title}</h4>
+                    <p>{getJobSummary(job)}</p>
+                    <span className="tv-btn-link">
+                      Apply Now
+                      <ArrowRight size={16} />
+                    </span>
+                  </Link>
+                </div>
+              ))}
             </div>
           ) : null}
 
-          <div className="row gy-4">
-            {jobs.map((job) => (
-              <div key={job.id} className="col-xl-4 col-lg-6">
-                <Link to={`/careers/${job.slug}`} className="tv-careers-job h-100">
-                  <div className="tv-careers-job__meta">
-                    <span>
-                      <BriefcaseBusiness size={16} />
-                      {job.type}
-                    </span>
-                    <span>
-                      <MapPin size={16} />
-                      {job.location}
-                    </span>
-                    <span>
-                      <CalendarDays size={16} />
-                      {formatPostedLabel(job.postedAt)}
-                    </span>
-                  </div>
-                  <h4>{job.title}</h4>
-                  <p>{getJobSummary(job)}</p>
-                  <span className="tv-btn-link">
-                    Apply Now
-                    <ArrowRight size={16} />
-                  </span>
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          {!jobs.length ? (
+          {!isLoading && !jobs.length ? (
             <div className="tv-careers-empty">
               <h4>No open roles right now</h4>
             </div>
