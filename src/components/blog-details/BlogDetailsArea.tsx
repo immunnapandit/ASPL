@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import Seo, { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '../../common/Seo';
 import { type BlogPost } from '../../data/blog-posts';
 import {
   fetchBlogComments,
@@ -27,6 +28,35 @@ const initialCommentForm: CommentFormState = {
   message: '',
   website: '',
 };
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function buildBlogPostSchema(post: BlogPost, path: string, description: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description,
+    image: post.imageUrl,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    author: {
+      '@type': 'Person',
+      name: post.authorName,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}${DEFAULT_OG_IMAGE}`,
+      },
+    },
+    mainEntityOfPage: `${SITE_URL}${path}`,
+  };
+}
 
 function renderInlineMarkdown(text: string) {
   const parts = text.split(/(!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g);
@@ -285,7 +315,7 @@ export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
     }
 
     return window.location.href;
-  }, [slug]);
+  }, []);
 
   const shareLinks = useMemo(() => {
     const encodedUrl = encodeURIComponent(shareUrl);
@@ -362,8 +392,21 @@ export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
   }
 
   return (
-    <div className="tv-blog-area pt-130 pb-130">
-      <div className="container">
+    <>
+      <Seo
+        title={post.seoTitle || `${post.title} | ${SITE_NAME} Blog`}
+        description={post.seoDescription || post.excerpt || stripHtml(post.content).slice(0, 155)}
+        path={`/blog/${post.slug}`}
+        image={post.imageUrl}
+        type="article"
+        schema={buildBlogPostSchema(
+          post,
+          `/blog/${post.slug}`,
+          post.seoDescription || post.excerpt || stripHtml(post.content).slice(0, 155)
+        )}
+      />
+      <div className="tv-blog-area pt-130 pb-130">
+        <div className="container">
         <div className="row">
           <div className="col-xl-8 col-lg-8 col-12">
             <div className="tv-blog-list-wrap">
@@ -614,6 +657,7 @@ export default function BlogDetailsArea({ previewPost }: BlogDetailsAreaProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

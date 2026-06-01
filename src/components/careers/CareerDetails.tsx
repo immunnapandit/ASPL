@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import Breadcrumb from '../../common/Breadcrumb';
+import Seo, { SITE_NAME, SITE_URL } from '../../common/Seo';
 import { CAREER_API_URL } from '../../config/api';
 import {
   generalApplication,
@@ -55,6 +56,29 @@ function formatPostedDate(value?: string) {
         hour: '2-digit',
         minute: '2-digit',
       });
+}
+
+function buildJobPostingSchema(job: DisplayJob) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: job.title,
+    description: job.fullDescription,
+    employmentType: job.type,
+    datePosted: 'postedAt' in job ? job.postedAt : undefined,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      sameAs: SITE_URL,
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: job.location,
+      },
+    },
+  };
 }
 
 export default function CareerDetails() {
@@ -193,6 +217,12 @@ export default function CareerDetails() {
   return (
     <Wrapper>
       <HeaderOne />
+      <Seo
+        title={`${job.title} | Careers at ${SITE_NAME}`}
+        description={`${job.description} Apply to AtiSunya for ${job.type.toLowerCase()} opportunities in ${job.location}.`}
+        path={`/careers/${job.slug}`}
+        schema={buildJobPostingSchema(job)}
+      />
       <main>
         <Breadcrumb title={job.title} subtitle="Careers" />
         <section className="tv-career-detail-area pt-130 pb-130">
