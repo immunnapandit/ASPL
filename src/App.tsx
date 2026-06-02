@@ -61,6 +61,7 @@ const router = createBrowserRouter([
   { path: '/terms-and-conditions', element: <TermsConditions /> },
   { path: '/solutions/cyber-security', element: <CyberSecurity /> },
   { path: '/solutions/d365-for-finance-and-operations', element: <D365Finance /> },
+  { path: '/d365-finance-operations', element: <D365Finance /> },
   { path: '/become-mct/enroll', element: <BecomeMctEnrollPage /> },
   ...customPageRoutes,
   { path: '*', element: <NotFound /> },

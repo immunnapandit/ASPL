@@ -46,6 +46,7 @@ import { industryPages } from '../data/industry-pages';
 
 export const customPageRoutes: RouteObject[] = [
   { path: '/solutions/microsoft-dynamics-365', element: <MicrosoftDynamics365Page /> },
+  { path: '/microsoft-dynamics-365-consulting', element: <MicrosoftDynamics365Page /> },
   { path: '/solutions/business-central', element: <BusinessCentralPage /> },
   { path: '/solutions/salesforce', element: <SalesforcePage /> },
   { path: '/solutions/aws', element: <AwsPage /> },
@@ -67,7 +68,9 @@ export const customPageRoutes: RouteObject[] = [
     element: <D365ProjectServiceAutomationPage />
   },
   { path: '/solutions/microsoft-azure', element: <MicrosoftAzurePage /> },
+  { path: '/azure-cloud-services', element: <MicrosoftAzurePage /> },
   { path: '/ai-solutions', element: <AiSolutionsPage /> },
+  { path: '/microsoft-copilot-services', element: <AiSolutionsPage /> },
   { path: '/solutions/office-365', element: <Office365Page /> },
   { path: '/solutions/microsoft-dynamics-ax', element: <MicrosoftDynamicsAxPage /> },
   { path: '/solutions/microsoft-dynamics-ax/ax-7', element: <Ax7Page /> },
@@ -84,6 +87,7 @@ export const customPageRoutes: RouteObject[] = [
     element: <DynamicsNav2018Page />
   },
   { path: '/solutions/microsoft-power-platform', element: <MicrosoftPowerPlatformPage /> },
+  { path: '/power-platform-services', element: <MicrosoftPowerPlatformPage /> },
   { path: '/solutions/microsoft-power-bi', element: <MicrosoftPowerBiPage /> },
   { path: '/solutions/cloud-technology', element: <CloudTechnologyPage /> },
   {
@@ -98,11 +102,13 @@ export const customPageRoutes: RouteObject[] = [
     path: '/what-we-do/support-managed-services',
     element: <SupportManagedServicesPage />
   },
+  { path: '/managed-services', element: <SupportManagedServicesPage /> },
   { path: '/what-we-do/enterprise-management', element: <EnterpriseManagementPage /> },
   { path: '/what-we-do/digital-transformation', element: <DigitalTransformationPage /> },
   { path: '/what-we-do/consulting', element: <ConsultingPage /> },
   { path: '/what-we-do/product-engineering', element: <ProductEngineeringPage /> },
   { path: '/what-we-do/training', element: <TrainingPage /> },
+  { path: '/microsoft-training', element: <TrainingPage /> },
   { path: '/what-we-do/web-development', element: <WebDevelopmentPage /> },
   {
     path: '/microsoft-certified-trainer-readiness-training',

@@ -13,7 +13,10 @@ export interface SeoProps {
 
 export const SITE_NAME = 'AtiSunya';
 export const SITE_URL = 'https://www.atisunya.co';
-export const DEFAULT_OG_IMAGE = '/assets/img/logo/AtiSunyaLogo.png';
+export const ORGANIZATION_LOGO = '/assets/img/logo/AtiSunyaLogo.png';
+export const DEFAULT_OG_IMAGE = '/assets/img/seo/atisunya-social-banner.jpg';
+export const DEFAULT_KEYWORDS =
+  'Microsoft Dynamics 365, D365 Finance and Operations, Azure Cloud, Power Platform, Microsoft Copilot, AI Solutions, Managed Services, Cloud Migration, ERP Implementation, Microsoft Training, Dynamics 365 Partner India';
 
 function toAbsoluteUrl(value: string) {
   if (value.startsWith('http://') || value.startsWith('https://')) {
@@ -86,6 +89,12 @@ export default function Seo({
     document.title = title;
 
     upsertMeta('name', 'description', description);
+    upsertMeta('name', 'keywords', DEFAULT_KEYWORDS);
+    upsertMeta('name', 'author', 'AtiSunya Private Limited');
+    upsertMeta('name', 'geo.region', 'IN-UP');
+    upsertMeta('name', 'geo.placename', 'Noida');
+    upsertMeta('name', 'geo.position', '28.5355;77.3910');
+    upsertMeta('name', 'ICBM', '28.5355,77.3910');
     upsertMeta('name', 'robots', robots);
     upsertMeta('property', 'og:title', title);
     upsertMeta('property', 'og:description', description);
@@ -97,7 +106,10 @@ export default function Seo({
     upsertMeta('name', 'twitter:title', title);
     upsertMeta('name', 'twitter:description', description);
     upsertMeta('name', 'twitter:image', imageUrl);
+    upsertMeta('name', 'twitter:site', '@AtiSunya');
+    upsertMeta('name', 'twitter:creator', '@AtiSunya');
     upsertLink('canonical', canonicalUrl);
+    upsertLink('sitemap', `${SITE_URL}/sitemap.xml`);
     upsertJsonLd(schema);
   }, [canonicalPath, description, image, noindex, path, schema, title, type]);
 

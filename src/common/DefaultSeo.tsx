@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { fallbackPublishedBlogPosts } from '../data/published-blog-posts';
 import { industryPages } from '../data/industry-pages';
-import Seo, { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, type SeoProps } from './Seo';
+import Seo, { DEFAULT_OG_IMAGE, ORGANIZATION_LOGO, SITE_NAME, SITE_URL, type SeoProps } from './Seo';
 
 function titleFromSegment(segment: string) {
   const wordMap: Record<string, string> = {
@@ -28,12 +28,53 @@ function buildOrganizationSchema() {
     '@type': 'Organization',
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}${DEFAULT_OG_IMAGE}`,
+    logo: `${SITE_URL}${ORGANIZATION_LOGO}`,
+    description: 'Microsoft Dynamics 365, Azure Cloud, AI and Power Platform Consulting Services.',
     email: 'info@atisunya.co',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Noida',
+      addressRegion: 'Uttar Pradesh',
+      addressCountry: 'IN',
+    },
+    areaServed: ['India', 'Global'],
     sameAs: [
       'https://www.facebook.com/AtiSunya.co/',
       'https://www.instagram.com/atisunyaerpai/',
       'https://www.linkedin.com/company/atisunyaprivatelimited/',
+    ],
+  };
+}
+
+function buildProfessionalServiceSchema(path = '/') {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: SITE_NAME,
+    url: `${SITE_URL}${path}`,
+    image: `${SITE_URL}${DEFAULT_OG_IMAGE}`,
+    description: 'Microsoft Dynamics 365, Azure Cloud, AI, Copilot, Power Platform, Managed Services, Consulting, Training and Implementation Partner.',
+    email: 'info@atisunya.co',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Noida',
+      addressRegion: 'Uttar Pradesh',
+      addressCountry: 'IN',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 28.5355,
+      longitude: 77.391,
+    },
+    areaServed: ['Noida', 'Delhi NCR', 'India', 'Global'],
+    serviceType: [
+      'Microsoft Dynamics 365',
+      'Azure Cloud Consulting',
+      'Microsoft Copilot Consulting',
+      'Power Platform Development',
+      'AI Solutions',
+      'Managed Services',
+      'Microsoft Training',
     ],
   };
 }
@@ -59,8 +100,33 @@ function buildServiceSchema(name: string, description: string, path: string) {
       name: SITE_NAME,
       url: SITE_URL,
     },
-    areaServed: 'Global',
+    areaServed: ['Noida', 'Delhi NCR', 'India', 'Global'],
     url: `${SITE_URL}${path}`,
+  };
+}
+
+function buildServiceFaqSchema(name: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `What ${name} services does AtiSunya provide?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `AtiSunya provides consulting, implementation, integration, support, upgrades, training, and managed services for ${name}.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Does AtiSunya serve clients in India?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. AtiSunya serves organizations in Noida, Delhi NCR, across India, and globally.',
+        },
+      },
+    ],
   };
 }
 
@@ -105,6 +171,12 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
       'Implement Microsoft Dynamics 365 with AtiSunya to connect ERP, CRM, finance, sales, operations, service, and reporting on one business platform.',
     image: '/assets/img/service/MicrosoftD365.jpg',
   },
+  '/microsoft-dynamics-365-consulting': {
+    name: 'Microsoft Dynamics 365 Consulting',
+    description:
+      'Work with a Dynamics 365 Partner in India for ERP, CRM, finance, operations, migration, support, and managed services from AtiSunya.',
+    image: '/assets/img/service/MicrosoftD365.jpg',
+  },
   '/solutions/business-central': {
     name: 'Dynamics 365 Business Central',
     description:
@@ -115,6 +187,12 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
     name: 'Dynamics 365 Finance and Operations',
     description:
       'Improve financial control, supply chain visibility, reporting, and enterprise operations with Dynamics 365 Finance and Operations consulting.',
+    image: '/assets/img/d365-finance/finance-hero-dashboard.svg',
+  },
+  '/d365-finance-operations': {
+    name: 'D365 Finance and Operations',
+    description:
+      'Get D365 Finance and Operations consulting for financial control, supply chain visibility, reporting, implementation, and support.',
     image: '/assets/img/d365-finance/finance-hero-dashboard.svg',
   },
   '/solutions/d365-for-supply-chain-management': {
@@ -163,6 +241,12 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
       'Plan, migrate, secure, and modernize cloud workloads with Microsoft Azure consulting, architecture, automation, and managed cloud services.',
     image: '/assets/img/service/Azure.png',
   },
+  '/azure-cloud-services': {
+    name: 'Azure Cloud Services',
+    description:
+      'Plan Azure cloud migration, modernization, architecture, security, automation, and managed cloud services with AtiSunya consultants in India.',
+    image: '/assets/img/service/Azure.png',
+  },
   '/solutions/aws': {
     name: 'AWS Cloud Solutions',
     description:
@@ -179,6 +263,18 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
     description:
       'Automate processes, build low-code apps, create dashboards, and connect data with Microsoft Power Platform solutions.',
     image: '/assets/img/service/PowerPlatform.svg',
+  },
+  '/power-platform-services': {
+    name: 'Power Platform Services',
+    description:
+      'Build Power Apps, Power Automate workflows, Power BI dashboards, and low-code business automation with AtiSunya Power Platform experts.',
+    image: '/assets/img/service/PowerPlatform.svg',
+  },
+  '/microsoft-copilot-services': {
+    name: 'Microsoft Copilot Consulting',
+    description:
+      'Adopt Microsoft Copilot with practical consulting, AI readiness, workflow automation, governance, and enterprise enablement from AtiSunya.',
+    image: '/assets/img/service/AI.png',
   },
   '/solutions/microsoft-power-platform/power-automate-solutions': {
     name: 'Power Automate Solutions',
@@ -282,6 +378,12 @@ const serviceSeo: Record<string, { name: string; description: string; image?: st
       'Keep business systems reliable with AtiSunya support, managed services, issue resolution, optimization, and ongoing improvements.',
     image: '/assets/img/service/Support-management.png',
   },
+  '/managed-services': {
+    name: 'Managed Services',
+    description:
+      'Keep Microsoft Dynamics 365, Azure, Power Platform, AI, ERP, CRM, and cloud systems reliable with AtiSunya managed services.',
+    image: '/assets/img/service/Support-management.png',
+  },
   '/what-we-do/enterprise-management': {
     name: 'Enterprise Management',
     description:
@@ -310,6 +412,12 @@ const serviceSeo: Record<string, { name: string; description: string; image?: st
     name: 'Technology Training',
     description:
       'Upskill teams with Microsoft technology training across Dynamics 365, Azure, Power Platform, cloud, and enterprise applications.',
+    image: '/assets/img/service/Training.png',
+  },
+  '/microsoft-training': {
+    name: 'Microsoft Training',
+    description:
+      'Upskill teams with Microsoft Dynamics 365, Azure, Power Platform, AI, Copilot, and enterprise technology training from AtiSunya.',
     image: '/assets/img/service/Training.png',
   },
   '/what-we-do/web-development': {
@@ -349,10 +457,10 @@ function buildSeoForPath(pathname: string): SeoProps {
 
   const pageMap: Record<string, SeoProps> = {
     '/': {
-      title: 'AtiSunya | Microsoft Dynamics 365, Azure Cloud and AI Solutions',
+      title: 'Microsoft Dynamics 365, Azure Cloud, AI & Power Platform Experts | AtiSunya',
       description:
-        'AtiSunya helps businesses modernize with Microsoft Dynamics 365, Azure cloud, Power Platform, AI solutions, training, and managed services.',
-      schema: [organizationSchema, buildWebsiteSchema()],
+        'Microsoft Dynamics 365, Azure Cloud, AI, Copilot, Power Platform, Managed Services, Consulting, Training and Implementation Partner. Transform your business with AtiSunya experts.',
+      schema: [organizationSchema, buildWebsiteSchema(), buildProfessionalServiceSchema()],
     },
     '/about': {
       title: 'About AtiSunya | Microsoft Dynamics 365 and Cloud Experts',
@@ -523,6 +631,7 @@ function buildSeoForPath(pathname: string): SeoProps {
           { name: solutionPage.name, path: pathname },
         ]),
         buildServiceSchema(solutionPage.name, solutionPage.description, pathname),
+        buildServiceFaqSchema(solutionPage.name),
       ],
     };
   }
@@ -541,6 +650,7 @@ function buildSeoForPath(pathname: string): SeoProps {
           { name: servicePage.name, path: pathname },
         ]),
         buildServiceSchema(servicePage.name, servicePage.description, pathname),
+        buildServiceFaqSchema(servicePage.name),
       ],
     };
   }
@@ -581,6 +691,7 @@ function buildSeoForPath(pathname: string): SeoProps {
             { name: industryPage.title, path: pathname },
           ]),
           buildServiceSchema(`${industryPage.title} Solutions`, description, pathname),
+          buildServiceFaqSchema(`${industryPage.title} Solutions`),
         ],
       };
     }
@@ -618,7 +729,7 @@ function buildSeoForPath(pathname: string): SeoProps {
               name: SITE_NAME,
               logo: {
                 '@type': 'ImageObject',
-                url: `${SITE_URL}${DEFAULT_OG_IMAGE}`,
+                url: `${SITE_URL}${ORGANIZATION_LOGO}`,
               },
             },
             mainEntityOfPage: `${SITE_URL}${pathname}`,
@@ -670,7 +781,7 @@ function buildSeoForPath(pathname: string): SeoProps {
     return {
       title: `${pageName} | ${SITE_NAME}`,
       description,
-      schema: [organizationSchema, buildServiceSchema(pageName, description, pathname)],
+      schema: [organizationSchema, buildServiceSchema(pageName, description, pathname), buildServiceFaqSchema(pageName)],
       type: section === 'insight' ? 'article' : 'website',
     };
   }
