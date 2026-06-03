@@ -100,6 +100,9 @@ const CONTACT_FROM_EMAIL = (
 ).trim();
 const HR_TO_EMAIL = (process.env.HR_TO_EMAIL || CONTACT_TO_EMAIL).trim();
 const NEWSLETTER_TO_EMAIL = (process.env.NEWSLETTER_TO_EMAIL || CONTACT_TO_EMAIL).trim();
+const PUBLIC_SITE_URL = normalizeSiteUrl(
+  process.env.PUBLIC_SITE_URL || parseCsvList(FRONTEND_URL)[0] || 'https://www.atisunya.co'
+);
 const CAREERS_ADMIN_TOKEN = (
   process.env.CAREERS_ADMIN_TOKEN || 'change-me-careers-admin-token'
 ).trim();
@@ -1889,6 +1892,16 @@ function parseCsvList(value, fallback = []) {
   return items.length ? items : fallback;
 }
 
+function normalizeSiteUrl(value) {
+  const normalized = normalizeString(value).replace(/\/+$/, '');
+  return normalized || 'https://www.atisunya.co';
+}
+
+function buildPublicUrl(path) {
+  const normalizedPath = `/${String(path || '').replace(/^\/+/, '')}`;
+  return `${PUBLIC_SITE_URL}${normalizedPath}`;
+}
+
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -2063,6 +2076,13 @@ async function handleAdminCareerOpeningCreate(req) {
   };
 
   await saveCareerOpening(opening, [opening, ...openings]);
+
+  if (opening.status === 'active') {
+    await safelyNotifyNewsletterSubscribers('job opening', () =>
+      sendJobOpeningNewsletterEmail(opening)
+    );
+  }
+
   return json(200, { ok: true, opening }, req);
 }
 
@@ -2103,6 +2123,12 @@ async function handleAdminCareerOpeningUpdate(req, openingId) {
     opening,
     openings.map((item) => (item.id === openingId ? opening : item))
   );
+
+  if (currentOpening.status !== 'active' && opening.status === 'active') {
+    await safelyNotifyNewsletterSubscribers('job opening', () =>
+      sendJobOpeningNewsletterEmail(opening)
+    );
+  }
 
   return json(200, { ok: true, opening }, req);
 }
@@ -2328,6 +2354,13 @@ async function handleAdminBlogPostCreate(req) {
   };
 
   await saveBlogPost(post, [post, ...posts]);
+
+  if (post.status === 'published') {
+    await safelyNotifyNewsletterSubscribers('blog post', () =>
+      sendBlogPostNewsletterEmail(post)
+    );
+  }
+
   return json(200, { ok: true, post }, req);
 }
 
@@ -2369,6 +2402,13 @@ async function handleAdminBlogPostUpdate(req, postId) {
   };
 
   await saveBlogPost(post, posts.map((item) => (item.id === postId ? post : item)));
+
+  if (currentPost.status !== 'published' && post.status === 'published') {
+    await safelyNotifyNewsletterSubscribers('blog post', () =>
+      sendBlogPostNewsletterEmail(post)
+    );
+  }
+
   return json(200, { ok: true, post }, req);
 }
 
@@ -2539,6 +2579,69 @@ async function sendNewsletterSubscriptionEmail(subscription) {
     text: buildNewsletterSubscriptionEmailText(subscription, subscribedAt),
     html: buildNewsletterSubscriptionEmailHtml(subscription, subscribedAt),
   });
+}
+
+async function safelyNotifyNewsletterSubscribers(label, sendEmail) {
+  try {
+    const result = await sendEmail();
+
+    if (result?.sent || result?.failed) {
+      console.log(
+        `Newsletter ${label} notification complete. Sent: ${result.sent}, failed: ${result.failed}.`
+      );
+    }
+  } catch (error) {
+    console.error(`Newsletter ${label} notification failed:`, error);
+  }
+}
+
+async function sendBlogPostNewsletterEmail(post) {
+  const url = buildPublicUrl(`/blog/${post.slug}`);
+
+  return sendNewsletterBroadcast({
+    subject: `New blog from AtiSunya: ${sanitizeEmailHeaderValue(post.title)}`,
+    text: buildBlogPostNewsletterText(post, url),
+    html: buildBlogPostNewsletterHtml(post, url),
+  });
+}
+
+async function sendJobOpeningNewsletterEmail(opening) {
+  const url = buildPublicUrl(`/careers/${opening.slug}`);
+
+  return sendNewsletterBroadcast({
+    subject: `New job opening at AtiSunya: ${sanitizeEmailHeaderValue(opening.title)}`,
+    text: buildJobOpeningNewsletterText(opening, url),
+    html: buildJobOpeningNewsletterHtml(opening, url),
+  });
+}
+
+async function sendNewsletterBroadcast(message) {
+  if (!isEmailSendingConfigured() || !CONTACT_FROM_EMAIL) {
+    return { sent: 0, failed: 0, skipped: true };
+  }
+
+  const subscribers = await readNewsletterSubscribers();
+  let sent = 0;
+  let failed = 0;
+
+  for (const subscriber of subscribers) {
+    try {
+      await sendNotificationEmail({
+        from: {
+          name: 'AtiSunya Newsletter',
+          address: CONTACT_FROM_EMAIL,
+        },
+        to: subscriber.email,
+        ...message,
+      });
+      sent += 1;
+    } catch (error) {
+      failed += 1;
+      console.error(`Newsletter delivery failed for ${subscriber.email}:`, error);
+    }
+  }
+
+  return { sent, failed, skipped: false };
 }
 
 function buildCareerApplicationEmailText(application, submittedAt) {
@@ -2909,6 +3012,86 @@ function validateBlogCommentPayload(data) {
   };
 }
 
+function buildBlogPostNewsletterText(post, url) {
+  return [
+    'New blog post from AtiSunya',
+    '',
+    post.title,
+    '',
+    post.excerpt,
+    '',
+    `Read more: ${url}`,
+  ].join('\n');
+}
+
+function buildBlogPostNewsletterHtml(post, url) {
+  return buildNewsletterAnnouncementHtml({
+    eyebrow: 'New Blog Post',
+    title: post.title,
+    description: post.excerpt,
+    ctaLabel: 'Read the blog',
+    url,
+  });
+}
+
+function buildJobOpeningNewsletterText(opening, url) {
+  return [
+    'New job opening at AtiSunya',
+    '',
+    opening.title,
+    '',
+    `${opening.department} | ${opening.location} | ${opening.experience}`,
+    '',
+    opening.description,
+    '',
+    `View role: ${url}`,
+  ].join('\n');
+}
+
+function buildJobOpeningNewsletterHtml(opening, url) {
+  return buildNewsletterAnnouncementHtml({
+    eyebrow: 'New Job Opening',
+    title: opening.title,
+    description: opening.description,
+    details: [opening.department, opening.location, opening.experience].filter(Boolean).join(' | '),
+    ctaLabel: 'View role',
+    url,
+  });
+}
+
+function buildNewsletterAnnouncementHtml({ eyebrow, title, description, details = '', ctaLabel, url }) {
+  return `
+    <!doctype html>
+    <html lang="en">
+      <body style="margin: 0; font-family: Arial, sans-serif; color: #222; line-height: 1.5; background: #f5f7fb;">
+        <div style="max-width: 640px; margin: 0 auto; padding: 28px 16px;">
+          <div style="background: #ffffff; border: 1px solid #e6e8ef; padding: 28px;">
+            <p style="margin: 0 0 10px; color: #0f52ba; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;">${escapeHtml(
+              eyebrow
+            )}</p>
+            <h1 style="margin: 0 0 14px; font-size: 26px; line-height: 1.25; color: #111827;">${escapeHtml(
+              title
+            )}</h1>
+            ${
+              details
+                ? `<p style="margin: 0 0 16px; color: #4b5563; font-weight: 700;">${escapeHtml(
+                    details
+                  )}</p>`
+                : ''
+            }
+            <p style="margin: 0 0 24px; color: #374151;">${escapeHtml(description)}</p>
+            <a href="${escapeHtml(
+              url
+            )}" style="display: inline-block; background: #0f52ba; color: #ffffff; text-decoration: none; padding: 12px 18px; font-weight: 700;">${escapeHtml(
+              ctaLabel
+            )}</a>
+            <p style="margin: 24px 0 0; color: #6b7280; font-size: 13px;">You are receiving this because you subscribed to the AtiSunya newsletter.</p>
+          </div>
+        </div>
+      </body>
+    </html>`;
+}
+
 function getObjectString(data, key) {
   const value = data?.[key];
   return typeof value === 'string' ? value.trim() : '';
@@ -3205,6 +3388,70 @@ async function getExistingNewsletterSubscription(email) {
   }
 
   return null;
+}
+
+async function readNewsletterSubscribers() {
+  const collection = await getCollection('newsletterSubscriptions');
+
+  if (collection) {
+    const subscribers = await collection
+      .find(
+        { status: 'subscribed' },
+        { projection: { _id: 0, email: 1, status: 1, subscribedAt: 1 } }
+      )
+      .toArray();
+
+    return normalizeNewsletterSubscribers(subscribers);
+  }
+
+  if (!existsSync(newsletterStoreFile)) {
+    return [];
+  }
+
+  const latestByEmail = new Map();
+  const records = readFileSync(newsletterStoreFile, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean);
+
+  for (const record of records) {
+    try {
+      const subscription = JSON.parse(record);
+      const email = typeof subscription?.email === 'string' ? subscription.email.toLowerCase() : '';
+
+      if (email) {
+        latestByEmail.set(email, {
+          ...subscription,
+          email,
+        });
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return normalizeNewsletterSubscribers([...latestByEmail.values()]);
+}
+
+function normalizeNewsletterSubscribers(subscribers) {
+  const uniqueEmails = new Set();
+
+  return subscribers
+    .map((subscriber) => ({
+      ...subscriber,
+      email: typeof subscriber?.email === 'string' ? subscriber.email.trim().toLowerCase() : '',
+    }))
+    .filter((subscriber) => {
+      if (
+        subscriber.status !== 'subscribed' ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subscriber.email) ||
+        uniqueEmails.has(subscriber.email)
+      ) {
+        return false;
+      }
+
+      uniqueEmails.add(subscriber.email);
+      return true;
+    });
 }
 
 async function persistNewsletterSubscription(subscription) {
