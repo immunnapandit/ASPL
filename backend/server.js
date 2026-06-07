@@ -92,6 +92,10 @@ const MCT_ENROLLMENT_TO_EMAILS = parseCsvList(
   process.env.MCT_ENROLLMENT_TO_EMAILS,
   ['info@atisunya.co', 'sangeeta@atisunya.co']
 );
+const MCT_TRAINER_REGISTRATION_TO_EMAILS = parseCsvList(
+  process.env.MCT_TRAINER_REGISTRATION_TO_EMAILS,
+  MCT_ENROLLMENT_TO_EMAILS
+);
 const CONTACT_FROM_EMAIL = (
   process.env.CONTACT_FROM_EMAIL ||
   process.env.GRAPH_FROM_EMAIL ||
@@ -203,6 +207,10 @@ const server = BunLikeServe({
 
     if (req.method === 'POST' && url.pathname === '/api/mct-enrollment') {
       return handleMctEnrollment(req);
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/mct-trainer-registration') {
+      return handleMctTrainerRegistration(req);
     }
 
     if (req.method === 'POST' && url.pathname === '/api/careers') {
@@ -710,6 +718,46 @@ async function handleMctEnrollment(req) {
   }
 }
 
+async function handleMctTrainerRegistration(req) {
+  const body = await safeFormData(req);
+
+  if (!body.ok) {
+    return json(400, { error: 'Invalid form submission.' }, req);
+  }
+
+  const validation = await validateMctTrainerRegistrationPayload(body.data);
+
+  if (!validation.ok) {
+    return json(400, { error: validation.error }, req);
+  }
+
+  try {
+    await sendMctTrainerRegistrationEmail(validation.data);
+    await sendMctTrainerWelcomeEmail(validation.data);
+    return json(
+      200,
+      {
+        ok: true,
+        message:
+          'Registration submitted successfully. A welcome email has been sent to your inbox.',
+      },
+      req
+    );
+  } catch (error) {
+    console.error('MCT trainer registration email delivery failed:', error);
+
+    const message = isContactEmailConfigError(error)
+      ? error.message
+      : error?.message || 'Unable to submit your registration right now.';
+
+    return json(
+      isContactEmailConfigError(error) ? 500 : 502,
+      { error: message },
+      req
+    );
+  }
+}
+
 async function handleVerifyPayment(req) {
   if (!RAZORPAY_KEY_SECRET) {
     return json(500, { error: 'Missing Razorpay key secret.' }, req);
@@ -989,6 +1037,50 @@ async function sendMctEnrollmentEmail(enrollment) {
     )}`,
     text: buildMctEnrollmentEmailText(enrollment, submittedAt),
     html: buildMctEnrollmentEmailHtml(enrollment, submittedAt),
+  });
+}
+
+async function sendMctTrainerRegistrationEmail(registration) {
+  const submittedAt = new Date().toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  await sendNotificationEmail({
+    from: {
+      name: 'AtiSunya Trainer Network',
+      address: CONTACT_FROM_EMAIL,
+    },
+    to: MCT_TRAINER_REGISTRATION_TO_EMAILS,
+    replyTo: {
+      name: sanitizeEmailHeaderValue(registration.fullName),
+      address: registration.email,
+    },
+    subject: `MCT trainer registration from ${sanitizeEmailHeaderValue(
+      registration.fullName
+    )}`,
+    text: buildMctTrainerRegistrationEmailText(registration, submittedAt),
+    html: buildMctTrainerRegistrationEmailHtml(registration, submittedAt),
+    attachments: [
+      {
+        filename: registration.resume.name,
+        contentType: registration.resume.contentType,
+        contentBytes: registration.resume.contentBytes,
+      },
+    ],
+  });
+}
+
+async function sendMctTrainerWelcomeEmail(registration) {
+  await sendNotificationEmail({
+    from: {
+      name: 'AtiSunya Learning & Training Team',
+      address: CONTACT_FROM_EMAIL,
+    },
+    to: registration.email,
+    subject: 'Welcome to the AtiSunya Trainer Network',
+    text: buildMctTrainerWelcomeEmailText(registration),
+    html: buildMctTrainerWelcomeEmailHtml(registration),
   });
 }
 
@@ -1294,6 +1386,110 @@ function buildMctEnrollmentEmailHtml(enrollment, submittedAt) {
     </html>`;
 }
 
+function buildMctTrainerRegistrationEmailText(registration, submittedAt) {
+  return [
+    'New Microsoft Certified Trainer registration',
+    '',
+    `Name: ${registration.fullName}`,
+    `Email: ${registration.email}`,
+    `Phone: ${registration.phone}`,
+    `Country: ${registration.country}`,
+    `LinkedIn: ${registration.linkedInProfile || 'NA'}`,
+    `MCT ID: ${registration.mctId}`,
+    `MCT status: ${registration.mctStatus}`,
+    `Years of training experience: ${registration.yearsOfExperience}`,
+    `Areas of expertise: ${registration.expertise.join(', ') || 'NA'}`,
+    `Preferred training mode: ${registration.preferredTrainingMode}`,
+    `Languages spoken: ${registration.languagesSpoken}`,
+    `Additional certifications: ${registration.additionalCertifications || 'NA'}`,
+    `Resume: ${registration.resume.name}`,
+    `Submitted at: ${submittedAt}`,
+    '',
+    'Professional summary:',
+    registration.professionalSummary,
+  ].join('\n');
+}
+
+function buildMctTrainerRegistrationEmailHtml(registration, submittedAt) {
+  const rows = [
+    ['Name', registration.fullName],
+    ['Email', registration.email],
+    ['Phone', registration.phone],
+    ['Country', registration.country],
+    ['LinkedIn', registration.linkedInProfile || 'NA'],
+    ['MCT ID', registration.mctId],
+    ['MCT status', registration.mctStatus],
+    ['Years of training experience', registration.yearsOfExperience],
+    ['Areas of expertise', registration.expertise.join(', ') || 'NA'],
+    ['Preferred training mode', registration.preferredTrainingMode],
+    ['Languages spoken', registration.languagesSpoken],
+    ['Additional certifications', registration.additionalCertifications || 'NA'],
+    ['Resume', registration.resume.name],
+    ['Submitted at', submittedAt],
+  ]
+    .map(
+      ([label, value]) => `
+        <tr>
+          <th align="left" style="padding: 8px 12px; border: 1px solid #ddd; background: #f7f7f7;">${escapeHtml(label)}</th>
+          <td style="padding: 8px 12px; border: 1px solid #ddd;">${escapeHtml(value)}</td>
+        </tr>`
+    )
+    .join('');
+
+  return `
+    <!doctype html>
+    <html lang="en">
+      <body style="font-family: Arial, sans-serif; color: #222; line-height: 1.5;">
+        <h2 style="margin: 0 0 16px;">New Microsoft Certified Trainer registration</h2>
+        <table style="border-collapse: collapse; margin-bottom: 18px;">
+          ${rows}
+        </table>
+        <p style="margin: 0 0 8px;"><strong>Professional summary</strong></p>
+        <div style="white-space: pre-wrap; border: 1px solid #ddd; padding: 12px;">${escapeHtml(
+          registration.professionalSummary
+        )}</div>
+      </body>
+    </html>`;
+}
+
+function buildMctTrainerWelcomeEmailText(registration) {
+  return [
+    'Hello ' + registration.fullName + ',',
+    '',
+    'Thank you for registering your interest in joining the AtiSunya Trainer Network.',
+    '',
+    'We are excited to connect with talented Microsoft Certified Trainers from around the world and explore opportunities for collaboration across corporate training engagements, certification bootcamps, workshops, and Microsoft technology programs.',
+    '',
+    'Our team will review your profile and reach out when opportunities align with your expertise and experience.',
+    '',
+    'We look forward to working with you and building impactful learning experiences together.',
+    '',
+    'Best Regards,',
+    'AtiSunya Learning & Training Team',
+    'AtiSunya',
+  ].join('\n');
+}
+
+function buildMctTrainerWelcomeEmailHtml(registration) {
+  return `
+    <!doctype html>
+    <html lang="en">
+      <body style="margin: 0; font-family: Arial, sans-serif; color: #222; line-height: 1.55; background: #f5f7fb;">
+        <div style="max-width: 640px; margin: 0 auto; padding: 28px 16px;">
+          <div style="background: #ffffff; border: 1px solid #e6e8ef; padding: 28px;">
+            <h1 style="margin: 0 0 18px; font-size: 26px; color: #111827;">Welcome to the AtiSunya Trainer Network</h1>
+            <p>Hello ${escapeHtml(registration.fullName)},</p>
+            <p>Thank you for registering your interest in joining the AtiSunya Trainer Network.</p>
+            <p>We are excited to connect with talented Microsoft Certified Trainers from around the world and explore opportunities for collaboration across corporate training engagements, certification bootcamps, workshops, and Microsoft technology programs.</p>
+            <p>Our team will review your profile and reach out when opportunities align with your expertise and experience.</p>
+            <p>We look forward to working with you and building impactful learning experiences together.</p>
+            <p style="margin: 24px 0 0;">Best Regards,<br />AtiSunya Learning &amp; Training Team<br />AtiSunya</p>
+          </div>
+        </div>
+      </body>
+    </html>`;
+}
+
 function createContactEmailConfigError(message) {
   const error = new Error(message);
   error.code = 'CONTACT_EMAIL_CONFIG_ERROR';
@@ -1495,6 +1691,100 @@ function validateMctEnrollmentPayload(data) {
   };
 }
 
+async function validateMctTrainerRegistrationPayload(data) {
+  const fullName = getFormString(data, 'fullName');
+  const email = getFormString(data, 'email').toLowerCase();
+  const phone = getFormString(data, 'phone');
+  const country = getFormString(data, 'country');
+  const linkedInProfile = getFormString(data, 'linkedInProfile');
+  const mctId = getFormString(data, 'mctId');
+  const mctStatus = getFormString(data, 'mctStatus');
+  const yearsOfExperience = getFormString(data, 'yearsOfExperience');
+  const expertise = data
+    .getAll('expertise')
+    .map((value) => (typeof value === 'string' ? value.trim() : ''))
+    .filter(Boolean);
+  const preferredTrainingMode = getFormString(data, 'preferredTrainingMode');
+  const languagesSpoken = getFormString(data, 'languagesSpoken');
+  const additionalCertifications = getFormString(data, 'additionalCertifications');
+  const professionalSummary = getFormString(data, 'professionalSummary');
+  const resumeFile = data.get('resume');
+
+  if (!fullName) {
+    return { ok: false, error: 'Full name is required.' };
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  if (!phone) {
+    return { ok: false, error: 'Phone number is required.' };
+  }
+
+  if (!country) {
+    return { ok: false, error: 'Country is required.' };
+  }
+
+  if (!mctId) {
+    return { ok: false, error: 'Microsoft Certified Trainer ID is required.' };
+  }
+
+  if (!mctStatus) {
+    return { ok: false, error: 'MCT status is required.' };
+  }
+
+  if (!yearsOfExperience) {
+    return { ok: false, error: 'Years of training experience is required.' };
+  }
+
+  if (!expertise.length) {
+    return { ok: false, error: 'Please select at least one area of expertise.' };
+  }
+
+  if (!preferredTrainingMode) {
+    return { ok: false, error: 'Preferred training mode is required.' };
+  }
+
+  if (!languagesSpoken) {
+    return { ok: false, error: 'Languages spoken is required.' };
+  }
+
+  if (!isUploadedFile(resumeFile)) {
+    return { ok: false, error: 'Resume upload is required.' };
+  }
+
+  const maxResumeBytes = 10 * 1024 * 1024;
+
+  if (resumeFile.size > maxResumeBytes) {
+    return { ok: false, error: 'Resume must be 10 MB or smaller.' };
+  }
+
+  return {
+    ok: true,
+    data: {
+      fullName,
+      email,
+      phone,
+      country,
+      linkedInProfile,
+      mctId,
+      mctStatus,
+      yearsOfExperience,
+      expertise,
+      preferredTrainingMode,
+      languagesSpoken,
+      additionalCertifications,
+      professionalSummary,
+      resume: {
+        name: sanitizeAttachmentName(resumeFile.name || 'resume'),
+        contentType: resumeFile.type || 'application/octet-stream',
+        contentBytes: Buffer.from(await resumeFile.arrayBuffer()).toString('base64'),
+      },
+    },
+  };
+}
+
 function safeJson(req) {
   return req
     .json()
@@ -1531,7 +1821,7 @@ function withCors(req, response) {
   const requestHeaders = req?.headers.get('access-control-request-headers');
   const isAllowedLocalhostOrigin =
     typeof requestOrigin === 'string' &&
-    /^http:\/\/localhost:\d+$/.test(requestOrigin);
+    /^http:\/\/(?:localhost|127\.0\.0\.1):\d+$/.test(requestOrigin);
 
   const allowOrigin =
     requestOrigin && (ALLOWED_ORIGINS.includes(requestOrigin) || isAllowedLocalhostOrigin)

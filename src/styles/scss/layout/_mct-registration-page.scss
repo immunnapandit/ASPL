@@ -1,0 +1,515 @@
+@use '../utils' as *;
+
+.mct-registration-page {
+  background: #ffffff;
+  color: var(--tv-heading-primary);
+  font-family: var(--tv-ff-body);
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--tv-heading-primary);
+    font-family: var(--tv-ff-heading);
+    letter-spacing: 0;
+  }
+
+  p,
+  li {
+    color: var(--tv-text-body);
+    font-size: 16px;
+    line-height: 28px;
+  }
+}
+
+.mct-registration-hero {
+  padding: 72px 0 42px;
+  background:
+    linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.mct-registration-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.mct-registration-hero-copy,
+.mct-registration-hero-card,
+.mct-registration-opportunity-grid article,
+.mct-registration-application-shell {
+  border: 1px solid rgba(10, 22, 94, 0.08);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 49, 58, 0.06);
+}
+
+.mct-registration-hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 330px;
+  padding: 42px;
+}
+
+.mct-registration-kicker,
+.mct-registration-hero-card > span,
+.mct-registration-application-head span {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--tv-theme-1);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mct-registration-hero-copy h1 {
+  max-width: 760px;
+  margin: 0 0 14px;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.mct-registration-hero-copy p {
+  max-width: 760px;
+  margin: 0 0 26px;
+}
+
+.mct-registration-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mct-registration-button,
+.mct-registration-form-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--tv-theme-1);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.mct-registration-button:hover,
+.mct-registration-form-footer button:hover {
+  transform: translateY(-2px);
+  background: var(--tv-heading-primary);
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(10, 22, 94, 0.14);
+}
+
+.mct-registration-hero-card {
+  padding: 28px;
+}
+
+.mct-registration-hero-card h2 {
+  margin: 0 0 18px;
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+.mct-registration-hero-card ul {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mct-registration-hero-card li {
+  display: flex;
+  gap: 10px;
+  color: var(--tv-text-body);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.mct-registration-hero-card svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--tv-theme-1);
+}
+
+.mct-registration-opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.mct-registration-opportunity-grid article {
+  padding: 20px;
+  box-shadow: none;
+}
+
+.mct-registration-opportunity-grid svg {
+  margin-bottom: 12px;
+  color: var(--tv-theme-1);
+}
+
+.mct-registration-opportunity-grid h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.mct-registration-opportunity-grid p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 23px;
+}
+
+.mct-registration-application {
+  padding: 44px 0 110px;
+}
+
+.mct-registration-application-shell {
+  overflow: hidden;
+}
+
+.mct-registration-application-head {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 30px 34px;
+  border-bottom: 1px solid rgba(10, 22, 94, 0.08);
+  background: #f8fafc;
+}
+
+.mct-registration-application-head h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.mct-registration-application-head p {
+  max-width: 470px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 25px;
+}
+
+.mct-registration-form {
+  display: grid;
+  gap: 0;
+}
+
+.mct-registration-form fieldset {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 28px;
+  margin: 0;
+  padding: 30px 34px;
+  border: 0;
+  border-bottom: 1px solid rgba(10, 22, 94, 0.08);
+  background: #ffffff;
+}
+
+.mct-registration-form fieldset:nth-of-type(even) {
+  background: #fbfcfe;
+}
+
+.mct-registration-form legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 250px;
+  color: var(--tv-heading-primary);
+  font-family: var(--tv-ff-heading);
+  font-size: 19px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.mct-registration-form legend svg {
+  color: var(--tv-theme-1);
+}
+
+.mct-registration-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.mct-registration-field-wide {
+  grid-column: 1 / -1;
+}
+
+.mct-registration-fields label {
+  display: grid;
+  gap: 8px;
+  color: var(--tv-heading-primary);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mct-registration-fields input,
+.mct-registration-fields select,
+.mct-registration-fields textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 15px;
+  border: 1px solid rgba(10, 22, 94, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--tv-heading-primary);
+  font-size: 15px;
+  outline: none;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.mct-registration-fields textarea {
+  min-height: 116px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.mct-registration-fields input:focus,
+.mct-registration-fields select:focus,
+.mct-registration-fields textarea:focus {
+  border-color: var(--tv-theme-1);
+  box-shadow: 0 0 0 3px rgba(43, 77, 255, 0.1);
+}
+
+.mct-registration-input-icon {
+  position: relative;
+  display: block;
+}
+
+.mct-registration-input-icon svg {
+  position: absolute;
+  left: 14px;
+  top: 15px;
+  color: var(--tv-text-body);
+}
+
+.mct-registration-input-icon input {
+  padding-left: 42px;
+}
+
+.mct-registration-field-help {
+  grid-column: 2;
+  max-width: 720px;
+  margin: 0 0 16px;
+  font-size: 15px !important;
+  line-height: 25px !important;
+}
+
+.mct-registration-expertise-fieldset .mct-registration-checkbox-grid {
+  grid-column: 2;
+}
+
+.mct-registration-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mct-registration-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 11px 13px;
+  border: 1px solid rgba(10, 22, 94, 0.08);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--tv-heading-primary);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 20px;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.mct-registration-checkbox-grid label:hover,
+.mct-registration-checkbox-grid label:focus-within {
+  transform: translateY(-1px);
+  border-color: rgba(43, 77, 255, 0.32);
+  box-shadow: 0 10px 22px rgba(15, 49, 58, 0.06);
+}
+
+.mct-registration-checkbox-grid input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  accent-color: var(--tv-theme-1);
+}
+
+.mct-registration-checkbox-grid span {
+  display: block;
+  color: var(--tv-heading-primary);
+}
+
+.mct-registration-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 14px;
+  border: 1px dashed rgba(43, 77, 255, 0.36);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--tv-text-body);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.mct-registration-file svg {
+  color: var(--tv-theme-1);
+}
+
+.mct-registration-file-input {
+  position: absolute;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0 !important;
+}
+
+.mct-registration-status {
+  margin: 24px 34px 0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 15px !important;
+  font-weight: 650;
+}
+
+.mct-registration-status.is-success {
+  background: #effaf4;
+  color: #087443;
+}
+
+.mct-registration-status.is-error {
+  background: #fff1f1;
+  color: #b42318;
+}
+
+.mct-registration-form-footer {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 34px;
+  background: #ffffff;
+}
+
+.mct-registration-form-footer p {
+  max-width: 560px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.mct-registration-form-footer button {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mct-registration-form-footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+@media (max-width: 1199px) {
+  .mct-registration-hero-grid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+
+  .mct-registration-opportunity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 991px) {
+  .mct-registration-hero-grid,
+  .mct-registration-form fieldset {
+    grid-template-columns: 1fr;
+  }
+
+  .mct-registration-form legend,
+  .mct-registration-field-help,
+  .mct-registration-expertise-fieldset .mct-registration-checkbox-grid {
+    grid-column: auto;
+    width: auto;
+  }
+
+  .mct-registration-application-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 767px) {
+  .mct-registration-hero {
+    padding: 50px 0 28px;
+  }
+
+  .mct-registration-hero-copy,
+  .mct-registration-hero-card,
+  .mct-registration-application-head,
+  .mct-registration-form fieldset,
+  .mct-registration-form-footer {
+    padding: 22px;
+  }
+
+  .mct-registration-hero-copy {
+    min-height: auto;
+  }
+
+  .mct-registration-hero-copy h1 {
+    font-size: 32px;
+  }
+
+  .mct-registration-application-head h2 {
+    font-size: 26px;
+  }
+
+  .mct-registration-opportunity-grid,
+  .mct-registration-fields,
+  .mct-registration-checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mct-registration-form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mct-registration-button,
+  .mct-registration-form-footer button {
+    width: 100%;
+  }
+}

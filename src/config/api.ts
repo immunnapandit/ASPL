@@ -16,6 +16,10 @@ export const MCT_ENROLLMENT_API_URL =
   import.meta.env.VITE_MCT_ENROLLMENT_API_URL ||
   buildApiUrl('/api/mct-enrollment');
 
+export const MCT_TRAINER_REGISTRATION_API_URL =
+  import.meta.env.VITE_MCT_TRAINER_REGISTRATION_API_URL ||
+  buildApiUrl('/api/mct-trainer-registration');
+
 export const CAREER_API_URL =
   import.meta.env.VITE_CAREER_API_URL || buildApiUrl('/api/careers');
 

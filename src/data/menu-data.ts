@@ -148,6 +148,7 @@ const menu_data: MenuDataType[] = [
       { title: 'Training', link: '/what-we-do/training' },
       { title: 'Web Development', link: '/what-we-do/web-development' },
       { title: 'Microsoft Certified Trainer Readiness Training', link: '/microsoft-certified-trainer-readiness-training' },
+      { title: 'Microsoft Certified Trainer Registration', link: '/what-we-do/microsoft-certified-trainer-registration' },
     ],
   },
 
