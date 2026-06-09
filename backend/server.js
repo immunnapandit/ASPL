@@ -94,7 +94,11 @@ const MCT_ENROLLMENT_TO_EMAILS = parseCsvList(
 );
 const MCT_TRAINER_REGISTRATION_TO_EMAILS = parseCsvList(
   process.env.MCT_TRAINER_REGISTRATION_TO_EMAILS,
-  MCT_ENROLLMENT_TO_EMAILS
+  ['sangeeta@atisunya.co']
+);
+const MCT_TRAINER_REGISTRATION_CC_EMAILS = parseCsvList(
+  process.env.MCT_TRAINER_REGISTRATION_CC_EMAILS,
+  ['info@atisunya.co']
 );
 const CONTACT_FROM_EMAIL = (
   process.env.CONTACT_FROM_EMAIL ||
@@ -738,8 +742,7 @@ async function handleMctTrainerRegistration(req) {
       200,
       {
         ok: true,
-        message:
-          'Registration submitted successfully. A welcome email has been sent to your inbox.',
+        message: 'Registration submitted successfully.',
       },
       req
     );
@@ -1052,6 +1055,7 @@ async function sendMctTrainerRegistrationEmail(registration) {
       address: CONTACT_FROM_EMAIL,
     },
     to: MCT_TRAINER_REGISTRATION_TO_EMAILS,
+    cc: MCT_TRAINER_REGISTRATION_CC_EMAILS,
     replyTo: {
       name: sanitizeEmailHeaderValue(registration.fullName),
       address: registration.email,
@@ -1172,6 +1176,7 @@ function toGraphMessage(message) {
       content: message.html || escapeHtml(message.text || ''),
     },
     toRecipients: toGraphRecipients(message.to),
+    ccRecipients: message.cc ? toGraphRecipients(message.cc) : undefined,
     replyTo: message.replyTo ? toGraphRecipients(message.replyTo) : undefined,
     attachments: message.attachments?.map(toGraphAttachment),
   };
@@ -1182,6 +1187,10 @@ function toGraphMessage(message) {
 
   if (!graphMessage.replyTo?.length) {
     delete graphMessage.replyTo;
+  }
+
+  if (!graphMessage.ccRecipients?.length) {
+    delete graphMessage.ccRecipients;
   }
 
   return graphMessage;

@@ -20,7 +20,7 @@ const globalLocations = [
     address: 'Level 40/140 William St, Melbourne VIC 300',
     phone: 'AUS: (+61) 478006757',
     thumbClassName: 'is-leeds',
-    thumbSrc: '/assets/img/slider/Australia.jpg',
+    thumbSrc: '/assets/img/about/melbourne.webp',
     mapSrc: 'https://www.google.com/maps?q=Melbourne%2C%20Australia&z=10&output=embed',
     mapCountry: 'Australia',
     mapLabel: 'Melbourne',

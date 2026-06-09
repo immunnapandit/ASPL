@@ -112,7 +112,7 @@ export default function MicrosoftCertifiedTrainerRegistration() {
       setIsSuccess(true);
       setStatusMessage(
         result?.message ||
-          'Registration submitted successfully. Please check your email for the welcome note.'
+          'Registration submitted successfully.'
       );
       form.reset();
       setResumeFileName('');
