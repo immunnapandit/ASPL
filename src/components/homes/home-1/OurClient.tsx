@@ -86,6 +86,30 @@ const clientLogos = [
     name: 'Ksquare99 Web Services',
     logo: '/assets/img/brand/ksquare99-web-services.png',
   },
+  {
+    id: 22,
+    name: 'Brunswick',
+    logo: '/assets/img/brand/brunswick_corporation_logo.jpg',
+    useLocalAsset: true,
+  },
+  {
+    id: 23,
+    name: 'NMB Bank',
+    logo: '/assets/img/brand/nmb-bank.png',
+    useLocalAsset: true,
+  },
+  {
+    id: 24,
+    name: 'ICICI Bank',
+    logo: '/assets/img/brand/icici-bank.png',
+    useLocalAsset: true,
+  },
+  {
+    id: 25,
+    name: 'HDFC Bank',
+    logo: '/assets/img/brand/HDFC_Bank.png',
+    useLocalAsset: true,
+  },
 ];
 
 export default function OurClient() {
@@ -227,10 +251,14 @@ export default function OurClient() {
                 <SwiperSlide className="swiper-slide" key={client.id}>
                   <div className="tv-brand-single-item our-client-item">
                     <img
-                      src={getCloudinaryAssetUrl(
-                        client.logo,
-                        CLOUDINARY_TRANSFORMS.logo,
-                      )}
+                      src={
+                        client.useLocalAsset
+                          ? client.logo
+                          : getCloudinaryAssetUrl(
+                              client.logo,
+                              CLOUDINARY_TRANSFORMS.logo,
+                            )
+                      }
                       alt={client.name}
                       className={client.logoClassName}
                     />
