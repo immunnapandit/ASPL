@@ -80,6 +80,13 @@ export default function MctEnrollmentPopup() {
           Microsoft Certified Trainer journey with expert guidance.
         </p>
 
+        <div className="mct-popup__deadline">
+          <CalendarDays size={18} />
+          <span>
+            Last date for Become MCT: <strong>30 Jun</strong>. Enroll now.
+          </span>
+        </div>
+
         <div className="mct-popup__highlights">
           <span>
             <Award size={16} />
@@ -92,7 +99,7 @@ export default function MctEnrollmentPopup() {
         </div>
 
         <div className="mct-popup__actions">
-          <a href="/become-mct" className="mct-popup__primary">
+          <a href="/become-mct/enroll" className="mct-popup__primary">
             Enroll Now
             <ArrowRight size={18} />
           </a>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import {
   ArrowRight,
@@ -9,57 +9,11 @@ import {
 import { Link } from 'react-router-dom';
 import '../../styles/scss/layout/_becomemct.scss';
 
-type UpcomingBatch = {
-  leftDate: Date;
-  rightDate?: Date;
-};
-
-const batchWeekdays = new Set([1, 3, 4, 5]);
-
-const buildUpcomingBatches = (today = new Date()): UpcomingBatch[] => {
-  const currentDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  );
-  const batchDates: Date[] = [];
-  const dateCursor = new Date(currentDate);
-
-  while (batchDates.length < 10) {
-    if (batchWeekdays.has(dateCursor.getDay())) {
-      batchDates.push(new Date(dateCursor));
-    }
-
-    dateCursor.setDate(dateCursor.getDate() + 1);
-  }
-
-  return Array.from({ length: Math.ceil(batchDates.length / 2) }, (_, index) => {
-    const pairIndex = index * 2;
-
-    return {
-      leftDate: batchDates[pairIndex],
-      rightDate: batchDates[pairIndex + 1],
-    };
-  });
-};
-
-const formatBatchDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-
-  return `${day}-${month}-${date.getFullYear()}`;
-};
-
-const getBatchKey = ({ leftDate, rightDate }: UpcomingBatch) => {
-  return `${formatBatchDate(leftDate)}-${rightDate ? formatBatchDate(rightDate) : 'single'}`;
-};
-
-const formatBatchPair = ({ leftDate, rightDate }: UpcomingBatch) => {
-  return {
-    left: formatBatchDate(leftDate),
-    right: rightDate ? formatBatchDate(rightDate) : '',
-  };
-};
+const upcomingBatches = [
+  ['22-06-2026', '24-06-2026'],
+  ['25-06-2026', '26-06-2026'],
+  ['29-06-2026', '30-06-2026'],
+];
 
 const pageVariants: Variants = {
   hidden: {},
@@ -94,7 +48,6 @@ const heroImageVariants: Variants = {
 
 export default function BecomeMct() {
   const [openIndex, setOpenIndex] = useState(0);
-  const upcomingBatches = useMemo(() => buildUpcomingBatches(), []);
 
   const heroHighlights = [
     { icon: Clock3, label: '2-day live readiness program' },
@@ -431,27 +384,22 @@ export default function BecomeMct() {
                 </div>
 
                 <div className="pm-batch-list">
-                  {upcomingBatches.length > 0 ? (
-                    upcomingBatches.map((batch) => {
-                      const batchPair = formatBatchPair(batch);
-
-                      return (
-                        <div key={getBatchKey(batch)} className="pm-batch-row">
-                          <span>{batchPair.left}</span>
-                          <span
-                            aria-hidden="true"
-                            className="pm-batch-divider"
-                          />
-                          <span>{batchPair.right}</span>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p className="pm-batch-empty">
-                      New global batch dates will be announced soon.
-                    </p>
-                  )}
+                  {upcomingBatches.map(([leftDate, rightDate]) => (
+                    <div
+                      key={`${leftDate}-${rightDate}`}
+                      className="pm-batch-row"
+                    >
+                      <span>{leftDate}</span>
+                      <span aria-hidden="true" className="pm-batch-divider" />
+                      <span>{rightDate}</span>
+                    </div>
+                  ))}
                 </div>
+
+                <p className="pm-batch-note">
+                  Microsoft is introducing a new MCT onboarding experience
+                  starting from 1st July 2026.
+                </p>
               </motion.div>
 
               <motion.div

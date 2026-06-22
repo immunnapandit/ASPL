@@ -137,6 +137,35 @@
   z-index: 1;
 }
 
+.mct-popup__deadline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: min(100%, 405px);
+  margin: 18px auto 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(236, 176, 20, 0.42);
+  border-radius: 6px;
+  background: rgba(255, 248, 226, 0.86);
+  color: #0a165e;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 10px 24px rgba(236, 176, 20, 0.12);
+}
+
+.mct-popup__deadline svg {
+  flex: 0 0 auto;
+  color: #ecb014;
+}
+
+.mct-popup__deadline strong {
+  color: #1739e6;
+}
+
 .mct-popup__highlights {
   display: flex;
   flex-wrap: wrap;
