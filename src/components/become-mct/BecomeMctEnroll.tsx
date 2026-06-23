@@ -15,6 +15,12 @@ import { Link } from 'react-router-dom';
 import { MCT_ENROLLMENT_API_URL } from '../../config/api';
 import '../../styles/scss/layout/_becomemct.scss';
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 type EnrollFormState = {
   fullName: string;
   email: string;
@@ -77,6 +83,10 @@ export default function BecomeMctEnroll() {
       }
 
       setIsSuccess(true);
+      window.gtag?.('event', 'conversion', {
+        send_to: 'AW-18202522456/uDxUCOXSgsQcENjm0edD',
+        transaction_id: '',
+      });
       setStatusMessage(
         result?.message ||
           'Enrollment request submitted successfully. Our team will contact you soon.'
