@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import HomeOne from './components/homes/home-1';
 import HomeTwo from './components/homes/home-2';
@@ -75,6 +76,7 @@ function App() {
     <>
       <RouterProvider router={router} />
       <MctEnrollmentPopup />
+      <Analytics />
       <SpeedInsights />
     </>
   );
