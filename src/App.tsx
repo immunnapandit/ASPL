@@ -66,9 +66,8 @@ const router = createBrowserRouter([
   { path: '/d365-finance-operations', element: <D365Finance /> },
   { path: '/become-mct/enroll', element: <BecomeMctEnrollPage /> },
   ...customPageRoutes,
+  { path: '/become-mct', element: <NotFound /> },
   { path: '*', element: <NotFound /> },
-
-  { path: '/become-mct', element: <BecomeMCTPage /> },
 ]);
 
 function App() {

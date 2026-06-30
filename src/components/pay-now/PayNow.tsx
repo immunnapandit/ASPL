@@ -5,7 +5,6 @@ import {
   Building2,
   CheckCircle2,
   CircleAlert,
-  Copy,
   CreditCard,
   ExternalLink,
   Globe,
@@ -16,7 +15,6 @@ import {
   Phone,
   QrCode,
   ShieldAlert,
-  ShieldCheck,
   User,
 } from 'lucide-react';
 import '../../styles/scss/layout/_pay-now.scss';
@@ -180,9 +178,9 @@ const DEFAULT_GATEWAY_CONFIG: PaymentGatewayConfig = {
   keyId: (import.meta.env.VITE_RAZORPAY_KEY_ID || '').trim(),
   isConfigured: Boolean((import.meta.env.VITE_RAZORPAY_KEY_ID || '').trim()),
   merchantName: 'AtiSunya',
-  merchantDescription: 'Microsoft Certified Trainer Readiness Program',
-  defaultCourse: 'Microsoft Certified Trainer Readiness',
-  defaultAmount: 35400,
+  merchantDescription: 'Secure Payment',
+  defaultCourse: '',
+  defaultAmount: 0,
   defaultCurrency: 'INR',
   supportedCurrencies: DEFAULT_SUPPORTED_CURRENCIES,
   supportedMethods: ['card', 'upi', 'netbanking'],
@@ -211,7 +209,7 @@ const INITIAL_FORM_STATE: PaymentFormState = {
   addressLine2: '',
   state: '',
   pincode: '',
-  amount: String(DEFAULT_GATEWAY_CONFIG.defaultAmount),
+  amount: '',
   currency: DEFAULT_GATEWAY_CONFIG.defaultCurrency,
   pan: '',
   gstn: '',
@@ -638,10 +636,6 @@ function formatPaymentMethod(method: string | null | undefined) {
   return method ? method.toUpperCase() : 'Pending';
 }
 
-function getMethodOption(method: PaymentMethod) {
-  return METHOD_OPTIONS.find((option) => option.id === method) || METHOD_OPTIONS[0];
-}
-
 function hasUpiFallback(upiDetails: UpiDetails | null) {
   return Boolean(upiDetails?.id || upiDetails?.qrImageUrl || upiDetails?.intentUrl);
 }
@@ -686,46 +680,6 @@ function buildUpiIntentLink({
   return `upi://pay?${params.toString()}`;
 }
 
-function getCheckoutDescription({
-  paymentMethod,
-  isOnlineCheckoutReady,
-  hasManualUpi,
-  hasManualBank,
-}: {
-  paymentMethod: PaymentMethod;
-  isOnlineCheckoutReady: boolean;
-  hasManualUpi: boolean;
-  hasManualBank: boolean;
-}) {
-  if (paymentMethod === 'card') {
-    return isOnlineCheckoutReady
-      ? 'Razorpay will open a secure card checkout. OTP and 3D Secure approval are handled by your bank.'
-      : 'Card payments need live Razorpay keys on the backend before the checkout can open.';
-  }
-
-  if (paymentMethod === 'upi') {
-    if (hasManualUpi) {
-      return 'Scan the AtiSunya QR code or open your UPI app using the details shown below.';
-    }
-
-    if (isOnlineCheckoutReady) {
-      return 'Razorpay will show UPI apps and QR options inside the secure checkout popup.';
-    }
-
-    return 'Add UPI ID or QR details on the backend to make this option usable before checkout goes live.';
-  }
-
-  if (hasManualBank) {
-    return 'Use the beneficiary bank details shown below to complete the transfer for this payment.';
-  }
-
-  if (isOnlineCheckoutReady) {
-    return 'Razorpay will show supported banks and continue the bank transfer in a secure flow.';
-  }
-
-  return 'Add bank transfer details on the backend if you want a manual fallback for netbanking.';
-}
-
 function getSubmitButtonLabel({
   paymentMethod,
   isOnlineCheckoutReady,
@@ -768,7 +722,6 @@ export default function PayNow() {
   const [isLoadingConfig, setIsLoadingConfig] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastPayment, setLastPayment] = useState<VerifiedPayment | null>(null);
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [isQrPreviewOpen, setIsQrPreviewOpen] = useState(false);
   const [isTaxDetailsOpen, setIsTaxDetailsOpen] = useState(false);
   const [exchangeRates, setExchangeRates] = useState<ExchangeRateSnapshot | null>(null);
@@ -856,10 +809,10 @@ export default function PayNow() {
     }
 
     if (selectedExchangeRate && formState.currency.toUpperCase() !== CONVERSION_BASE_CURRENCY) {
-      return `1 ${CONVERSION_BASE_CURRENCY} = ${formatExchangeRateValue(selectedExchangeRate)} ${formState.currency.toUpperCase()}. ${exchangeRates.stale ? 'Showing cached reference rates' : 'Reference rates updated'} on ${exchangeRates.date}.`;
+      return `1 ${CONVERSION_BASE_CURRENCY} = ${formatExchangeRateValue(selectedExchangeRate)} ${formState.currency.toUpperCase()}.`;
     }
 
-    return `Base pricing is in ${CONVERSION_BASE_CURRENCY}. Switching currency will auto-convert the current amount using ${exchangeRates.stale ? 'cached ' : ''}reference rates from ${exchangeRates.date}.`;
+    return '';
   }, [
     exchangeRateError,
     exchangeRates,
@@ -873,21 +826,6 @@ export default function PayNow() {
   const hasManualUpi = hasUpiFallback(gatewayConfig.upiDetails);
   const hasManualBank = hasBankFallback(gatewayConfig.bankDetails);
 
-  const selectedMethodOption = useMemo(
-    () => getMethodOption(formState.paymentMethod),
-    [formState.paymentMethod]
-  );
-
-  const checkoutDescription = useMemo(
-    () =>
-      getCheckoutDescription({
-        paymentMethod: formState.paymentMethod,
-        isOnlineCheckoutReady,
-        hasManualUpi,
-        hasManualBank,
-      }),
-    [formState.paymentMethod, hasManualBank, hasManualUpi, isOnlineCheckoutReady]
-  );
 
   const manualUpiIntentUrl = useMemo(
     () =>
@@ -937,7 +875,7 @@ export default function PayNow() {
   const summaryBadgeLabel = usesManualFlow
     ? 'Manual Payment Ready'
     : isOnlineCheckoutReady
-      ? 'Razorpay Live'
+      ? ''
       : 'Setup Pending';
   const checkoutChannelLabel = usesManualFlow
     ? formState.paymentMethod === 'upi'
@@ -950,12 +888,8 @@ export default function PayNow() {
   const phoneFieldLabel = isCardCheckout
     ? 'Mobile linked with card / bank OTP *'
     : 'Mobile number *';
-  const phoneFieldHelper = isCardCheckout
-    ? 'For card payments, OTP is always sent by the issuing bank to the mobile number linked with the card. Razorpay cannot redirect it to another number.'
-    : 'Use an active number for payment updates and support.';
-  const checkoutProfileNote = isCardCheckout
-    ? 'If Razorpay shows a remembered checkout number, that is only the checkout profile. Card OTP still goes to the card-linked mobile number.'
-    : 'The selected payment method will continue through the secure hosted flow or the fallback shown on this page.';
+  const phoneFieldHelper = isCardCheckout ? 'Use the mobile number linked to your card.' : 'Use an active number for updates.';
+  const checkoutProfileNote = isCardCheckout ? 'OTP is sent to the card-linked mobile number.' : 'The selected method will continue through the secure flow.';
 
   useEffect(() => {
     let isMounted = true;
@@ -979,7 +913,7 @@ export default function PayNow() {
         setGatewayConfig(mergedConfig);
         setFormState((current) => ({
           ...current,
-          amount: String(mergedConfig.defaultAmount),
+          amount: current.amount,
           currency: mergedConfig.defaultCurrency,
           paymentMethod: mergedConfig.supportedMethods[0] || 'card',
         }));
@@ -1316,14 +1250,6 @@ export default function PayNow() {
     }
   }
 
-  function handleQrPreviewOpen() {
-    if (!gatewayConfig.upiDetails?.qrImageUrl) {
-      return;
-    }
-
-    setIsQrPreviewOpen(true);
-  }
-
   function handleQrPreviewClose() {
     setIsQrPreviewOpen(false);
   }
@@ -1334,33 +1260,6 @@ export default function PayNow() {
     }
 
     window.open(gatewayConfig.upiDetails.qrImageUrl, '_blank', 'noopener,noreferrer');
-  }
-
-  async function handleCopy(copyName: string, value: string) {
-    if (!value.trim()) {
-      return;
-    }
-
-    if (!navigator.clipboard?.writeText) {
-      setStatus({
-        tone: 'warning',
-        message: `Clipboard access is not available. Please copy the ${copyName} manually.`,
-      });
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedKey(copyName);
-      window.setTimeout(() => {
-        setCopiedKey((current) => (current === copyName ? null : current));
-      }, 1600);
-    } catch {
-      setStatus({
-        tone: 'warning',
-        message: `Unable to copy the ${copyName}. Please copy it manually.`,
-      });
-    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -1556,8 +1455,6 @@ export default function PayNow() {
     }
   }
 
-  const SelectedMethodIcon = selectedMethodOption.icon;
-
   return (
     <section className="pn-page">
       <div className="container">
@@ -1565,15 +1462,8 @@ export default function PayNow() {
           <div className="pn-head">
             <span className="pn-badge">Secure Payment</span>
             <h1>Make your payment in one step</h1>
-            <p>
-              Enter the required billing details once, choose your payment method, and
-              continue through Razorpay or the available fallback.
-            </p>
+            <p>Complete your billing details and continue securely in a single flow.</p>
             <div className="pn-head-meta">
-              <div className="pn-head-stat">
-                <span>Program</span>
-                <strong>{gatewayConfig.defaultCourse}</strong>
-              </div>
               <div className="pn-head-stat">
                 <span>Payable today</span>
                 <strong>{payableAmount}</strong>
@@ -1605,7 +1495,7 @@ export default function PayNow() {
                   <div className="pn-section-head">
                     <span className="pn-section-kicker">Required</span>
                     <h2>Payer information</h2>
-                    <p>Use the same details you want to appear on the payment record.</p>
+                    <p>Use the details you want on the payment record.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1688,7 +1578,7 @@ export default function PayNow() {
                   <div className="pn-section-head">
                     <span className="pn-section-kicker">Billing Address</span>
                     <h2>Address details</h2>
-                    <p>Use the billing address that should be linked with this payment.</p>
+                    <p>Add the billing address that should be linked to this payment.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1770,7 +1660,7 @@ export default function PayNow() {
                   <div className="pn-section-head">
                     <span className="pn-section-kicker">Payment</span>
                     <h2>Amount and method</h2>
-                    <p>Keep INR for Indian payments, or switch currency for international card checkout.</p>
+                    <p>Use INR for local payments or switch currency for international card checkout.</p>
                   </div>
 
                   <div className="pn-grid">
@@ -1784,7 +1674,7 @@ export default function PayNow() {
                           type="text"
                           value={formState.amount}
                           onChange={handleChange}
-                          placeholder="35400"
+                          placeholder="Enter amount"
                           inputMode="decimal"
                           required
                         />
@@ -1858,13 +1748,6 @@ export default function PayNow() {
                       })}
                     </div>
 
-                    <div className="pn-method-tip">
-                      <span className={`pn-summary-badge pn-summary-badge-${summaryBadgeTone}`}>
-                        {summaryBadgeLabel}
-                      </span>
-                      <p>{checkoutDescription}</p>
-                    </div>
-
                     {fieldErrors.paymentMethod && (
                       <span className="pn-field-error">{fieldErrors.paymentMethod}</span>
                     )}
@@ -1887,7 +1770,7 @@ export default function PayNow() {
                     <div className="pn-optional-copy">
                       <span className="pn-section-kicker">Optional</span>
                       <strong>Tax details</strong>
-                      <p>Add PAN or GSTIN only if you need them on the billing record.</p>
+                      <p>Add PAN or GSTIN only if needed for billing.</p>
                     </div>
                   </summary>
 
@@ -1934,8 +1817,8 @@ export default function PayNow() {
                     <strong>{payableAmount}</strong>
                     <small className="pn-footer-note">
                       {isCardCheckout
-                        ? 'Card OTP verification is completed by your bank during checkout.'
-                        : 'You can switch payment methods anytime before continuing.'}
+                        ? 'OTP is handled by your bank during checkout.'
+                        : 'You can switch the method before continuing.'}
                     </small>
                   </div>
 
@@ -1965,15 +1848,11 @@ export default function PayNow() {
                     <span className={`pn-summary-badge pn-summary-badge-${summaryBadgeTone}`}>
                       {summaryBadgeLabel}
                     </span>
-                    <h3>Payment snapshot</h3>
+                    <h3>Order summary</h3>
                   </div>
                   <strong className="pn-summary-amount">{payableAmount}</strong>
                 </div>
 
-                <div className="pn-summary-row">
-                  <span>Program</span>
-                  <strong>{gatewayConfig.defaultCourse}</strong>
-                </div>
 
                 <div className="pn-summary-row">
                   <span>Customer</span>
@@ -2000,283 +1879,6 @@ export default function PayNow() {
                   <strong>{checkoutChannelLabel}</strong>
                 </div>
 
-                <div className="pn-detail-panel">
-                  <div className="pn-method-panel-head">
-                    <SelectedMethodIcon size={20} />
-                    <div>
-                      <strong>{selectedMethodOption.label}</strong>
-                      <p>{checkoutDescription}</p>
-                    </div>
-                  </div>
-
-                  {formState.paymentMethod === 'card' && (
-                    <div className="pn-note-list">
-                      <div className="pn-note-item">
-                        <CircleAlert size={16} />
-                        <span>Card OTP is always sent by the issuing bank to the mobile number linked with the card.</span>
-                      </div>
-                      <div className="pn-note-item">
-                        <ShieldCheck size={16} />
-                        <span>Visa, Mastercard, RuPay, and supported international cards continue inside Razorpay.</span>
-                      </div>
-                      <div className="pn-note-item">
-                        <CheckCircle2 size={16} />
-                        <span>
-                          {isOnlineCheckoutReady
-                            ? 'If Razorpay shows a remembered checkout number, it does not change the OTP destination for the card.'
-                            : 'Add live backend Razorpay keys to make card checkout available.'}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {formState.paymentMethod === 'upi' && (
-                    <>
-                      {gatewayConfig.upiDetails?.id && (
-                        <div className="pn-copy-card">
-                          <span>UPI ID</span>
-                          <div className="pn-copy-row">
-                            <strong>{gatewayConfig.upiDetails.id}</strong>
-                            <button
-                              type="button"
-                              className="pn-copy-btn"
-                              onClick={() => handleCopy('upi id', gatewayConfig.upiDetails?.id || '')}
-                            >
-                              <Copy size={14} />
-                              {copiedKey === 'upi id' ? 'Copied' : 'Copy'}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {gatewayConfig.upiDetails?.qrImageUrl ? (
-                        <button
-                          type="button"
-                          className="pn-qr-card pn-qr-card-action"
-                          onClick={handleQrPreviewOpen}
-                          aria-haspopup="dialog"
-                        >
-                          <img
-                            src={gatewayConfig.upiDetails.qrImageUrl}
-                            alt="AtiSunya UPI QR code"
-                          />
-                          <p>
-                            Click to enlarge this QR, or scan it with any UPI app to pay {payableAmount}.
-                          </p>
-                          <small>This uses the AtiSunya QR image shared for direct UPI payment.</small>
-                        </button>
-                      ) : (
-                        <p className="pn-inline-note">
-                          {isOnlineCheckoutReady
-                            ? 'Razorpay checkout can still show UPI apps even when no manual QR is configured here.'
-                            : 'Add PAYMENT_UPI_QR_IMAGE_URL to show a scannable QR code on this page.'}
-                        </p>
-                      )}
-
-                      <div className="pn-action-row">
-                        {gatewayConfig.upiDetails?.qrImageUrl && (
-                          <button type="button" className="pn-copy-btn" onClick={handleQrImageOpen}>
-                            <ExternalLink size={14} />
-                            Open QR
-                          </button>
-                        )}
-
-                        {manualUpiIntentUrl && (
-                          <a href={manualUpiIntentUrl} className="pn-inline-link">
-                            Open UPI app
-                            <ExternalLink size={14} />
-                          </a>
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                  {formState.paymentMethod === 'netbanking' && (
-                    <>
-                      {hasManualBank ? (
-                          <div className="pn-info-grid">
-                          {gatewayConfig.bankDetails?.accountName && (
-                            <div className="pn-info-card">
-                              <span>Account holder</span>
-                              <strong>{gatewayConfig.bankDetails.accountName}</strong>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.bankName && (
-                            <div className="pn-info-card">
-                              <span>Bank</span>
-                              <strong>{gatewayConfig.bankDetails.bankName}</strong>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.accountNumber && (
-                            <div className="pn-info-card">
-                              <span>Account number</span>
-                              <div className="pn-copy-row">
-                                <strong>{gatewayConfig.bankDetails.accountNumber}</strong>
-                                <button
-                                  type="button"
-                                  className="pn-copy-btn"
-                                  onClick={() =>
-                                    handleCopy(
-                                      'account number',
-                                      gatewayConfig.bankDetails?.accountNumber || ''
-                                    )
-                                  }
-                                >
-                                  <Copy size={14} />
-                                  {copiedKey === 'account number' ? 'Copied' : 'Copy'}
-                                </button>
-                              </div>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.ifsc && (
-                            <div className="pn-info-card">
-                              <span>IFSC</span>
-                              <div className="pn-copy-row">
-                                <strong>{gatewayConfig.bankDetails.ifsc}</strong>
-                                <button
-                                  type="button"
-                                  className="pn-copy-btn"
-                                  onClick={() =>
-                                    handleCopy('ifsc', gatewayConfig.bankDetails?.ifsc || '')
-                                  }
-                                >
-                                  <Copy size={14} />
-                                  {copiedKey === 'ifsc' ? 'Copied' : 'Copy'}
-                                </button>
-                              </div>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.branch && (
-                            <div className="pn-info-card pn-info-card-span-2">
-                              <span>Branch</span>
-                              <strong>{gatewayConfig.bankDetails.branch}</strong>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.accountType && (
-                            <div className="pn-info-card">
-                              <span>Account type</span>
-                              <strong>{gatewayConfig.bankDetails.accountType}</strong>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.micr && (
-                            <div className="pn-info-card">
-                              <span>MICR code</span>
-                              <div className="pn-copy-row">
-                                <strong>{gatewayConfig.bankDetails.micr}</strong>
-                                <button
-                                  type="button"
-                                  className="pn-copy-btn"
-                                  onClick={() =>
-                                    handleCopy('micr code', gatewayConfig.bankDetails?.micr || '')
-                                  }
-                                >
-                                  <Copy size={14} />
-                                  {copiedKey === 'micr code' ? 'Copied' : 'Copy'}
-                                </button>
-                              </div>
-                            </div>
-                          )}
-
-                          {gatewayConfig.bankDetails?.swiftCode && (
-                            <div className="pn-info-card">
-                              <span>SWIFT code</span>
-                              <div className="pn-copy-row">
-                                <strong>{gatewayConfig.bankDetails.swiftCode}</strong>
-                                <button
-                                  type="button"
-                                  className="pn-copy-btn"
-                                  onClick={() =>
-                                    handleCopy(
-                                      'swift code',
-                                      gatewayConfig.bankDetails?.swiftCode || ''
-                                    )
-                                  }
-                                >
-                                  <Copy size={14} />
-                                  {copiedKey === 'swift code' ? 'Copied' : 'Copy'}
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                          </div>
-                      ) : (
-                        <p className="pn-inline-note">
-                          {isOnlineCheckoutReady
-                            ? 'Razorpay will show the supported bank list after you continue.'
-                            : 'Add PAYMENT_BANK_ACCOUNT_NAME, PAYMENT_BANK_ACCOUNT_NUMBER, PAYMENT_BANK_IFSC, PAYMENT_BANK_NAME, PAYMENT_BANK_BRANCH, PAYMENT_BANK_MICR, and PAYMENT_BANK_SWIFT_CODE for a manual fallback here.'}
-                        </p>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {(gatewayConfig.supportEmail ||
-                  gatewayConfig.supportPhone ||
-                  gatewayConfig.supportUrl ||
-                  gatewayConfig.companyPan ||
-                  gatewayConfig.companyGstin) && (
-                  <div className="pn-detail-panel">
-                    <div className="pn-panel-heading">
-                      <Building2 size={16} />
-                      <span>Support and billing</span>
-                    </div>
-
-                    <div className="pn-info-grid">
-                      {gatewayConfig.supportEmail && (
-                        <div className="pn-info-card">
-                          <span>Support email</span>
-                          <strong>
-                            <a href={`mailto:${gatewayConfig.supportEmail}`}>
-                              {gatewayConfig.supportEmail}
-                            </a>
-                          </strong>
-                        </div>
-                      )}
-
-                      {gatewayConfig.supportPhone && (
-                        <div className="pn-info-card">
-                          <span>Support phone</span>
-                          <strong>
-                            <a href={`tel:${gatewayConfig.supportPhone}`}>
-                              {gatewayConfig.supportPhone}
-                            </a>
-                          </strong>
-                        </div>
-                      )}
-
-                      {gatewayConfig.companyPan && (
-                        <div className="pn-info-card">
-                          <span>Company PAN</span>
-                          <strong>{gatewayConfig.companyPan}</strong>
-                        </div>
-                      )}
-
-                      {gatewayConfig.companyGstin && (
-                        <div className="pn-info-card">
-                          <span>Company GSTIN</span>
-                          <strong>{gatewayConfig.companyGstin}</strong>
-                        </div>
-                      )}
-
-                      {gatewayConfig.supportUrl && (
-                        <div className="pn-info-card pn-info-card-span-2">
-                          <span>Support page</span>
-                          <strong>
-                            <a href={gatewayConfig.supportUrl} target="_blank" rel="noreferrer">
-                              Open support page
-                            </a>
-                          </strong>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
 
                 {lastPayment && (
                   <div className="pn-success-box">
@@ -2344,3 +1946,4 @@ export default function PayNow() {
     </section>
   );
 }
+

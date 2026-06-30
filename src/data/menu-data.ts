@@ -166,10 +166,6 @@ const menu_data: MenuDataType[] = [
   {
     title: 'Careers',
     link: '/careers',
-  },
-  {
-    title: 'Become MCT',
-    link: '/become-mct',
   }
 
 ];

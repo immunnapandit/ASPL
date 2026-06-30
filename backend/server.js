@@ -57,13 +57,13 @@ const RAZORPAY_CAPTURE_AUTHORIZED_PAYMENTS = parseBoolean(
 const PAYMENT_BRAND_NAME = (process.env.PAYMENT_BRAND_NAME || 'AtiSunya').trim();
 const PAYMENT_BRAND_DESCRIPTION = (
   process.env.PAYMENT_BRAND_DESCRIPTION ||
-  'Microsoft Certified Trainer Readiness Program'
+  'Secure Payment'
 ).trim();
 const PAYMENT_DEFAULT_COURSE = (
   process.env.PAYMENT_DEFAULT_COURSE ||
-  'Microsoft Certified Trainer Readiness'
+  ''
 ).trim();
-const PAYMENT_DEFAULT_AMOUNT = Number.parseInt(process.env.PAYMENT_DEFAULT_AMOUNT || '', 10) || 35400;
+const PAYMENT_DEFAULT_AMOUNT = Number.parseInt(process.env.PAYMENT_DEFAULT_AMOUNT || '', 10) || 0;
 const PAYMENT_THEME_COLOR = (process.env.PAYMENT_THEME_COLOR || '#0f52ba').trim();
 const PAYMENT_LOGO_URL = (process.env.PAYMENT_LOGO_URL || '').trim();
 const PAYMENT_SUPPORT_EMAIL = (
@@ -3867,3 +3867,4 @@ function normalizeDataDir(value) {
 
   return isAbsolute(normalized) ? normalized : join(__dirname, normalized);
 }
+
