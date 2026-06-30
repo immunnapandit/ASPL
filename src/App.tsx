@@ -30,7 +30,6 @@ import PrivacyPolicy from './components/privacy-policy';
 import TermsConditions from './components/terms-conditions';
 import CyberSecurity from './components/solutions/cyber-security';
 import { customPageRoutes } from './routes/custom-pages';
-import MctEnrollmentPopup from './common/MctEnrollmentPopup';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomeOne /> },
