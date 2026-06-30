@@ -17,7 +17,6 @@ import Faq from './components/faq';
 import BlogGrid from './components/blog-grid';
 import BlogDetails from './components/blog-details';
 import Contact from './components/contact';
-import BecomeMCTPage from './components/become-mct';
 import BecomeMctEnrollPage from './components/become-mct/enroll';
 import Careers from './components/careers';
 import CareerDetails from './components/careers/CareerDetails';
@@ -74,7 +73,7 @@ function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <MctEnrollmentPopup />
+      {/* <MctEnrollmentPopup /> */}
       <Analytics />
       <SpeedInsights />
     </>
