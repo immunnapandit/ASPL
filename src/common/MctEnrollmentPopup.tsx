@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Award, CalendarDays, GraduationCap, X } from 'lucide-react';
 
-const HIDDEN_ROUTES = ['/become-mct', '/become-mct/enroll', '/admin'];
+const HIDDEN_ROUTES = ['/admin'];
 const STORAGE_KEY = 'mct-enrollment-popup-dismissed';
 
 export default function MctEnrollmentPopup() {
@@ -99,7 +99,7 @@ export default function MctEnrollmentPopup() {
         </div>
 
         <div className="mct-popup__actions">
-          <a href="/become-mct/enroll" className="mct-popup__primary">
+          <a href="/microsoft-certified-trainer" className="mct-popup__primary">
             Enroll Now
             <ArrowRight size={18} />
           </a>

@@ -34,8 +34,7 @@ import CrmImplementationPage from '../components/what-we-do/crm-implementation';
 import DigitalTransformationPage from '../components/what-we-do/digital-transformation';
 import EnterpriseManagementPage from '../components/what-we-do/enterprise-management';
 import ErpImplementationPage from '../components/what-we-do/erp-implementation';
-import MicrosoftCertifiedTrainerReadinessTrainingPage from '../components/what-we-do/microsoft-certified-trainer-readiness-training';
-import MicrosoftCertifiedTrainerRegistrationPage from '../components/what-we-do/microsoft-certified-trainer-registration';
+import MicrosoftCertifiedTrainerPage from '../components/what-we-do/microsoft-certified-trainer';
 import ProductEngineeringPage from '../components/what-we-do/product-engineering';
 import SupportManagedServicesPage from '../components/what-we-do/support-managed-services';
 import TrainingPage from '../components/what-we-do/training';
@@ -112,17 +111,10 @@ export const customPageRoutes: RouteObject[] = [
   { path: '/microsoft-training', element: <TrainingPage /> },
   { path: '/what-we-do/web-development', element: <WebDevelopmentPage /> },
   {
-    path: '/microsoft-certified-trainer-readiness-training',
-    element: <MicrosoftCertifiedTrainerReadinessTrainingPage />
+    path: '/microsoft-certified-trainer',
+    element: <MicrosoftCertifiedTrainerPage />
   },
-  {
-    path: '/what-we-do/microsoft-certified-trainer-registration',
-    element: <MicrosoftCertifiedTrainerRegistrationPage />
-  },
-  {
-    path: '/microsoft-certified-trainer-registration',
-    element: <MicrosoftCertifiedTrainerRegistrationPage />
-  },
+  
   { path: '/insights/gallery', element: <GalleryPage /> },
   { path: '/insights/webinars-events', element: <WebinarsEventsPage /> },
   { path: '/insights/success-stories', element: <SuccessStoriesPage /> },

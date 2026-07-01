@@ -426,10 +426,10 @@ const serviceSeo: Record<string, { name: string; description: string; image?: st
       'Create responsive websites, web applications, portals, and digital experiences with AtiSunya web development services.',
     image: '/assets/img/service/webdevelopment.svg',
   },
-  '/microsoft-certified-trainer-readiness-training': {
-    name: 'Microsoft Certified Trainer Readiness Training',
+  '/microsoft-certified-trainer': {
+    name: 'Microsoft Certified Trainer',
     description:
-      'Prepare for the Microsoft Certified Trainer journey with readiness training, guidance, practical enablement, and Microsoft learning support.',
+      'Discover Microsoft Certified Trainers: profiles, expertise, and contact details. Find the right trainer for Microsoft Dynamics, Azure, Power Platform, and more.',
     image: '/assets/img/service/MCTRT.png',
   },
 };
@@ -520,19 +520,7 @@ function buildSeoForPath(pathname: string): SeoProps {
         'See how AtiSunya plans, delivers, and supports digital transformation projects across ERP, CRM, cloud, analytics, and AI services.',
       schema: organizationSchema,
     },
-    '/become-mct': {
-      title: 'Become an MCT with AtiSunya | Microsoft Certified Trainer Readiness',
-      description:
-        'Start your Microsoft Certified Trainer readiness journey with AtiSunya through structured guidance, training support, and practical enablement.',
-      schema: organizationSchema,
-    },
-    '/become-mct/enroll': {
-      title: 'Enroll for MCT Readiness Training | AtiSunya',
-      description:
-        'Enroll in AtiSunya Microsoft Certified Trainer readiness training and begin your MCT preparation journey.',
-      noindex: true,
-      schema: organizationSchema,
-    },
+    
     '/privacy-policy': {
       title: 'Privacy Policy | AtiSunya',
       description: 'Read the AtiSunya privacy policy and learn how we collect, use, and protect your information.',
@@ -761,7 +749,7 @@ function buildSeoForPath(pathname: string): SeoProps {
 
   const isServicePage =
     pathname === '/ai-solutions' ||
-    pathname === '/microsoft-certified-trainer-readiness-training' ||
+    pathname === '/microsoft-certified-trainer' ||
     pathname.startsWith('/solutions/') ||
     pathname.startsWith('/what-we-do/') ||
     pathname.startsWith('/insights/') ||
