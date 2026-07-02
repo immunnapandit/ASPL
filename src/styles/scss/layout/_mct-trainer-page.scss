@@ -1,0 +1,232 @@
+@use '../utils' as *;
+
+.mct-trainer-list-page {
+  background: #f6f9fc;
+  color: #172033;
+  font-family: var(--tv-ff-body);
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    letter-spacing: 0;
+  }
+}
+
+.mct-trainer-directory {
+  padding: 64px 0 78px;
+}
+
+.mct-trainer-section-head {
+  max-width: 780px;
+  margin-bottom: 30px;
+}
+
+.mct-trainer-section-head span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 13px;
+  border: 1px solid rgba(13, 143, 214, 0.18);
+  border-radius: 999px;
+  background: #eaf7ff;
+  color: #0b6da5;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mct-trainer-section-head h2 {
+  margin: 16px 0 0;
+  color: #172033;
+  font-family: var(--tv-ff-heading);
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.mct-trainer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.mct-trainer-card {
+  position: relative;
+  min-height: 364px;
+  padding: 24px;
+  border: 1px solid rgba(23, 32, 51, 0.09);
+  border-radius: 8px;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, rgba(13, 143, 214, 0.45), rgba(20, 184, 166, 0.32), rgba(245, 158, 11, 0.26)) border-box;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+
+
+.mct-trainer-card:hover {
+  transform: translate3d(0, -4px, 0) scale(1.018);
+  border-color: rgba(100, 126, 255, 0.5);
+  box-shadow:
+    0 18px 42px rgba(15, 23, 42, 0.09),
+    0 0 0 1px rgba(112, 157, 255, 0.22),
+    0 0 18px rgba(90, 150, 255, 0.5),
+    0 0 38px rgba(126, 87, 255, 0.42),
+    14px 18px 42px rgba(126, 87, 255, 0.28),
+    -14px -12px 38px rgba(88, 166, 255, 0.34);
+}
+
+
+
+
+.mct-trainer-card__topline,
+.mct-trainer-card__header,
+.mct-trainer-card__expertise,
+.mct-trainer-card__bio {
+  position: relative;
+  z-index: 1;
+}
+
+.mct-trainer-card__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.mct-trainer-card__topline span {
+  color: rgba(23, 32, 51, 0.28);
+  font-family: var(--tv-ff-heading);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.mct-trainer-card__topline svg {
+  color: #0d8fd6;
+}
+
+.mct-trainer-card__header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.mct-trainer-card__photo {
+  flex: 0 0 86px;
+  width: 86px;
+  height: 86px;
+  border: 3px solid #ffffff;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: center top;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+}
+
+.mct-trainer-card__header h3 {
+  margin: 0;
+  color: #172033;
+  font-family: var(--tv-ff-heading);
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.mct-trainer-card__header p {
+  margin: 7px 0 0;
+  color: #0b6da5;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.mct-trainer-card__expertise {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-height: 62px;
+  margin: 24px 0 18px;
+  padding: 14px;
+  border: 1px solid rgba(13, 143, 214, 0.14);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eef8ff 0%, #f8fbff 100%);
+}
+
+.mct-trainer-card__expertise svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #0f766e;
+}
+
+.mct-trainer-card__expertise span {
+  color: #26384f;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.mct-trainer-card__bio {
+  margin: 0;
+  color: #46566b;
+  font-size: 15px;
+  line-height: 1.62;
+}
+
+@media (max-width: 1199px) {
+  .mct-trainer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .mct-trainer-directory {
+    padding: 44px 0 56px;
+  }
+
+  .mct-trainer-section-head h2 {
+    font-size: 26px;
+  }
+
+  .mct-trainer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mct-trainer-card {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .mct-trainer-card__header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .mct-trainer-card__header {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mct-trainer-card {
+    transition: none;
+  }
+}
+
+
+
+
+

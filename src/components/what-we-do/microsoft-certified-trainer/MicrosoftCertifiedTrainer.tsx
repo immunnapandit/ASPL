@@ -1,33 +1,48 @@
 import Breadcrumb from '../../../common/Breadcrumb';
+import { CheckCircle2, GraduationCap } from 'lucide-react';
 
 const trainers = [
   {
-    name: 'Umesh Kumar',
-    title: 'Lead Azure Trainer',
-    image: '/assets/img/team/team-1.jpg',
-    bio: 'Umesh is an experienced Azure architect and trainer who focuses on platform engineering, migrations, and hands-on workshops for enterprise teams.',
-    linkedin: 'https://www.linkedin.com/in/umesh-kumar'
+    name: 'Dr Umesh Pandit',
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/umesh%20pandit.png',
+    expertise: 'Microsoft Cloud, Dynamics 365, and enterprise training',
+    bio: 'Guides professionals and corporate teams with structured Microsoft technology learning, certification readiness, and practical classroom delivery.'
   },
   {
-    name: 'Sangeeta Rao',
-    title: 'Dynamics 365 & Power Platform Trainer',
-    image: '/assets/img/team/team-2.jpg',
-    bio: 'Sangeeta specialises in Dynamics 365 implementations and Power Platform training, enabling business users to build low-code solutions and automation.',
-    linkedin: 'https://www.linkedin.com/in/sangeeta-rao'
+    name: 'Atul Verma',
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/Atul%20Verma.jpg',
+    expertise: 'Business applications, implementation, and user enablement',
+    bio: 'Delivers outcome-focused sessions that connect Microsoft solutions with real business processes and hands-on learner practice.'
   },
   {
-    name: 'Amit Verma',
-    title: 'Microsoft 365 & Collaboration Trainer',
-    image: '/assets/img/team/team-3.jpg',
-    bio: 'Amit trains teams on Microsoft 365, security, and governance. He designs role-driven learning paths and certification readiness programs.',
-    linkedin: 'https://www.linkedin.com/in/amit-verma'
+    name: 'Saroj Pandit',
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/Saroj%20Pandit.jpg',
+    expertise: 'Functional consulting, process training, and learner mentoring',
+    bio: 'Supports learners with clear explanations, scenario-based workshops, and professional guidance for Microsoft certification pathways.'
+  },
+  {
+    name: 'Sangeeta Verma',
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/Sangeeta.jpg',
+    expertise: 'Power Platform, Dynamics 365, and practical enablement',
+    bio: 'Helps teams build confidence through role-based training, guided exercises, and focused Microsoft technology preparation.'
+  },
+  {
+    name: 'Amit Pandit',
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/Amit%20Pandit.jpg',
+    expertise: 'Microsoft 365, governance, and enterprise collaboration',
+    bio: 'Designs professional learning paths that help learners understand Microsoft platforms, adoption practices, and certification expectations.'
   },
   {
     name: 'Anshika Gupta',
-    title: 'Power BI & Analytics Trainer',
-    image: '/assets/img/team/team-4.jpg',
-    bio: 'Anshika delivers analytics and Power BI training with a focus on data modelling, visualization best practices, and storytelling with data.',
-    linkedin: 'https://www.linkedin.com/in/anshika-gupta'
+    title: 'Microsoft Certified Trainer',
+    image: '/assets/img/team/Anshika%20Gupta.png',
+    expertise: 'Power BI, analytics, and data-driven reporting',
+    bio: 'Delivers analytics-focused training with emphasis on data modelling, visualization quality, and confident business storytelling.'
   }
 ];
 
@@ -36,29 +51,43 @@ export default function MicrosoftCertifiedTrainer() {
     <main className="mct-trainer-list-page">
       <Breadcrumb title="Microsoft Certified Trainer" subtitle="Meet our certified trainers" />
 
-      <section className="container" style={{ padding: '48px 0' }}>
-        <div className="row" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-          {trainers.map((t) => (
-            <article key={t.name} className="mct-trainer-card" style={{ flex: '1 1 320px', minWidth: 280 }}>
-              <div className="mct-trainer-card__header" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                <img src={t.image} alt={t.name} className="mct-trainer-card__photo" style={{ width: 96, height: 96, borderRadius: 8, objectFit: 'cover' }} />
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 18 }}>{t.name}</h3>
-                  <p style={{ margin: '6px 0 0', color: '#475569' }}>{t.title}</p>
+      <section className="mct-trainer-directory">
+        <div className="container">
+          <div className="mct-trainer-section-head">
+            <span>Certified Trainer Profiles</span>
+            <h2>Our Microsoft Certified Trainer team</h2>
+          </div>
+
+          <div className="mct-trainer-grid">
+            {trainers.map((trainer, index) => (
+              <article key={trainer.name} className="mct-trainer-card">
+                <div className="mct-trainer-card__topline">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <CheckCircle2 size={18} aria-hidden="true" />
                 </div>
-              </div>
 
-              <p style={{ marginTop: 12, color: '#334155', lineHeight: 1.5 }}>{t.bio}</p>
+                <div className="mct-trainer-card__header">
+                  <img
+                    src={trainer.image}
+                    alt={trainer.name}
+                    className="mct-trainer-card__photo"
+                  />
 
-              <div style={{ marginTop: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
-                <a href={t.linkedin} target="_blank" rel="noopener noreferrer" className="mct-linkedin" title={`Open ${t.name} on LinkedIn`} aria-label={`Open ${t.name} on LinkedIn`} style={{ color: '#0a66c2', textDecoration: 'none', display: 'inline-flex', gap: 8, alignItems: 'center' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.2 8h4.6V24H.2zM8.5 8h4.4v2.2h.1c.6-1.1 2.2-2.2 4.5-2.2 4.8 0 5.7 3.2 5.7 7.4V24h-4.6v-7.8c0-1.9 0-4.3-2.6-4.3-2.6 0-3 2-3 4.2V24H8.5z" />
-                  </svg>
-                </a>
-              </div>
-            </article>
-          ))}
+                  <div>
+                    <h3>{trainer.name}</h3>
+                    <p>{trainer.title}</p>
+                  </div>
+                </div>
+
+                <div className="mct-trainer-card__expertise">
+                  <GraduationCap size={18} aria-hidden="true" />
+                  <span>{trainer.expertise}</span>
+                </div>
+
+                <p className="mct-trainer-card__bio">{trainer.bio}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </main>
