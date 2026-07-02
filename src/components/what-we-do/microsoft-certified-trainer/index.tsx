@@ -1,5 +1,14 @@
+import FooterOne from '../../../layouts/footers/FooterOne';
+import HeaderOne from '../../../layouts/headers/HeaderOne';
+import Wrapper from '../../../layouts/Wrapper';
 import MicrosoftCertifiedTrainer from './MicrosoftCertifiedTrainer';
 
 export default function MicrosoftCertifiedTrainerPage() {
-  return <MicrosoftCertifiedTrainer />;
+  return (
+    <Wrapper>
+      <HeaderOne />
+      <MicrosoftCertifiedTrainer />
+      <FooterOne />
+    </Wrapper>
+  );
 }
