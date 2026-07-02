@@ -6,56 +6,63 @@ const trainers = [
     name: 'Dr Umesh Pandit',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/umesh%20pandit.png',
-    expertise: 'Microsoft Cloud, Dynamics 365, and enterprise training',
-    bio: 'Guides professionals and corporate teams with structured Microsoft technology learning, certification readiness, and practical classroom delivery.'
+    expertise: 'Microsoft Cloud and Dynamics 365 architecture with enterprise training delivery',
+    bio: 'Guides professionals and corporate teams with structured Microsoft technology learning, certification readiness, and practical classroom delivery.',
+    focusAreas: ['Cloud readiness', 'Dynamics 365 architecture', 'Enterprise workshops']
   },
   {
     name: 'Atul Verma',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Atul%20Verma.jpg',
-    expertise: 'Business applications, implementation, and user enablement',
-    bio: 'Delivers outcome-focused sessions that connect Microsoft solutions with real business processes and hands-on learner practice.'
+    expertise: 'Dynamics 365 Business Central On-Premises setup, administration, finance, inventory, and upgrade readiness',
+    bio: 'Delivers Business Central On-Premises training focused on setup, administration, upgrades, and practical ERP process enablement for SMB and partner teams.',
+    focusAreas: ['On-premises setup', 'Administration readiness', 'ERP process mapping']
   },
   {
     name: 'Saroj Pandit',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Saroj%20Pandit.jpg',
-    expertise: 'Functional consulting, process training, and learner mentoring',
-    bio: 'Supports learners with clear explanations, scenario-based workshops, and professional guidance for Microsoft certification pathways.'
+    expertise: 'Microsoft functional consulting, business process workshops, user adoption, and learner mentoring',
+    bio: 'Supports learners with clear functional explanations, scenario-based workshops, and professional guidance for Microsoft certification pathways.',
+    focusAreas: ['Functional discovery', 'User adoption', 'Scenario workshops']
   },
   {
     name: 'Sangeeta Verma',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Sangeeta.jpg',
-    expertise: 'Power Platform, Dynamics 365, and practical enablement',
-    bio: 'Helps teams build confidence through role-based training, guided exercises, and focused Microsoft technology preparation.'
+    expertise: 'Dynamics 365 CRM and Finance & Operations workflows, customer engagement, and ERP process alignment',
+    bio: 'Trains teams on customer engagement and Dynamics 365 Finance and Operations concepts, connecting CRM workflows with finance and operations process understanding.',
+    focusAreas: ['CRM workflows', 'Finance and operations', 'Role-based enablement']
   },
   {
     name: 'Amit Pandit',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Amit%20Pandit.jpg',
-    expertise: 'Microsoft 365, governance, and enterprise collaboration',
-    bio: 'Designs professional learning paths that help learners understand Microsoft platforms, adoption practices, and certification expectations.'
+    expertise: 'Dynamics 365 Supply Chain Management functional consulting for procurement, inventory, warehouse, planning, and production',
+    bio: 'Guides learners through supply chain management processes, functional consulting practices, and real-world Dynamics 365 SCM business scenarios.',
+    focusAreas: ['Procurement and sourcing', 'Inventory and warehouse', 'Planning and production']
   },
   {
     name: 'Anshika Gupta',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Anshika%20Gupta.png',
-    expertise: 'Power BI, analytics, and data-driven reporting',
-    bio: 'Delivers analytics-focused training with emphasis on data modelling, visualization quality, and confident business storytelling.'
+    expertise: 'Dynamics 365 Finance & Operations development with X++, extensions, data entities, integrations, and deployable packages',
+    bio: 'Delivers developer-focused Dynamics 365 Finance and Operations training around X++, extensions, data entities, debugging, and deployment-ready customization practices.',
+    focusAreas: ['X++ development', 'Extensions and models', 'Data entities and integration']
   }
 ];
 
 export default function MicrosoftCertifiedTrainer() {
   return (
     <main className="mct-trainer-list-page">
-      <Breadcrumb title="Microsoft Certified Trainer" subtitle="Meet our certified trainers" />
+      <Breadcrumb title="Microsoft Certified Trainers" subtitle="Meet our certified trainers" />
 
       <section className="mct-trainer-directory">
         <div className="container">
           <div className="mct-trainer-section-head">
-            <span>Certified Trainer Profiles</span>
-            <h2>Our Microsoft Certified Trainer team</h2>
+            <span>Certified Trainers Profiles</span>
+            <h2>Our Microsoft Certified Trainers team</h2>
+            <p>Experienced Microsoft technology trainers supporting practical learning, implementation readiness, and role-based enablement.</p>
           </div>
 
           <div className="mct-trainer-grid">
@@ -84,6 +91,12 @@ export default function MicrosoftCertifiedTrainer() {
                   <span>{trainer.expertise}</span>
                 </div>
 
+                <ul className="mct-trainer-card__focus" aria-label={`${trainer.name} focus areas`}>
+                  {trainer.focusAreas.map((area) => (
+                    <li key={area}>{area}</li>
+                  ))}
+                </ul>
+
                 <p className="mct-trainer-card__bio">{trainer.bio}</p>
               </article>
             ))}
@@ -93,3 +106,6 @@ export default function MicrosoftCertifiedTrainer() {
     </main>
   );
 }
+
+
+

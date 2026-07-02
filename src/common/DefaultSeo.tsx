@@ -427,7 +427,7 @@ const serviceSeo: Record<string, { name: string; description: string; image?: st
     image: '/assets/img/service/webdevelopment.svg',
   },
   '/microsoft-certified-trainer': {
-    name: 'Microsoft Certified Trainer',
+    name: 'Microsoft Certified Trainers',
     description:
       'Discover Microsoft Certified Trainers: profiles, expertise, and contact details. Find the right trainer for Microsoft Dynamics, Azure, Power Platform, and more.',
     image: '/assets/img/service/MCTRT.png',
@@ -789,3 +789,4 @@ export default function DefaultSeo() {
 
   return <Seo {...seo} path={location.pathname} />;
 }
+

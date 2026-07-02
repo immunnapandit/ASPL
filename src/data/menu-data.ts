@@ -146,7 +146,7 @@ const menu_data: MenuDataType[] = [
       { title: 'Product Engineering', link: '/what-we-do/product-engineering' },
       { title: 'Training', link: '/what-we-do/training' },
       { title: 'Web Development', link: '/what-we-do/web-development' },
-      { title: 'Microsoft Certified Trainer', link: '/microsoft-certified-trainer' },
+      { title: 'Microsoft Certified Trainers', link: '/microsoft-certified-trainer' },
     ],
   },
 
@@ -169,3 +169,4 @@ const menu_data: MenuDataType[] = [
 ];
 
 export default menu_data;
+
