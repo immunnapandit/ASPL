@@ -18,7 +18,7 @@ const globalLocations = [
     id: 'Aus',
     title: 'Australia, Melbourne',
     address: 'Level 40/140 William St, Melbourne VIC 300',
-    phone: 'AUS: (+61) 478006757',
+    phone: 'AUS: (+61) 0468402119',
     thumbClassName: 'is-leeds',
     thumbSrc: '/assets/img/about/melbourne.webp',
     mapSrc: 'https://www.google.com/maps?q=Melbourne%2C%20Australia&z=10&output=embed',
@@ -52,6 +52,19 @@ const globalLocations = [
     mapCountry: 'Germany',
     mapLabel: 'Berlin',
     flagSrc: 'https://flagcdn.com/w160/de.png',
+    markerPosition: { x: '54%', y: '47%' }
+  },
+  {
+    id: 'usa',
+    title: 'New Jersey, USA',
+    address: '101 Hampshire Drive Plainsboro Township, New Jersey 08536 USA',
+    //phone: '(+1) 555-1234',
+    thumbClassName: 'is-new-jersey',
+    thumbSrc: '/assets/img/about/newjersey.jpg',
+    mapSrc: 'https://www.google.com/maps?q=New%20Jersey%2C%20USA&z=10&output=embed',
+    mapCountry: 'USA',
+    mapLabel: 'New Jersey',
+    flagSrc: 'https://flagcdn.com/w160/us.png',
     markerPosition: { x: '54%', y: '47%' }
   }
 ];
