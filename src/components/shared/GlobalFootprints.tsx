@@ -15,6 +15,19 @@ const globalLocations = [
     markerPosition: { x: '57%', y: '52%' }
   },
   {
+    id: 'india',
+    title: 'India, Hyderabad',
+    address: 'Innov8, 7th Floor Vasavi Sky City Telecom Nagar, Gachibowli Hyderabad - 500032 Telangana',
+    phone: '(+91) 9021023513, (+91) 7396453199',
+    thumbClassName: 'is-hyderabad',
+    thumbSrc: '/assets/img/about/Hyderabad.jpg',
+    mapSrc: 'https://www.google.com/maps?q=Hyderabad,+Telangana&z=17&output=embed',
+    mapCountry: 'India',
+    mapLabel: 'Hyderabad',
+    flagSrc: 'https://flagcdn.com/w160/in.png',
+    markerPosition: { x: '57%', y: '52%' }
+  },
+  {
     id: 'Aus',
     title: 'Australia, Melbourne',
     address: 'Level 40/140 William St, Melbourne VIC 300',
