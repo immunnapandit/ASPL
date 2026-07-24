@@ -9,12 +9,14 @@ import {
   ExternalLink,
   Globe,
   Landmark,
+  Lock,
   LoaderCircle,
   Mail,
   MapPin,
   Phone,
   QrCode,
   ShieldAlert,
+  ShieldCheck,
   User,
 } from 'lucide-react';
 import '../../styles/scss/layout/_pay-now.scss';
@@ -1460,7 +1462,10 @@ export default function PayNow() {
       <div className="container">
         <div className="pn-wrap">
           <div className="pn-head">
-            <span className="pn-badge">Secure Payment</span>
+            <span className="pn-badge">
+              <ShieldCheck size={13} />
+              Secure Payment
+            </span>
             <h1>Make your payment in one step</h1>
             <p>Complete your billing details and continue securely in a single flow.</p>
             <div className="pn-head-meta">
@@ -1471,6 +1476,10 @@ export default function PayNow() {
               <div className="pn-head-stat">
                 <span>Checkout</span>
                 <strong>{checkoutChannelLabel}</strong>
+              </div>
+              <div className="pn-head-stat pn-head-stat-trust">
+                <span>Protected by</span>
+                <strong>Razorpay | 256-bit SSL</strong>
               </div>
             </div>
           </div>
@@ -1822,23 +1831,29 @@ export default function PayNow() {
                     </small>
                   </div>
 
-                  <button
-                    type="submit"
-                    className={`pn-submit-btn ${!canSubmit ? 'pn-submit-btn-muted' : ''}`}
-                    disabled={isSubmitting || !canSubmit}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <LoaderCircle size={18} className="pn-spin" />
-                        Please wait
-                      </>
-                    ) : (
-                      <>
-                        {submitLabel}
-                        <ArrowRight size={18} />
-                      </>
-                    )}
-                  </button>
+                  <div className="pn-submit-col">
+                    <button
+                      type="submit"
+                      className={`pn-submit-btn ${!canSubmit ? 'pn-submit-btn-muted' : ''}`}
+                      disabled={isSubmitting || !canSubmit}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <LoaderCircle size={18} className="pn-spin" />
+                          Please wait
+                        </>
+                      ) : (
+                        <>
+                          {submitLabel}
+                          <ArrowRight size={18} />
+                        </>
+                      )}
+                    </button>
+                    <span className="pn-secure-note">
+                      <Lock size={12} />
+                      Secure, encrypted checkout
+                    </span>
+                  </div>
                 </div>
               </form>
 

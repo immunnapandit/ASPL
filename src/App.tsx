@@ -22,6 +22,7 @@ import CareerDetails from './components/careers/CareerDetails';
 import CareersAdmin from './components/careers/CareersAdmin';
 import BlogAdmin from './components/blog-admin/BlogAdmin';
 import BlogPreview from './components/blog-preview/BlogPreview';
+import CustomersPage from './components/customers';
 import PayNowPage from './components/pay-now';
 import D365Finance from './components/solutions/d365-finance';
 import WorkingProcess from './components/working-process';
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
   { path: '/blog-details', element: <Navigate to="/blog" replace /> },
   { path: '/blog/:slug', element: <BlogDetails /> },
   { path: '/blog-preview/:previewKey', element: <BlogPreview /> },
+  { path: '/our-customers', element: <CustomersPage /> },
   { path: '/contact', element: <Contact /> },
   { path: '/careers', element: <Careers /> },
   { path: '/careers/:slug', element: <CareerDetails /> },
@@ -78,3 +80,4 @@ function App() {
 }
 
 export default App;
+
