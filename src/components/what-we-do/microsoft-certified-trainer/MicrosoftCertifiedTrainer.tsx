@@ -21,7 +21,7 @@ const trainers = [
   {
     name: 'Saroj Pandit',
     title: 'Microsoft Certified Trainer',
-    image: '/assets/img/team/Saroj%20Pandit.jpg',
+    image: '/assets/img/team/Saroj.jpg',
     expertise: 'Microsoft functional consulting, business process workshops, user adoption, and learner mentoring',
     bio: 'Supports learners with clear functional explanations, scenario-based workshops, and professional guidance for Microsoft certification pathways.',
     focusAreas: ['Functional discovery', 'User adoption', 'Scenario workshops']
