@@ -32,11 +32,11 @@ const solutions = [
     image: '/assets/img/service/Azure.png',
   },
   {
-    key: 'Office 365',
-    title: 'Collaborate Better with Office 365',
-    desc: 'Empower your teams with Office 365 through connected productivity apps, secure collaboration, and cloud-based tools that keep work moving from anywhere.',
+    key: 'Microsoft 365',
+    title: 'Collaborate Better with Microsoft 365',
+    desc: 'Empower your teams with Microsoft 365 through connected productivity apps, secure collaboration, and cloud-based tools that keep work moving from anywhere.',
     button: 'Know More',
-    href: '/solutions/office-365',
+    href: '/solutions/microsoft-365',
     image: '/assets/img/service/Office365.png',
   },
   {

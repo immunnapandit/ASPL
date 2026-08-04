@@ -14,8 +14,8 @@ const trainers = [
     name: 'Atul Verma',
     title: 'Microsoft Certified Trainer',
     image: '/assets/img/team/Atul%20Verma.jpg',
-    expertise: 'Dynamics 365 Business Central On-Premises setup, administration, finance, inventory, and upgrade readiness',
-    bio: 'Delivers Business Central On-Premises training focused on setup, administration, upgrades, and practical ERP process enablement for SMB and partner teams.',
+    expertise: 'Microsoft D365FO On-Premises setup, administration, finance, inventory, and upgrade readiness',
+    bio: 'Delivers Microsoft D365FO On-Premises training focused on setup, administration, upgrades, and practical ERP process enablement for SMB and partner teams.',
     focusAreas: ['On-premises setup', 'Administration readiness', 'ERP process mapping']
   },
   {

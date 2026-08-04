@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router-dom';
 import GenericIndustryPage from '../components/industries/generic';
+import AiAutomationPage from '../components/solutions/ai-automation';
 import AiSolutionsPage from '../components/solutions/ai-solutions';
 import Ax7Page from '../components/solutions/ax-7';
 import AwsPage from '../components/solutions/aws';
@@ -15,6 +16,7 @@ import D365SalesPage from '../components/solutions/d365-sales';
 import D365SupplyChainManagementPage from '../components/solutions/d365-supply-chain-management';
 import D365TalentPage from '../components/solutions/d365-talent';
 import CloudTechnologyPage from '../components/solutions/cloud-technology';
+import D365FoOnPremisesPage from '../components/solutions/d365fo-on-premises';
 import DynamicsNav2017Page from '../components/solutions/dynamics-nav-2017';
 import DynamicsNav2018Page from '../components/solutions/dynamics-nav-2018';
 import MicrosoftAzurePage from '../components/solutions/microsoft-azure';
@@ -22,11 +24,13 @@ import MicrosoftDynamics365Page from '../components/solutions/microsoft-dynamics
 import MicrosoftDynamicsAxPage from '../components/solutions/microsoft-dynamics-ax';
 import MicrosoftDynamicsCrmPage from '../components/solutions/microsoft-dynamics-crm';
 import MicrosoftDynamicsNavPage from '../components/solutions/microsoft-dynamics-nav';
-import Office365Page from '../components/solutions/office-365';
+import Microsoft365Page from '../components/solutions/microsoft-365';
+import Microsoft365MigrationsPage from '../components/solutions/microsoft-365-migrations';
 import MicrosoftPowerBiPage from '../components/solutions/microsoft-power-bi';
 import MicrosoftPowerPlatformPage from '../components/solutions/microsoft-power-platform';
 import PowerAutomateSolutionsPage from '../components/solutions/power-automate-solutions';
 import SalesforcePage from '../components/solutions/salesforce';
+import VendorCollaborationPage from '../components/solutions/vendor-collaboration';
 import AppDevelopmentPage from '../components/what-we-do/app-development';
 import BiAnalyticsPage from '../components/what-we-do/bi-analytics';
 import ConsultingPage from '../components/what-we-do/consulting';
@@ -34,6 +38,7 @@ import CrmImplementationPage from '../components/what-we-do/crm-implementation';
 import DigitalTransformationPage from '../components/what-we-do/digital-transformation';
 import EnterpriseManagementPage from '../components/what-we-do/enterprise-management';
 import ErpImplementationPage from '../components/what-we-do/erp-implementation';
+import IntegrationPage from '../components/what-we-do/integration';
 import MicrosoftCertifiedTrainerPage from '../components/what-we-do/microsoft-certified-trainer';
 import ProductEngineeringPage from '../components/what-we-do/product-engineering';
 import SupportManagedServicesPage from '../components/what-we-do/support-managed-services';
@@ -54,6 +59,7 @@ export const customPageRoutes: RouteObject[] = [
     path: '/solutions/d365-for-supply-chain-management',
     element: <D365SupplyChainManagementPage />
   },
+  { path: '/solutions/vendor-collaboration', element: <VendorCollaborationPage /> },
   { path: '/solutions/d365-for-retail', element: <D365RetailPage /> },
   { path: '/solutions/d365-for-talent', element: <D365TalentPage /> },
   { path: '/solutions/d365-for-sales', element: <D365SalesPage /> },
@@ -67,11 +73,15 @@ export const customPageRoutes: RouteObject[] = [
     path: '/solutions/d365-for-project-service-automation',
     element: <D365ProjectServiceAutomationPage />
   },
+  { path: '/solutions/d365fo-on-premises', element: <D365FoOnPremisesPage /> },
   { path: '/solutions/microsoft-azure', element: <MicrosoftAzurePage /> },
   { path: '/azure-cloud-services', element: <MicrosoftAzurePage /> },
   { path: '/ai-solutions', element: <AiSolutionsPage /> },
+  { path: '/solutions/ai-solutions/automation', element: <AiAutomationPage /> },
   { path: '/microsoft-copilot-services', element: <AiSolutionsPage /> },
-  { path: '/solutions/office-365', element: <Office365Page /> },
+  { path: '/solutions/microsoft-365', element: <Microsoft365Page /> },
+  { path: '/solutions/office-365', element: <Microsoft365Page /> },
+  { path: '/solutions/microsoft-365/migrations', element: <Microsoft365MigrationsPage /> },
   { path: '/solutions/microsoft-dynamics-ax', element: <MicrosoftDynamicsAxPage /> },
   { path: '/solutions/microsoft-dynamics-ax/ax-7', element: <Ax7Page /> },
   { path: '/solutions/microsoft-dynamics-crm', element: <MicrosoftDynamicsCrmPage /> },
@@ -104,6 +114,7 @@ export const customPageRoutes: RouteObject[] = [
   },
   { path: '/managed-services', element: <SupportManagedServicesPage /> },
   { path: '/what-we-do/enterprise-management', element: <EnterpriseManagementPage /> },
+  { path: '/what-we-do/integration', element: <IntegrationPage /> },
   { path: '/what-we-do/digital-transformation', element: <DigitalTransformationPage /> },
   { path: '/what-we-do/consulting', element: <ConsultingPage /> },
   { path: '/what-we-do/product-engineering', element: <ProductEngineeringPage /> },

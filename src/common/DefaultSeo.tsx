@@ -287,10 +287,22 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
       'Turn business data into dashboards, reports, and actionable insights with Microsoft Power BI consulting and implementation.',
     image: '/assets/img/service/power-bi-icon.svg',
   },
-  '/solutions/office-365': {
-    name: 'Office 365',
+  '/solutions/microsoft-365': {
+    name: 'Microsoft 365',
     description:
-      'Improve collaboration, productivity, email, document management, and secure work with Microsoft Office 365 services.',
+      'Improve collaboration, productivity, email, document management, and secure work with Microsoft 365 services.',
+    image: '/assets/img/service/Office365.png',
+  },
+  '/solutions/office-365': {
+    name: 'Microsoft 365',
+    description:
+      'Improve collaboration, productivity, email, document management, and secure work with Microsoft 365 services.',
+    image: '/assets/img/service/Office365.png',
+  },
+  '/solutions/microsoft-365/migrations': {
+    name: 'Microsoft 365 Migrations',
+    description:
+      'Migrate mailboxes, tenants, and files to Microsoft 365 from on-premises Exchange, legacy hosting, or other tenants with a structured, low-risk approach.',
     image: '/assets/img/service/Office365.png',
   },
   '/solutions/microsoft-dynamics-ax': {

@@ -174,7 +174,7 @@ export default function ServiceHomeOne() {
               <h3 className="service-section-title">Migration</h3>
               <p>
                 Our expert team is always there with you in your Migration of AX 2012 R2 or AX 2009 to D365 FO, 
-                It might be case for other technologies like CRM to CE, or NAV to BC or Webmail Hosting to Office 365 or 
+                It might be case for other technologies like CRM to CE, or NAV to BC or Webmail Hosting to Microsoft 365 or 
                 SAP on Azure.</p>
               <Link to="/service-details" className="tv-normal-btn">
                 Read More <i className="fa-solid fa-arrow-right"></i>

@@ -63,11 +63,11 @@ const services = [
     href: '/what-we-do/erp-implementation',
   },
   {
-    title: 'Office 365',
-    desc: 'Microsoft 365 and Office 365 services for secure collaboration, productivity, migration, and user enablement.',
+    title: 'Microsoft 365',
+    desc: 'Microsoft 365 services for secure collaboration, productivity, migration, and user enablement.',
     img: '/assets/img/service/Microsoft_365.svg',
     accent: '#2563EB',
-    href: '/solutions/office-365',
+    href: '/solutions/microsoft-365',
   },
   {
     title: 'Web Development',

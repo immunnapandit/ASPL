@@ -38,8 +38,16 @@ const menu_data: MenuDataType[] = [
             link: '/solutions/d365-for-finance-and-operations',
           },
           {
+            title: 'D365FO On-Premises',
+            link: '/solutions/d365fo-on-premises',
+          },
+          {
             title: 'Dynamics 365 Supply Chain Management',
             link: '/solutions/d365-for-supply-chain-management',
+          },
+          {
+            title: 'Vendor Collaboration',
+            link: '/solutions/vendor-collaboration',
           },
           {
             title: 'Dynamics 365 Commerce',
@@ -74,10 +82,26 @@ const menu_data: MenuDataType[] = [
       {
         title: 'AI Solutions',
         link: '/ai-solutions',
+        sub_menus: [
+          {
+            title: 'Automation',
+            link: '/solutions/ai-solutions/automation',
+          },
+        ]
       },
       {
-        title: 'Office 365',
-        link: '/solutions/office-365',
+        title: 'Microsoft 365',
+        link: '/solutions/microsoft-365',
+        sub_menus: [
+          {
+            title: 'Migrations',
+            link: '/solutions/microsoft-365/migrations',
+          },
+        ]
+      },
+      {
+        title: 'Business Central',
+        link: '/solutions/business-central',
       },
       {
         title: 'Microsoft Dynamics AX',
@@ -142,6 +166,8 @@ const menu_data: MenuDataType[] = [
       { title: 'Support & Managed Services', link: '/what-we-do/support-managed-services' },
       { title: 'Enterprise Management', link: '/what-we-do/enterprise-management' },
       { title: 'Digital Transformation', link: '/what-we-do/digital-transformation' },
+      { title: 'Microsoft Azure', link: '/solutions/microsoft-azure' },
+      { title: 'Integration', link: '/what-we-do/integration' },
       { title: 'Consulting', link: '/what-we-do/consulting' },
       { title: 'Product Engineering', link: '/what-we-do/product-engineering' },
       { title: 'Training', link: '/what-we-do/training' },

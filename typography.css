@@ -1,0 +1,37 @@
+/* ASPL Typography Style — portable, drop into any project */
+
+/* 1. Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
+
+/* 2. Font variables */
+:root {
+  --ff-body: 'Inter', sans-serif;
+  --ff-heading: 'Outfit', sans-serif;
+
+  --color-heading: #0a165e;
+  --color-body-text: #585b6f;
+}
+
+/* 3. Base typography */
+body {
+  font-family: var(--ff-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 28px;
+  color: var(--color-body-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-heading);
+  color: var(--color-heading);
+  font-weight: 600;
+  line-height: 1.22;
+  transition: all 0.3s ease-out 0s;
+}
+
+h1 { font-size: 40px; }
+h2 { font-size: 32px; }
+h3 { font-size: 28px; }
+h4 { font-size: 24px; }
+h5 { font-size: 20px; }
+h6 { font-size: 16px; }
