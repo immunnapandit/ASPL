@@ -141,6 +141,10 @@ export default function FooterOne() {
                       src="/assets/img/footer/MicrosoftSilverPartner.png"
                       alt="Microsoft Silver Partner"
                     />
+                    <img
+                      src="/assets/img/logo/Microsoft Partner.png"
+                      alt="Microsoft Partner"
+                    />
                   </div>
                   <div className="tv-footer-widget-text">
                     <p>
