@@ -20,10 +20,10 @@ const teamMembers = [
     linkedin: 'https://in.linkedin.com/in/atulk-verma',
   },
   {
-    name: 'Umesh Prajapati',
-    designation: 'Solution Architect',
-    image: '/assets/img/team/Umesh.png',
-    linkedin: 'https://in.linkedin.com/in/umeshprajapatiaspl',
+    name: 'Dr.Umesh Pandit',
+    designation: 'CEO',
+    image: '/assets/img/team/Umesh.jpg',
+    linkedin: 'https://www.linkedin.com/in/umeshpandit/',
   },
   {
     name: 'Sangeeta Verma',
