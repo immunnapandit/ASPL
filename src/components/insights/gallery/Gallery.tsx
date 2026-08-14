@@ -20,83 +20,16 @@ function getGalleryImageUrl(image: GalleryImage) {
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,c_fill,w_900,h_760/${image.publicId}`;
 }
 
-const galleryImages: GalleryImage[] = [
-  {
-    localSrc: '/assets/img/slider/Businees.jpg',
-    publicId: 'aspl/gallery/business-consulting',
-    alt: 'AtiSunya business consulting'
-  },
-  {
-    localSrc: '/assets/img/slider/financilabuilding.jpg',
-    publicId: 'aspl/gallery/corporate-office-building',
-    alt: 'Corporate office building'
-  },
-  {
-    localSrc: '/assets/img/slider/Cloud1.jpg',
-    publicId: 'aspl/gallery/cloud-consulting-workspace',
-    alt: 'Cloud consulting workspace'
-  },
-  {
-    localSrc: '/assets/img/slider/Cloud2.jpg',
-    publicId: 'aspl/gallery/cloud-infrastructure-planning',
-    alt: 'Cloud infrastructure planning'
-  },
-  {
-    localSrc: '/assets/img/service/Consulting.png',
-    publicId: 'aspl/gallery/professional-consulting-team',
-    alt: 'Professional consulting team'
-  },
-  {
-    localSrc: '/assets/img/service/App-development.png',
-    publicId: 'aspl/gallery/application-development-workspace',
-    alt: 'Application development workspace'
-  },
-  {
-    localSrc: '/assets/img/service/analytics.png',
-    publicId: 'aspl/gallery/business-analytics-dashboard',
-    alt: 'Business analytics dashboard'
-  },
-  {
-    localSrc: '/assets/img/service/Support-management.png',
-    publicId: 'aspl/gallery/support-managed-services',
-    alt: 'Support and managed services'
-  },
-  {
-    localSrc: '/assets/img/service/MicrosoftD365.jpg',
-    publicId: 'aspl/gallery/microsoft-dynamics-365-workspace',
-    alt: 'Microsoft Dynamics 365 workspace'
-  },
-  {
-    localSrc: '/assets/img/service/Training.png',
-    publicId: 'aspl/gallery/professional-training-program',
-    alt: 'Professional training program'
-  },
-  {
-    localSrc: '/assets/img/slider/slider-1-1.jpg',
-    publicId: 'aspl/gallery/business-transformation-session',
-    alt: 'Business transformation session'
-  },
-  {
-    localSrc: '/assets/img/slider/slider-1-2.jpg',
-    publicId: 'aspl/gallery/technology-consulting-discussion',
-    alt: 'Technology consulting discussion'
-  },
-  {
-    localSrc: '/assets/img/project/project-4-1.png',
-    publicId: 'aspl/gallery/project-showcase',
-    alt: 'Project showcase'
-  },
-  {
-    localSrc: '/assets/img/project/project-4-2.png',
-    publicId: 'aspl/gallery/project-delivery-showcase',
-    alt: 'Project delivery showcase'
-  },
-  {
-    localSrc: '/assets/img/project/project-4-3.png',
-    publicId: 'aspl/gallery/digital-project-showcase',
-    alt: 'Digital project showcase'
-  }
-];
+const EVENT_PHOTO_COUNT = 27;
+
+const galleryImages: GalleryImage[] = Array.from({ length: EVENT_PHOTO_COUNT }, (_, i) => {
+  const index = i + 1;
+  return {
+    localSrc: `/assets/img/event/event-${index}.jpg`,
+    publicId: `aspl/gallery/event-${index}_jpg`,
+    alt: `AtiSunya company event photo ${index}`
+  };
+});
 
 export default function Gallery() {
   const [activeImage, setActiveImage] = useState(-1);
