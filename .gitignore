@@ -28,6 +28,9 @@ Server_payment/.env
 backend/data/payments.json
 .env.local
 .env.development.local
-.env.example
 .env.test.local
-.env.production
+.env.production.local
+
+# NOTE: .env.example, backend/.env.example and .env.production are tracked
+# on purpose (templates + public build-time VITE_* URLs).
+# Never put real keys, secrets or bank details in them.
