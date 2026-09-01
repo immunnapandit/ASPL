@@ -1,4 +1,5 @@
 import { createHash, createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
+import dns from 'node:dns';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,6 +18,7 @@ const envPaths = [
 ];
 
 loadEnvFiles(envPaths);
+ensureUsableDnsResolvers();
 
 let dataDir = normalizeDataDir(process.env.CMS_DATA_DIR);
 let paymentsFile;
@@ -111,6 +113,19 @@ const NEWSLETTER_TO_EMAIL = (process.env.NEWSLETTER_TO_EMAIL || CONTACT_TO_EMAIL
 const PUBLIC_SITE_URL = normalizeSiteUrl(
   process.env.PUBLIC_SITE_URL || parseCsvList(FRONTEND_URL)[0] || 'https://www.atisunya.co'
 );
+const COMPANY_LINKEDIN_URL = (
+  process.env.COMPANY_LINKEDIN_URL ||
+  'https://www.linkedin.com/company/atisunyaprivatelimited'
+).trim();
+const CAREERS_PROFILE_FORM_URL = (
+  process.env.CAREERS_PROFILE_FORM_URL ||
+  'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=Rh-hd3XzWEqmULcIm1eU6-nRGDWOEM1CkA-YebMXfntUOUtUQkZTNzlWSlhITjFCT1lKQVRYU0pNUS4u'
+).trim();
+const COMPANY_LOGO_URL = (
+  process.env.COMPANY_LOGO_URL ||
+  process.env.PAYMENT_LOGO_URL ||
+  'https://www.atisunya.co/assets/img/logo/AtiSunyaLogo.png'
+).trim();
 const CAREERS_ADMIN_TOKEN = (
   process.env.CAREERS_ADMIN_TOKEN || 'change-me-careers-admin-token'
 ).trim();
@@ -1117,9 +1132,15 @@ function isGraphEmailConfigured() {
 async function sendGraphEmail(message) {
   validateGraphEmailConfig();
 
+  // Graph's sendMail always sends as the mailbox in the URL path -- the
+  // message's "from" field is otherwise ignored. Let a message pick a
+  // different sending mailbox (e.g. HR) by address; default to the
+  // configured GRAPH_FROM_EMAIL for everything else.
+  const sendingMailbox = message.from?.address || GRAPH_FROM_EMAIL;
+
   const accessToken = await getGraphAccessToken();
   const response = await fetch(
-    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(GRAPH_FROM_EMAIL)}/sendMail`,
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(sendingMailbox)}/sendMail`,
     {
       method: 'POST',
       headers: {
@@ -2276,6 +2297,46 @@ function loadEnvFile(filePath) {
   }
 }
 
+// mongodb+srv:// needs dns.resolveSrv(), which goes through c-ares rather than
+// the OS resolver. On some Windows setups c-ares ends up with only 127.0.0.1 in
+// its server list, and since nothing listens there every lookup fails instantly
+// with ECONNREFUSED -- even though nslookup and dns.lookup() work fine.
+// Point c-ares at real resolvers when that happens. No-op on a healthy host.
+function ensureUsableDnsResolvers() {
+  const configured = parseCsvList(process.env.DNS_SERVERS);
+
+  if (configured.length) {
+    dns.setServers(configured);
+    return;
+  }
+
+  let current = [];
+
+  try {
+    current = dns.getServers();
+  } catch {
+    current = [];
+  }
+
+  const isLoopback = (server) =>
+    server === '127.0.0.1' || server === '::1' || server.startsWith('127.');
+
+  if (current.length && !current.every(isLoopback)) {
+    return;
+  }
+
+  try {
+    dns.setServers(['1.1.1.1', '8.8.8.8']);
+    console.warn(
+      `DNS resolver list was unusable (${
+        current.join(', ') || 'empty'
+      }). Falling back to 1.1.1.1, 8.8.8.8. Override with DNS_SERVERS.`
+    );
+  } catch (error) {
+    console.error('Failed to set fallback DNS servers:', error);
+  }
+}
+
 function unquoteEnvValue(value) {
   const first = value.at(0);
   const last = value.at(-1);
@@ -2307,6 +2368,12 @@ async function handleCareerApplication(req) {
       await sendCareerApplicationEmail(validation.data, record);
     } catch (error) {
       console.error('Career application email delivery failed:', error);
+    }
+
+    try {
+      await sendCareerApplicationAcknowledgementEmail(validation.data, record);
+    } catch (error) {
+      console.error('Career application acknowledgement email delivery failed:', error);
     }
 
     return json(
@@ -2858,6 +2925,26 @@ async function sendCareerApplicationEmail(application, record) {
   });
 }
 
+async function sendCareerApplicationAcknowledgementEmail(application, record) {
+  const submittedAt = new Date(record.submittedAt).toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  await sendNotificationEmail({
+    from: {
+      name: 'AtiSunya HR Team',
+      address: HR_TO_EMAIL,
+    },
+    to: application.email,
+    subject: `We have received your application for ${sanitizeEmailHeaderValue(
+      application.appliedPosition || application.roleTitle
+    )}`,
+    text: buildCareerApplicationAcknowledgementEmailText(application, record, submittedAt),
+    html: buildCareerApplicationAcknowledgementEmailHtml(application, record, submittedAt),
+  });
+}
+
 async function sendNewsletterSubscriptionEmail(subscription) {
   if (!isEmailSendingConfigured() || !NEWSLETTER_TO_EMAIL || !CONTACT_FROM_EMAIL) {
     return;
@@ -2993,6 +3080,209 @@ function buildCareerApplicationEmailHtml(application, submittedAt) {
         )}</div>
       </body>
     </html>`;
+}
+
+function buildCareerApplicationAcknowledgementEmailText(application, record, submittedAt) {
+  const position = application.appliedPosition || application.roleTitle;
+
+  return [
+    `Hello ${application.fullName},`,
+    '',
+    `We have received your application for ${position}. Your resume is with our HR team.`,
+    '',
+    'YOUR APPLICATION',
+    `  Position    ${position}`,
+    `  Resume      ${record.resumeFileName}`,
+    `  Submitted   ${submittedAt}`,
+    '',
+    'WHAT HAPPENS NEXT',
+    '  1. Our HR team reviews your profile against the role requirements.',
+    '  2. If your experience is a match, we contact you to schedule a first conversation.',
+    '  3. If this role is not the right fit, we keep your profile on file for future openings.',
+    '',
+    'COMPLETE YOUR CANDIDATE PROFILE',
+    'A few extra details help us review your application faster. It takes about three minutes:',
+    CAREERS_PROFILE_FORM_URL,
+    '',
+    `Questions about your application? Reply to this email or write to ${HR_TO_EMAIL}.`,
+    '',
+    `For more information about AtiSunya, follow us on LinkedIn: ${COMPANY_LINKEDIN_URL}`,
+    '',
+    '--',
+    'AtiSunya HR Team',
+    PUBLIC_SITE_URL,
+  ].join('\n');
+}
+
+function buildCareerApplicationAcknowledgementEmailHtml(application, record, submittedAt) {
+  const position = application.appliedPosition || application.roleTitle;
+  const firstName = application.fullName.trim().split(/\s+/)[0] || application.fullName;
+  const fontStack =
+    "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif";
+
+  const summaryRows = [
+    ['Position', position],
+    ['Resume', record.resumeFileName],
+    ['Submitted', submittedAt],
+  ]
+    .map(
+      ([label, value], index) => `
+                  <tr>
+                    <td style="padding: ${
+                      index === 0 ? '0' : '10px'
+                    } 16px 0 0; font-family: ${fontStack}; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: #6b7280; white-space: nowrap; vertical-align: top;">${escapeHtml(
+        label
+      )}</td>
+                    <td style="padding: ${
+                      index === 0 ? '0' : '10px'
+                    } 0 0 0; font-family: ${fontStack}; font-size: 15px; color: #111827; font-weight: 600; vertical-align: top;">${escapeHtml(
+        value
+      )}</td>
+                  </tr>`
+    )
+    .join('');
+
+  const steps = [
+    'Our HR team reviews your profile against the role requirements.',
+    'If your experience is a match, we contact you to schedule a first conversation.',
+    'If this role is not the right fit, we keep your profile on file for future openings.',
+  ]
+    .map(
+      (step, index) => `
+                  <tr>
+                    <td width="28" style="padding: ${
+                      index === 0 ? '0' : '12px'
+                    } 12px 0 0; font-family: ${fontStack}; font-size: 15px; font-weight: 700; color: #0f52ba; vertical-align: top; line-height: 1.6;">${
+        index + 1
+      }</td>
+                    <td style="padding: ${
+                      index === 0 ? '0' : '12px'
+                    } 0 0 0; font-family: ${fontStack}; font-size: 15px; color: #4b5563; line-height: 1.6; vertical-align: top;">${escapeHtml(
+        step
+      )}</td>
+                  </tr>`
+    )
+    .join('');
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>We have received your application</title>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #eef1f7;">
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0;">Your application for ${escapeHtml(
+      position
+    )} is with our HR team.</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #eef1f7;">
+      <tr>
+        <td align="center" style="padding: 32px 12px;">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width: 600px; max-width: 100%; background-color: #ffffff; border: 1px solid #dfe3ec;">
+            <tr>
+              <td bgcolor="#0f52ba" style="padding: 22px 40px; background-color: #0f52ba;">
+                <img src="${escapeHtml(
+                  COMPANY_LOGO_URL
+                )}" alt="AtiSunya" height="30" style="height: 30px; width: auto; border: 0; display: block; color: #ffffff; font-family: ${fontStack}; font-size: 20px; font-weight: 600; letter-spacing: 1.5px;" />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 36px 40px 0 40px;">
+                <p style="margin: 0 0 10px; font-family: ${fontStack}; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #0f52ba;">Application received</p>
+                <h1 style="margin: 0 0 16px; font-family: ${fontStack}; font-size: 25px; line-height: 1.3; font-weight: 600; color: #111827;">Thank you, ${escapeHtml(
+    firstName
+  )}.</h1>
+                <p style="margin: 0 0 28px; font-family: ${fontStack}; font-size: 15px; line-height: 1.65; color: #4b5563;">We have received your application for <strong style="color: #111827;">${escapeHtml(
+    position
+  )}</strong>, and your resume is now with our HR team.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f7fd; border-left: 3px solid #0f52ba;">
+                  <tr>
+                    <td style="padding: 22px 24px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">${summaryRows}
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 40px 0 40px;">
+                <p style="margin: 0 0 16px; font-family: ${fontStack}; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #111827;">What happens next</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${steps}
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 40px 0 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #eef1f7;">
+                  <tr>
+                    <td style="padding-top: 28px;">
+                      <p style="margin: 0 0 8px; font-family: ${fontStack}; font-size: 17px; font-weight: 600; color: #111827;">Complete your candidate profile</p>
+                      <p style="margin: 0 0 20px; font-family: ${fontStack}; font-size: 15px; line-height: 1.65; color: #4b5563;">A few extra details help us review your application faster. It takes about three minutes.</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td bgcolor="#0f52ba" style="background-color: #0f52ba;">
+                            <a href="${escapeHtml(
+                              CAREERS_PROFILE_FORM_URL
+                            )}" style="display: inline-block; padding: 14px 28px; font-family: ${fontStack}; font-size: 15px; font-weight: 600; color: #ffffff; text-decoration: none;">Open the profile form</a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 40px 36px 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #eef1f7;">
+                  <tr>
+                    <td style="padding-top: 24px; font-family: ${fontStack}; font-size: 14px; line-height: 1.65; color: #4b5563;">
+                      Questions about your application? Reply to this email or write to <a href="mailto:${escapeHtml(
+                        HR_TO_EMAIL
+                      )}" style="color: #0f52ba; text-decoration: none; font-weight: 600;">${escapeHtml(
+    HR_TO_EMAIL
+  )}</a>.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px 40px 0 40px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid #eef1f7;">
+                  <tr>
+                    <td style="padding-top: 24px; font-family: ${fontStack}; font-size: 14px; line-height: 1.65; color: #4b5563;">
+                      For more information about AtiSunya, follow us on <a href="${escapeHtml(
+                        COMPANY_LINKEDIN_URL
+                      )}" style="color: #0f52ba; text-decoration: none; font-weight: 600;">LinkedIn</a>.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 24px 40px; background-color: #f7f9fc; border-top: 1px solid #eef1f7;">
+                <p style="margin: 0 0 6px; font-family: ${fontStack}; font-size: 14px; font-weight: 600; color: #111827;">AtiSunya HR Team</p>
+                <p style="margin: 0; font-family: ${fontStack}; font-size: 13px; color: #6b7280;">
+                  <a href="${escapeHtml(
+                    PUBLIC_SITE_URL
+                  )}" style="color: #0f52ba; text-decoration: none;">${escapeHtml(
+    PUBLIC_SITE_URL.replace(/^https?:\/\//, '')
+  )}</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
 }
 
 function buildNewsletterSubscriptionEmailText(subscription, subscribedAt) {
