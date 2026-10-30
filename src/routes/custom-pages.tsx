@@ -20,6 +20,7 @@ import D365FoOnPremisesPage from '../components/solutions/d365fo-on-premises';
 import DynamicsNav2017Page from '../components/solutions/dynamics-nav-2017';
 import DynamicsNav2018Page from '../components/solutions/dynamics-nav-2018';
 import MicrosoftAzurePage from '../components/solutions/microsoft-azure';
+import AzureSpecializedServicePage from '../components/solutions/azure-specialized/AzureSpecializedServicePage';
 import MicrosoftDynamics365Page from '../components/solutions/microsoft-dynamics-365';
 import MicrosoftDynamicsAxPage from '../components/solutions/microsoft-dynamics-ax';
 import MicrosoftDynamicsCrmPage from '../components/solutions/microsoft-dynamics-crm';
@@ -75,6 +76,7 @@ export const customPageRoutes: RouteObject[] = [
   },
   { path: '/solutions/d365fo-on-premises', element: <D365FoOnPremisesPage /> },
   { path: '/solutions/microsoft-azure', element: <MicrosoftAzurePage /> },
+  { path: '/solutions/microsoft-azure/:serviceSlug', element: <AzureSpecializedServicePage /> },
   { path: '/azure-cloud-services', element: <MicrosoftAzurePage /> },
   { path: '/ai-solutions', element: <AiSolutionsPage /> },
   { path: '/solutions/ai-solutions/automation', element: <AiAutomationPage /> },

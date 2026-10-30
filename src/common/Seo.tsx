@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 export interface SeoProps {
   title: string;
   description: string;
+  keywords?: string;
   path?: string;
   canonicalPath?: string;
   image?: string;
@@ -71,6 +72,7 @@ function upsertJsonLd(schema?: SeoProps['schema']) {
 export default function Seo({
   title,
   description,
+  keywords = DEFAULT_KEYWORDS,
   path = '/',
   canonicalPath,
   image = DEFAULT_OG_IMAGE,
@@ -89,7 +91,7 @@ export default function Seo({
     document.title = title;
 
     upsertMeta('name', 'description', description);
-    upsertMeta('name', 'keywords', DEFAULT_KEYWORDS);
+    upsertMeta('name', 'keywords', keywords);
     upsertMeta('name', 'author', 'AtiSunya Private Limited');
     upsertMeta('name', 'geo.region', 'IN-UP');
     upsertMeta('name', 'geo.placename', 'Noida');
@@ -111,7 +113,7 @@ export default function Seo({
     upsertLink('canonical', canonicalUrl);
     upsertLink('sitemap', `${SITE_URL}/sitemap.xml`);
     upsertJsonLd(schema);
-  }, [canonicalPath, description, image, noindex, path, schema, title, type]);
+  }, [canonicalPath, description, image, keywords, noindex, path, schema, title, type]);
 
   return null;
 }

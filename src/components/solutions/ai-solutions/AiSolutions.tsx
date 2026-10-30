@@ -1,25 +1,18 @@
-import type { ServicePageConfig } from '../../../data/service-page-types';
 import WhatWeDoServiceLayout from '../../what-we-do/shared/WhatWeDoServiceLayout';
-
-const pageConfig: ServicePageConfig = {
-  title: 'AI Solutions',
-  subtitle: 'Applied AI for automation, insight, and modern operations',
-  category: 'solution',
-  focus: 'AI copilots, process automation, and intelligent decision support',
-  summary:
-    'Use practical AI solutions to automate repetitive work, improve decision quality, and create better experiences across the enterprise.',
-  image: '/assets/img/service/AI.png',
-  highlights: [
-    'AI use-case discovery and prioritization',
-    'Copilot and workflow automation design',
-    'Insight generation from business data',
-    'Responsible rollout and adoption support'
-  ]
-};
-
-export { pageConfig };
+import pageConfig from './pageConfig';
 
 export default function AiSolutions() {
-  return <WhatWeDoServiceLayout page={pageConfig} />;
+  return (
+    <WhatWeDoServiceLayout
+      page={pageConfig}
+      relatedServices={[
+        {
+          title: 'Azure AI Production-Readiness Assessment',
+          description: 'Review Azure AI architecture, data protection, evaluation, responsible AI controls, and production operations.',
+          href: '/solutions/microsoft-azure/azure-ai-production-readiness-assessment'
+        }
+      ]}
+    />
+  );
 }
 

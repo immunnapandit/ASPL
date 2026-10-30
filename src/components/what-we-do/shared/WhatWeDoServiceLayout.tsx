@@ -1,9 +1,10 @@
-import { Check } from 'lucide-react';
+import { ArrowUpRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { ServicePageConfig } from '../../../data/service-page-types';
 
 interface WhatWeDoServiceLayoutProps {
   page: ServicePageConfig;
+  relatedServices?: Array<{ title: string; description: string; href: string }>;
 }
 
 function buildBenefits(page: ServicePageConfig) {
@@ -35,7 +36,7 @@ function buildBenefits(page: ServicePageConfig) {
   ];
 }
 
-export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutProps) {
+export default function WhatWeDoServiceLayout({ page, relatedServices = [] }: WhatWeDoServiceLayoutProps) {
   const benefits = buildBenefits(page);
   const sectionLabel = page.category === 'solution' ? 'Solutions' : 'What We Do';
   const benefitsLabel = page.category === 'solution' ? 'Solution Benefits' : 'Key Benefits';
@@ -59,7 +60,7 @@ export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutPro
           <div className="row align-items-center g-4 g-lg-5">
             <div className="col-lg-6">
               <div className="tv-pe-hero-media">
-                <img src={page.image} alt={page.title} />
+                <img src={page.image} alt={page.imageAlt ?? page.title} />
               </div>
             </div>
             <div className="col-lg-6">
@@ -144,6 +145,27 @@ export default function WhatWeDoServiceLayout({ page }: WhatWeDoServiceLayoutPro
           </div>
         </div>
       </section>
+
+      {relatedServices.length > 0 && (
+        <section className="tv-related-service-links" aria-labelledby="tv-related-service-title">
+          <div className="container">
+            <div className="tv-related-service-heading">
+              <span className="tv-pe-kicker">Related expertise</span>
+              <h2 id="tv-related-service-title">Explore connected services</h2>
+            </div>
+            <div className="row g-4">
+              {relatedServices.map((service) => (
+                <div className="col-md-6" key={service.href}>
+                  <Link className="tv-related-service-card" to={service.href}>
+                    <span><strong>{service.title}</strong><small>{service.description}</small></span>
+                    <span className="tv-related-service-arrow" aria-hidden="true"><ArrowUpRight size={19} /></span>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

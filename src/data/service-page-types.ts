@@ -7,5 +7,6 @@ export interface ServicePageConfig {
   focus: string;
   summary: string;
   image: string;
+  imageAlt?: string;
   highlights: [string, string, string, string];
 }

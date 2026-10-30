@@ -2,7 +2,8 @@ import Breadcrumb from '../../../common/Breadcrumb';
 import FooterOne from '../../../layouts/footers/FooterOne';
 import HeaderOne from '../../../layouts/headers/HeaderOne';
 import Wrapper from '../../../layouts/Wrapper';
-import Consulting, { pageConfig } from './Consulting';
+import Consulting from './Consulting';
+import pageConfig from './pageConfig';
 
 export default function ConsultingPage() {
   return (

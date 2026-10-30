@@ -1,24 +1,22 @@
-import type { ServicePageConfig } from '../../../data/service-page-types';
 import WhatWeDoServiceLayout from '../shared/WhatWeDoServiceLayout';
-
-const pageConfig: ServicePageConfig = {
-  title: 'Consulting',
-  subtitle: 'Advisory support that turns direction into delivery',
-  category: 'service',
-  focus: 'strategy, assessments, roadmap planning, and transformation guidance',
-  summary:
-    'Get advisory support on platform choices, delivery strategy, operating models, and execution planning across business applications.',
-  image: '/assets/img/service/Consulting1.png',
-  highlights: [
-    'Assessments and current-state reviews',
-    'Roadmap and business case development',
-    'Solution and delivery strategy',
-    'Execution guidance and governance',
-  ],
-};
-
-export { pageConfig };
+import pageConfig from './pageConfig';
 
 export default function Consulting() {
-  return <WhatWeDoServiceLayout page={pageConfig} />;
+  return (
+    <WhatWeDoServiceLayout
+      page={pageConfig}
+      relatedServices={[
+        {
+          title: 'Cloud Architecture Second-Opinion Review',
+          description: 'Get an independent review of cloud design assumptions, risks, options, and operational trade-offs.',
+          href: '/solutions/microsoft-azure/cloud-architecture-second-opinion-review'
+        },
+        {
+          title: 'Enterprise Azure Landing Zone Blueprint',
+          description: 'Define a governed foundation for enterprise subscriptions, identity, networking, security, and operations.',
+          href: '/solutions/microsoft-azure/enterprise-azure-landing-zone-blueprint'
+        }
+      ]}
+    />
+  );
 }

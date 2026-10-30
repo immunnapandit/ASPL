@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { fallbackPublishedBlogPosts } from '../data/published-blog-posts';
 import { industryPages } from '../data/industry-pages';
+import { azureSpecializedServices } from '../components/solutions/azure-specialized/services';
 import Seo, { DEFAULT_OG_IMAGE, ORGANIZATION_LOGO, SITE_NAME, SITE_URL, type SeoProps } from './Seo';
 
 function titleFromSegment(segment: string) {
@@ -158,7 +159,7 @@ function buildCollectionSchema(name: string, description: string, path: string) 
   };
 }
 
-const solutionSeo: Record<string, { name: string; description: string; image?: string }> = {
+const solutionSeo: Record<string, { name: string; description: string; image?: string; keywords?: string; canonicalPath?: string }> = {
   '/ai-solutions': {
     name: 'AI Solutions',
     description:
@@ -240,12 +241,15 @@ const solutionSeo: Record<string, { name: string; description: string; image?: s
     description:
       'Plan, migrate, secure, and modernize cloud workloads with Microsoft Azure consulting, architecture, automation, and managed cloud services.',
     image: '/assets/img/service/Azure.png',
+    keywords: 'Microsoft Azure consulting, Azure cloud services, Azure migration, Azure architecture, Azure security, cloud modernization',
   },
   '/azure-cloud-services': {
     name: 'Azure Cloud Services',
     description:
       'Plan Azure cloud migration, modernization, architecture, security, automation, and managed cloud services with AtiSunya consultants in India.',
     image: '/assets/img/service/Azure.png',
+    keywords: 'Azure cloud services, Azure consulting India, Azure migration, cloud modernization, Azure architecture',
+    canonicalPath: '/solutions/microsoft-azure',
   },
   '/solutions/aws': {
     name: 'AWS Cloud Solutions',
@@ -467,6 +471,39 @@ const insightSeo: Record<string, { name: string; description: string }> = {
 function buildSeoForPath(pathname: string): SeoProps {
   const organizationSchema = buildOrganizationSchema();
 
+  const azureServiceMatch = pathname.match(/^\/solutions\/microsoft-azure\/([^/]+)$/);
+  if (azureServiceMatch) {
+    const azureService = azureSpecializedServices.find((service) => service.slug === azureServiceMatch[1]);
+
+    if (azureService) {
+      return {
+        title: azureService.seo.title,
+        description: azureService.seo.description,
+        keywords: azureService.seo.keywords,
+        image: azureService.image,
+        canonicalPath: pathname,
+        schema: [
+          organizationSchema,
+          buildBreadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Microsoft Azure', path: '/solutions/microsoft-azure' },
+            { name: azureService.title, path: pathname },
+          ]),
+          buildServiceSchema(azureService.title, azureService.seo.description, pathname),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: azureService.faqs.map((faq) => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+            })),
+          },
+        ],
+      };
+    }
+  }
+
   const pageMap: Record<string, SeoProps> = {
     '/': {
       title: 'Microsoft Dynamics 365, Azure Cloud, AI & Power Platform Experts | AtiSunya',
@@ -622,7 +659,9 @@ function buildSeoForPath(pathname: string): SeoProps {
     return {
       title,
       description: solutionPage.description,
+      keywords: solutionPage.keywords,
       image: solutionPage.image,
+      canonicalPath: solutionPage.canonicalPath,
       schema: [
         organizationSchema,
         buildBreadcrumbSchema([

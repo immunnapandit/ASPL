@@ -2,7 +2,8 @@ import Breadcrumb from '../../../common/Breadcrumb';
 import FooterOne from '../../../layouts/footers/FooterOne';
 import HeaderOne from '../../../layouts/headers/HeaderOne';
 import Wrapper from '../../../layouts/Wrapper';
-import AiSolutions, { pageConfig } from './AiSolutions';
+import AiSolutions from './AiSolutions';
+import pageConfig from './pageConfig';
 
 export default function AiSolutionsPage() {
   return (
