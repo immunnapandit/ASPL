@@ -113,6 +113,7 @@ const NEWSLETTER_TO_EMAIL = (process.env.NEWSLETTER_TO_EMAIL || CONTACT_TO_EMAIL
 const PUBLIC_SITE_URL = normalizeSiteUrl(
   process.env.PUBLIC_SITE_URL || parseCsvList(FRONTEND_URL)[0] || 'https://www.atisunya.co'
 );
+const RSS_SITE_URL = 'https://www.atisunya.co';
 const COMPANY_LINKEDIN_URL = (
   process.env.COMPANY_LINKEDIN_URL ||
   'https://www.linkedin.com/company/atisunyaprivatelimited'
@@ -218,6 +219,10 @@ const server = BunLikeServe({
         },
         req
       );
+    }
+
+    if (req.method === 'GET' && url.pathname === '/feed.xml') {
+      return handleRssFeedRequest(req);
     }
 
     if (req.method === 'POST' && url.pathname === '/api/contact') {
@@ -2608,6 +2613,84 @@ async function handleBlogPostsRequest(req) {
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
 
   return json(200, { ok: true, posts }, req);
+}
+
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function decodeCommonHtmlEntities(value) {
+  return value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+}
+
+function toRssText(value) {
+  return decodeCommonHtmlEntities(String(value ?? '').replace(/<[^>]*>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function createRssXml(posts, builtAt = new Date()) {
+  const items = posts.map(({ post, publishedAt }) => {
+    const link = `${RSS_SITE_URL}/blog/${encodeURIComponent(post.slug)}`;
+    const title = escapeXml(post.title);
+    const description = escapeXml(toRssText(post.excerpt || post.content));
+    const authorName = toRssText(post.authorName);
+    const authorEmail = String(post.authorEmail || '').trim();
+    const hasAuthorEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authorEmail);
+    const author = hasAuthorEmail
+      ? `    <author>${escapeXml(authorEmail)}${authorName ? ` (${escapeXml(authorName)})` : ''}</author>\n`
+      : '';
+    const creator = authorName ? `    <dc:creator>${escapeXml(authorName)}</dc:creator>\n` : '';
+
+    return `  <item>\n    <title>${title}</title>\n    <link>${escapeXml(link)}</link>\n    <description>${description}</description>\n    <pubDate>${publishedAt.toUTCString()}</pubDate>\n    <guid isPermaLink="true">${escapeXml(link)}</guid>\n${author}${creator}  </item>`;
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">\n<channel>\n  <title>AtiSunya Blog</title>\n  <link>${RSS_SITE_URL}/blog</link>\n  <description>Latest published insights from AtiSunya on cloud, AI, cybersecurity, and enterprise technology.</description>\n  <language>en-IN</language>\n  <lastBuildDate>${builtAt.toUTCString()}</lastBuildDate>\n  <atom:link href="${RSS_SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />\n${items.join('\n')}\n</channel>\n</rss>\n`;
+}
+
+async function handleRssFeedRequest(req) {
+  try {
+    const posts = (await readBlogPosts())
+      .filter((post) => post.status === 'published' && post.slug && post.title)
+      .map((post) => ({ post, publishedAt: new Date(post.publishedAt) }))
+      .filter(({ publishedAt }) => !Number.isNaN(publishedAt.getTime()))
+      .sort((left, right) => right.publishedAt.getTime() - left.publishedAt.getTime())
+      .slice(0, 50);
+    const response = new Response(createRssXml(posts), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/rss+xml; charset=utf-8',
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+        'Vercel-CDN-Cache-Control': 'max-age=300, stale-while-revalidate=600',
+        'Vercel-Cache-Tag': 'blog-feed',
+      },
+    });
+
+    return withCors(req, response);
+  } catch (error) {
+    console.error('Unable to build the AtiSunya RSS feed:', error);
+    const response = new Response(createRssXml([]), {
+      status: 503,
+      headers: {
+        'Content-Type': 'application/rss+xml; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
+      },
+    });
+
+    return withCors(req, response);
+  }
 }
 
 async function handleBlogPostDetailsRequest(req, slug) {

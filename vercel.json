@@ -1,5 +1,17 @@
 {
   "rewrites": [
+    {
+      "source": "/feed.xml",
+      "destination": "https://aspl-server-1.onrender.com/feed.xml"
+    },
     { "source": "/(.*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/feed.xml",
+      "headers": [
+        { "key": "x-vercel-enable-rewrite-caching", "value": "1" }
+      ]
+    }
   ]
 }
