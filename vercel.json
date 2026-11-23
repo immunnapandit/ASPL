@@ -4,6 +4,10 @@
       "source": "/feed.xml",
       "destination": "https://aspl-server-1.onrender.com/feed.xml"
     },
+    {
+      "source": "/nmbtracker",
+      "destination": "/nmbtracker.html"
+    },
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
